@@ -18,7 +18,11 @@ Log::Log()
 	localtime_s(std::addressof(t_), std::addressof(t));
 
 	logPath = fs::path(L"..\\..\\..\\Saved") / LOGPATH ;
-	fs::create_directory(logPath);
+
+	if(!fs::exists(logPath))
+	{
+		fs::create_directories(logPath);
+	}
 
 	m_logfile = L"WGEngine.log";
 
