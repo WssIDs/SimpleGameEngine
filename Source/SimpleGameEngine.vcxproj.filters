@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{39487c3d-3de8-4122-bf37-97e5d50abd82}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Graphics\DX11\Bindable\Bindable.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\IndexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\InputLayout.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\PixelShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\Sampler.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\Texture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\Topology.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\TransformConstantBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\VertexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Bindable\VertexShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Drawable\Drawable.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\GDIPlusManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Graphics.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Primitive\Box.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Primitive\Melon.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Primitive\Pyramid.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Primitive\Sheet.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Primitive\SkinnedBox.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX11\Render\Surface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX12\CommandQueue.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX12\GraphicsEngine.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX12\PipelineState.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Logger\Log.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Input\KeyboardInput.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Input\MouseInput.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Timer\Timer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Launch\Window\ApplicationWindow.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Launch\Window\Window.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DX12\SwapChain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Imgui\imgui.cpp" />
+    <ClCompile Include="ThirdParty\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="ThirdParty\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="ThirdParty\Imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="ThirdParty\Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="ThirdParty\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Graphics\GUI\ImguiManager.cpp" />
+    <ClCompile Include="Graphics\Engine\Actors\Camera.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\ConstantBuffers.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\IndexBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\InputLayout.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\PixelShader.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\Sampler.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\Texture.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\Topology.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\TransformConstantBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\VertexBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\VertexShader.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Drawable\Drawable.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Drawable\DrawableBase.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\GDIPlusManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Geometry\Cone.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Geometry\Cube.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Geometry\IndexedTriangleList.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Geometry\Plane.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Geometry\Prism.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Geometry\Sphere.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Graphics.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Primitive\Box.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Primitive\Melon.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Primitive\Pyramid.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Primitive\Sheet.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Primitive\SkinnedBox.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Render\Surface.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX12\CommandQueue.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX12\d3dx12.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX12\GraphicsEngine.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX12\PipelineState.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Helpers\DirectXHelper.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Logger\LogDefinitions.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Logger\Log.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Input\MouseInput.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Input\KeyboardInput.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Timer\Timer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\resource.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Launch\Window\Window.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Launch\Window\ApplicationWindow.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX12\SwapChain.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Math\WGMath.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DX11\Bindable\BindableBase.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\Imgui\imconfig.h" />
+    <ClInclude Include="ThirdParty\Imgui\imgui.h" />
+    <ClInclude Include="ThirdParty\Imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="ThirdParty\Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="ThirdParty\Imgui\imgui_internal.h" />
+    <ClInclude Include="ThirdParty\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="ThirdParty\Imgui\imstb_textedit.h" />
+    <ClInclude Include="ThirdParty\Imgui\imstb_truetype.h" />
+    <ClInclude Include="Graphics\GUI\ImguiManager.h" />
+    <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\wgengine.ico">
+      <Filter>Source</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SimpleGameEngine.aps" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\SimpleGameEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphics\Shaders\ColorBlendPS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\ColorBlendVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\ColorIndexPS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\ColorIndexVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\TexturePS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\TextureVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PhongPS.hlsl" />
+  </ItemGroup>
+</Project>
