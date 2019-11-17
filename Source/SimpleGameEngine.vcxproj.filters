@@ -270,5 +270,7 @@
     <FxCompile Include="Graphics\Shaders\IndexedPhongPS.hlsl" />
     <FxCompile Include="Graphics\Shaders\BlendedPhongVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\BlendedPhongPS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\TexturePhongVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\TexturePhongPS.hlsl" />
   </ItemGroup>
 </Project>

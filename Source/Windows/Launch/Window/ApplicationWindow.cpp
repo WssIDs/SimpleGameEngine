@@ -4,6 +4,8 @@
 
 #include "Graphics/DX11/Primitive/Box.h"
 #include "Graphics/DX11/Primitive/Cylinder.h"
+#include "Graphics/DX11/Primitive/Pyramid.h"
+#include "Graphics/DX11/Primitive/SkinnedBox.h"
 
 #include "Graphics/DX11/Math/WGMath.h"
 #include <algorithm>
@@ -11,7 +13,7 @@
 #include "Graphics/DX11/GDIPlusManager.h"
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
-#include "Graphics/DX11/Primitive/Pyramid.h"
+
 
 namespace dx = DirectX;
 
@@ -52,6 +54,11 @@ ApplicationWindow::ApplicationWindow(int width, int height,const wchar_t* name)
 					rng, adist, ddist, odist,
 					rdist, tdist
 					);
+			case 3:
+				return std::make_unique<SkinnedBox>(m_gfx,
+					rng, adist, ddist, odist,
+					rdist
+					);
 			default:
 				assert(false && "impossible drawable option in factory");
 				return {};
@@ -65,7 +72,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const wchar_t* name)
 	private:
 		Graphics& m_gfx;
 		std::mt19937 rng{ std::random_device{}() };
-		std::uniform_int_distribution<int> sdist{ 0,2 };
+		std::uniform_int_distribution<int> sdist{ 0, 3 };
 		std::uniform_real_distribution<float> adist{ 0.0f,PI * 2.0f };
 		std::uniform_real_distribution<float> ddist{ 0.0f,PI * 0.5f };
 		std::uniform_real_distribution<float> odist{ 0.0f,PI * 0.08f };
