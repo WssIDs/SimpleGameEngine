@@ -48,3 +48,6 @@ Saved/*
 # Compiled source files
 Intermediate/*
 Plugins/*/Intermediate/*
+
+# Compiled Shader files
+Shaders/*
