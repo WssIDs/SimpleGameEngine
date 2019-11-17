@@ -13,7 +13,7 @@ public:
 	void SpawnControlWindow();
 	void Reset();
 	void Draw(Graphics& gfx) const;
-	void Bind(Graphics& gfx) const;
+	void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const;
 private:
 	struct PointLightContantBuffer
 	{

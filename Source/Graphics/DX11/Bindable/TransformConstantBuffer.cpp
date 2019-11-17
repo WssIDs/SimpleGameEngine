@@ -12,13 +12,12 @@ TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Drawable& 
 
 void TransformConstantBuffer::Bind(Graphics& gfx)
 {
-	const auto model = m_Parent.GetTransformXM();
+	const auto modelView = m_Parent.GetTransformXM() * gfx.GetCamera();
 	const Transforms tf =
 	{
-		DirectX::XMMatrixTranspose(model),
+		DirectX::XMMatrixTranspose(modelView),
 		DirectX::XMMatrixTranspose(
-			model *
-			gfx.GetCamera() *
+			modelView *
 			gfx.GetProjection()
 		)
 	};

@@ -98,7 +98,7 @@ void ApplicationWindow::onUpdate()
 	// DRAW/LOGICS
 
 	Gfx().SetCamera(camera.GetMatrix());
-	light.Bind(Gfx());
+	light.Bind(Gfx(), camera.GetMatrix());
 
 	for (auto& primitive : primitives )
 	{
@@ -112,7 +112,7 @@ void ApplicationWindow::onUpdate()
 
 	if (ImGui::Begin("Simulation Speed"))
 	{
-		ImGui::SliderFloat("Speed Factor", &speedFactor, 0.0f, 15.0f);
+		ImGui::SliderFloat("Speed Factor", &speedFactor, 0.0f, 6.0f,"%.4f",3.2f);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Text(u8"Нажмите пробел, чтобы остановить сцену");
 	}

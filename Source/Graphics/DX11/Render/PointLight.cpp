@@ -55,8 +55,11 @@ void PointLight::Draw(Graphics& gfx) const
 	m_mesh.Draw(gfx);
 }
 
-void PointLight::Bind(Graphics& gfx) const
+void PointLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const
 {
-	m_contantBuffer.Update(gfx, PointLightContantBuffer{ m_pcbData });
+	auto pcbDataCopy = m_pcbData;
+	const auto pos = DirectX::XMLoadFloat3(&m_pcbData.pos);
+	DirectX::XMStoreFloat3(&pcbDataCopy.pos,DirectX::XMVector3Transform( pos, view));
+	m_contantBuffer.Update(gfx,pcbDataCopy);
 	m_contantBuffer.Bind(gfx);
 }
