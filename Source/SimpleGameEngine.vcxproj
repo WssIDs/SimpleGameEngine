@@ -187,6 +187,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\DX11\Primitive\Cylinder.cpp" />
     <ClCompile Include="Graphics\DX11\Render\PointLight.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Camera.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Bindable.cpp" />
@@ -228,6 +229,7 @@
     <ClCompile Include="Windows\Launch\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\DX11\Primitive\Cylinder.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
     <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h" />
@@ -309,6 +311,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\IndexedPhongPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Graphics\Shaders\PhongPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
