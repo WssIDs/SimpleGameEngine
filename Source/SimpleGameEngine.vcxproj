@@ -266,6 +266,7 @@
     <ClInclude Include="Graphics\Helpers\DirectXHelper.h" />
     <ClInclude Include="Graphics\GUI\ImguiManager.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
+    <ClInclude Include="Graphics\Tests\TestObject.h" />
     <ClInclude Include="ThirdParty\Imgui\imconfig.h" />
     <ClInclude Include="ThirdParty\Imgui\imgui.h" />
     <ClInclude Include="ThirdParty\Imgui\imgui_impl_dx11.h" />

@@ -243,6 +243,7 @@
     <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
+    <ClInclude Include="Graphics\Tests\TestObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

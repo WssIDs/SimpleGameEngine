@@ -1,9 +1,8 @@
 #pragma once
-#include "Graphics/DX11/Drawable/DrawableBase.h"
-#include <random>
+#include "../../Tests/TestObject.h"
 
 
-class Box : public DrawableBase<Box>
+class Box : public TestObject<Box>
 {
 public:
 	Box(Graphics& gfx, std::mt19937& rng,
@@ -14,29 +13,9 @@ public:
 		std::uniform_real_distribution<float>& bdist,
 		DirectX::XMFLOAT3 material);
 
-	// Update primitive every time
-	void Update(float deltaSeconds) override;
-
 	DirectX::XMMATRIX GetTransformXM() const override;
 
 private:
-	// position
-	float r;
-	float roll = 0.0f;
-	float pitch = 0.0f;
-	float yaw = 0.0f;
-	float theta;
-	float phi;
-	float chi;
-
-	// speed (delta / s)
-	float droll;
-	float dpitch;
-	float dyaw;
-	float dtheta;
-	float dphi;
-	float dchi;
-
 	// model transform
 	DirectX::XMFLOAT3X3 modelTransform;
 };
