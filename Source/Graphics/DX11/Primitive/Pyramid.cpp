@@ -1,6 +1,7 @@
 #include "Pyramid.h"
 #include "Graphics/DX11/Bindable/BindableBase.h"
 #include "Graphics/DX11/Geometry/Cone.h"
+#include <array>
 
 
 Pyramid::Pyramid(Graphics& gfx,
@@ -8,18 +9,10 @@ Pyramid::Pyramid(Graphics& gfx,
 	std::uniform_real_distribution<float>& adist,
 	std::uniform_real_distribution<float>& ddist,
 	std::uniform_real_distribution<float>& odist,
-	std::uniform_real_distribution<float>& rdist)
+	std::uniform_real_distribution<float>& rdist,
+	std::uniform_int_distribution<int>& tdist)
 	:
-	r(rdist(rng)),
-	droll(ddist(rng)),
-	dpitch(ddist(rng)),
-	dyaw(ddist(rng)),
-	dphi(odist(rng)),
-	dtheta(odist(rng)),
-	dchi(odist(rng)),
-	chi(adist(rng)),
-	theta(adist(rng)),
-	phi(adist(rng))
+	TestObject(gfx,rng,adist,ddist,odist,rdist)
 {
 	namespace dx = DirectX;
 
@@ -28,43 +21,55 @@ Pyramid::Pyramid(Graphics& gfx,
 		struct Vertex
 		{
 			dx::XMFLOAT3 pos;
-			struct
-			{
-				unsigned char r;
-				unsigned char g;
-				unsigned char b;
-				unsigned char a;
-			} color;
+			dx::XMFLOAT3 n;
+			std::array<char, 4> color;
+			char padding;
 		};
-		auto model = Cone::MakeTesselated<Vertex>(4);
+		const auto tesselation = tdist(rng);
+		auto model = Cone::MakeTesselatedIndependentFaces<Vertex>(tesselation);
 		// set vertex colors for mesh
-		model.m_vertices[0].color = { 255,255,0 };
-		model.m_vertices[1].color = { 255,255,0 };
-		model.m_vertices[2].color = { 255,255,0 };
-		model.m_vertices[3].color = { 255,255,0 };
-		model.m_vertices[4].color = { 255,255,80 };
-		model.m_vertices[5].color = { 255,10,0 };
-		// deform mesh linearly
+		for (auto& vertex : model.m_vertices)
+		{
+			vertex.color = { (char)40, (char)40, (char)255 };
+		}
+		for (int i = 0; i < tesselation; i++)
+		{
+			model.m_vertices[i * 3].color = { (char)255,(char)10,(char)10 };
+		}
+
+		// squash mesh a bit in the z direction
 		model.Transform(dx::XMMatrixScaling(1.0f, 1.0f, 0.7f));
+		// add normals
+		model.SetNormalsIndependentFlat();
 
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"..\\..\\..\\Shaders\\ColorBlendVS.cso");
+		auto pvs = std::make_unique<VertexShader>(gfx, L"..\\..\\..\\Shaders\\BlendedPhongVS.cso");
 		auto pvsbc = pvs->GetByteCode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"..\\..\\..\\Shaders\\ColorBlendPS.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, L"..\\..\\..\\Shaders\\BlendedPhongPS.cso"));
 
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "Color",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Color",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,24,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		};
 		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
 
 		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+		struct PSMaterialConstant
+		{
+			float specularIntensity = 0.6f;
+			float specularPower = 30.0f;
+			float padding[2];
+		} colorConst;
+
+		AddStaticBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(gfx, colorConst, 1u));
 	}
 	else
 	{
@@ -72,22 +77,4 @@ Pyramid::Pyramid(Graphics& gfx,
 	}
 
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
-}
-
-void Pyramid::Update(float dt) noexcept
-{
-	roll += droll * dt;
-	pitch += dpitch * dt;
-	yaw += dyaw * dt;
-	theta += dtheta * dt;
-	phi += dphi * dt;
-	chi += dchi * dt;
-}
-
-DirectX::XMMATRIX Pyramid::GetTransformXM() const noexcept
-{
-	namespace dx = DirectX;
-	return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-		dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-		dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
 }
