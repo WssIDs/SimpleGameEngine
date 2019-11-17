@@ -1,12 +1,12 @@
 #include "TransformConstantBuffer.h"
 
-TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Drawable& parent)
+TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Drawable& parent, UINT slot /*0u*/)
 	:
 	m_Parent(parent)
 {
 	if( !m_VertexConstantBuffer)
 	{
-		m_VertexConstantBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(gfx);
+		m_VertexConstantBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(gfx, slot);
 	}
 }
 

@@ -12,7 +12,7 @@ private:
 		DirectX::XMMATRIX model;
 	};
 public:
-	TransformConstantBuffer(Graphics& gfx, const Drawable& parent);
+	TransformConstantBuffer(Graphics& gfx, const Drawable& parent, UINT slot = 0u);
 	virtual void Bind(Graphics& gfx) override;
 
 private:
