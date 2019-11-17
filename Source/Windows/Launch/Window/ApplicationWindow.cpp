@@ -3,14 +3,9 @@
 #include <memory>
 
 #include "Graphics/DX11/Primitive/Box.h"
-#include "Graphics/DX11/Primitive/Melon.h"
-#include "Graphics/DX11/Primitive/Sheet.h"
-#include "Graphics/DX11/Primitive/Pyramid.h"
-#include "Graphics/DX11/Primitive/SkinnedBox.h"
 
 #include "Graphics/DX11/Math/WGMath.h"
 #include <algorithm>
-
 
 #include "Graphics/DX11/GDIPlusManager.h"
 #include "Graphics/DX11/Render/Surface.h"
@@ -22,7 +17,8 @@ GDIPlusManager gdipm;
 ImguiManager imgui;
 
 ApplicationWindow::ApplicationWindow(int width, int height,const wchar_t* name)
-	:Window(width,height,name)
+	:Window(width,height,name),
+	light(Gfx())
 {
 	S_LOG(L"Application Window", L"Create");
 
@@ -35,37 +31,10 @@ ApplicationWindow::ApplicationWindow(int width, int height,const wchar_t* name)
 		{}
 		std::unique_ptr<Drawable> operator()()
 		{
-			switch (typedist(rng))
-			{
-			case 0:
-				return std::make_unique<Pyramid>(
-					m_gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			case 1:
-				return std::make_unique<Box>(
-					m_gfx, rng, adist, ddist,
+			return std::make_unique<Box>(m_gfx,
+					rng, adist, ddist,
 					odist, rdist, bdist
-					);
-			case 2:
-				return std::make_unique<Melon>(
-					m_gfx, rng, adist, ddist,
-					odist, rdist, longdist, latdist
-					);
-			case 3:
-				return std::make_unique<Sheet>(
-					m_gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			case 4:
-				return std::make_unique<SkinnedBox>(
-					m_gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			default:
-				assert(false && "bad drawable type in factory");
-				return {};
-			}
+				);
 		}
 
 		~Factory()
@@ -80,9 +49,6 @@ ApplicationWindow::ApplicationWindow(int width, int height,const wchar_t* name)
 		std::uniform_real_distribution<float> odist{ 0.0f,PI * 0.08f };
 		std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
 		std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
-		std::uniform_int_distribution<int> latdist{ 5,20 };
-		std::uniform_int_distribution<int> longdist{ 10,40 };
-		std::uniform_int_distribution<int> typedist{ 0,4 };
 	};
 
 	primitives.reserve(nPrimitives);
@@ -130,6 +96,7 @@ void ApplicationWindow::onUpdate()
 	// DRAW/LOGICS
 
 	Gfx().SetCamera(camera.GetMatrix());
+	light.Bind(Gfx());
 
 	for (auto& primitive : primitives )
 	{
@@ -137,12 +104,8 @@ void ApplicationWindow::onUpdate()
 		primitive->Draw(Gfx());
 	}
 
-	//if(Gfx().IsImguiEnabled())
-	//{
-	//	bool test = Gfx().IsImguiEnabled();
-	//	ImGui::ShowDemoWindow(&test);
-	//}
-	
+	light.Draw(Gfx());
+
 	static char buffer[1024];
 
 	if (ImGui::Begin("Simulation Speed"))
@@ -153,7 +116,9 @@ void ApplicationWindow::onUpdate()
 	}
 	ImGui::End();
 
+	// windows to control light and camera
 	camera.SpawnControlWindow();
+	light.SpawnControlWindow();
 
 	Gfx().EndFrame(); // EndFrame
 }

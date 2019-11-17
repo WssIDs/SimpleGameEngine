@@ -48,9 +48,6 @@
     <ClCompile Include="Graphics\DX11\Primitive\Box.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\DX11\Primitive\Melon.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DX11\Primitive\Pyramid.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -104,6 +101,8 @@
     <ClCompile Include="ThirdParty\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\GUI\ImguiManager.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Camera.cpp" />
+    <ClCompile Include="Graphics\DX11\Render\PointLight.cpp" />
+    <ClCompile Include="Graphics\DX11\Primitive\SolidSphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -170,9 +169,6 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DX11\Primitive\Box.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX11\Primitive\Melon.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DX11\Primitive\Pyramid.h">
@@ -245,6 +241,8 @@
     <ClInclude Include="ThirdParty\Imgui\imstb_truetype.h" />
     <ClInclude Include="Graphics\GUI\ImguiManager.h" />
     <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
+    <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
+    <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">
@@ -260,10 +258,11 @@
   <ItemGroup>
     <FxCompile Include="Graphics\Shaders\ColorBlendPS.hlsl" />
     <FxCompile Include="Graphics\Shaders\ColorBlendVS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\ColorIndexPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\ColorIndexVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\TexturePS.hlsl" />
     <FxCompile Include="Graphics\Shaders\TextureVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\PhongPS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PhongVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\SolidVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\SolidPS.hlsl" />
   </ItemGroup>
 </Project>

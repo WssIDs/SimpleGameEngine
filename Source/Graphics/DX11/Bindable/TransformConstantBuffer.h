@@ -5,12 +5,18 @@
 
 class TransformConstantBuffer : public Bindable
 {
+private:
+	struct Transforms
+	{
+		DirectX::XMMATRIX modelViewProj;
+		DirectX::XMMATRIX model;
+	};
 public:
 	TransformConstantBuffer(Graphics& gfx, const Drawable& parent);
 	virtual void Bind(Graphics& gfx) override;
 
 private:
-	static std::unique_ptr<VertexConstantBuffer<DirectX::XMMATRIX>> m_VertexConstantBuffer;
+	static std::unique_ptr<VertexConstantBuffer<Transforms>> m_VertexConstantBuffer;
 	const Drawable& m_Parent;
 };
 

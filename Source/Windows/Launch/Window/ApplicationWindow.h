@@ -8,6 +8,7 @@
 #include "Graphics/DX11/Primitive/Box.h"
 #include "Graphics/GUI/ImguiManager.h"
 #include "Graphics/Engine/Actors/Camera.h"
+#include <Graphics\DX11\Render\PointLight.h>
 
 class ApplicationWindow: public Window
 {
@@ -23,6 +24,7 @@ public:
 private:
 	Timer timer;
 	Camera camera;
+	PointLight light;
 	float speedFactor = 1.0f;
 	std::vector<std::unique_ptr<class Drawable>> primitives;
 	static constexpr size_t nPrimitives = 180;
