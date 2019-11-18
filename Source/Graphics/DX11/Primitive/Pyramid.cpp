@@ -68,8 +68,8 @@ Pyramid::Pyramid(Graphics& gfx,
 	// add normals
 	model.SetNormalsIndependentFlat();
 
-	AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
-	AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
+	AddBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
+	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
 
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 }

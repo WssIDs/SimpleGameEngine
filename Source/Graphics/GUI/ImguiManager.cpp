@@ -1,5 +1,6 @@
 #include "ImguiManager.h"
 #include "Imgui/imgui.h"
+#include <filesystem>
 
 ImguiManager::ImguiManager()
 {
@@ -20,7 +21,11 @@ ImguiManager::ImguiManager()
 		0,
 	};
 
-	io.Fonts->AddFontFromFileTTF(R"(..\\..\\Content\\Fonts\\segoeuii.ttf)", 20.0f, &font_config, ranges);
+	std::filesystem::path path = std::filesystem::path(R"(..\..\..\Content\Fonts\segoeui.ttf)");
+
+	std::string filename = path.u8string();
+
+	io.Fonts->AddFontFromFileTTF(filename.c_str(), 18.0f, &font_config, ranges);
 
 	ImGui::StyleColorsDark();
 }
