@@ -20,7 +20,7 @@ ImguiManager::ImguiManager()
 		0,
 	};
 
-	io.Fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\Segoeui_0.ttf)", 20.0f, &font_config, ranges);
+	io.Fonts->AddFontFromFileTTF(R"(..\\..\\Content\\Fonts\\segoeuii.ttf)", 20.0f, &font_config, ranges);
 
 	ImGui::StyleColorsDark();
 }
