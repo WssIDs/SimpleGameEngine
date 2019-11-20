@@ -7,6 +7,9 @@
 #include "Graphics/DX11/Primitive/Pyramid.h"
 #include "Graphics/DX11/Primitive/SkinnedBox.h"
 
+// Test Imported mesh
+#include "Graphics/Tests/AssetTest.h"
+
 #include "Graphics/DX11/Math/WGMath.h"
 #include <algorithm>
 
@@ -14,8 +17,6 @@
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
 
-#include <assimp/postprocess.h>
-#include <assimp/Importer.hpp>
 
 
 namespace dx = DirectX;
@@ -28,9 +29,6 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	light(Gfx())
 {
 	S_LOG(TEXT("Application Window"), TEXT("Create"));
-
-	Assimp::Importer imp;
-	auto model = imp.ReadFile(R"(..\..\..\Content\Models\mclaren.FBX)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
 	class Factory
 	{
@@ -64,6 +62,11 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 					rng, adist, ddist, odist,
 					rdist
 					);
+			case 4:
+				return std::make_unique<AssetTest>(m_gfx,
+					rng, adist, ddist,
+					odist, rdist, material, 0.005f
+					);
 			default:
 				assert(false && "impossible drawable option in factory");
 				return {};
@@ -77,7 +80,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	private:
 		Graphics& m_gfx;
 		std::mt19937 rng{ std::random_device{}() };
-		std::uniform_int_distribution<int> sdist{ 0, 3 };
+		std::uniform_int_distribution<int> sdist{ 0, 4 };
 		std::uniform_real_distribution<float> adist{ 0.0f,PI * 2.0f };
 		std::uniform_real_distribution<float> ddist{ 0.0f,PI * 0.5f };
 		std::uniform_real_distribution<float> odist{ 0.0f,PI * 0.08f };
