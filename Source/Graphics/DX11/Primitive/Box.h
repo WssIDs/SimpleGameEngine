@@ -15,7 +15,10 @@ public:
 		DirectX::XMFLOAT3 material);
 
 	DirectX::XMMATRIX GetTransformXM() const override;
-	void SpawnControlWindow(int id, Graphics& gfx);
+	/* Spawn imgui material control window
+	 * return false if closed
+	 */
+	bool SpawnControlWindow(int id, Graphics& gfx);
 
 private:
 	void SyncMaterial(Graphics& gfx);

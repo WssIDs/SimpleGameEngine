@@ -19,8 +19,12 @@ public:
 	~ApplicationWindow();
 
 	int Update();
-
 	virtual void onUpdate() override;
+
+	void SpawnSimulationWindow();
+	void SpawnBoxManagerWindow();
+	void SpawnBoxWindows();
+
 
 private:
 	Timer timer;

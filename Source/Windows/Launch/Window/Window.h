@@ -41,6 +41,7 @@ public:
 	// window is run
 	bool isRun() const;
 	
+	// update window every cycle step
 	virtual void onUpdate();
 
 	// loop messages
