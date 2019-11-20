@@ -9,6 +9,7 @@
 #include "Graphics/GUI/ImguiManager.h"
 #include "Graphics/Engine/Actors/Camera.h"
 #include <Graphics\DX11\Render\PointLight.h>
+#include <set>
 
 class ApplicationWindow: public Window
 {
@@ -27,6 +28,9 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 	std::vector<std::unique_ptr<class Drawable>> primitives;
+	std::vector<class Box*> boxes;
 	static constexpr size_t nPrimitives = 180;
+	std::optional<int> comboBoxIndex;
+	std::set<int> boxControlIds;
 };
 

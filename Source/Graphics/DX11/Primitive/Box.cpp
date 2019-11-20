@@ -1,6 +1,7 @@
 #include "Box.h"
 #include "Graphics/DX11/Bindable/BindableBase.h"
 #include "Graphics/DX11/Geometry/Cube.h"
+#include "Imgui/imgui.h"
 
 Box::Box(Graphics& gfx,
 	std::mt19937& rng,
@@ -53,16 +54,8 @@ Box::Box(Graphics& gfx,
 
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 
-	struct PSMaterialConstant
-	{
-		dx::XMFLOAT3 color;
-		float speculatIntensity = 0.6f;
-		float specularPower = 30.0f;
-		float padding[3];
-	} colorConst;
-
-	colorConst.color = material;
-	AddBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(gfx, colorConst, 1u));
+	m_materialConstants.color = material;
+	AddBind(std::make_unique<MaterialContantBuffer>(gfx, m_materialConstants, 1u));
 
 	// model deformation transform (per instance, not stored as bind)
 	dx::XMStoreFloat3x3(
@@ -75,4 +68,31 @@ DirectX::XMMATRIX Box::GetTransformXM() const
 {
 	namespace dx = DirectX;
 	return dx::XMLoadFloat3x3(&modelTransform) * TestObject::GetTransformXM();
+}
+
+void Box::SpawnControlWindow(int id, Graphics& gfx)
+{
+	using namespace std::string_literals;
+
+	bool dirty = false;
+	if (ImGui::Begin(("Box "s + std::to_string(id)).c_str()))
+	{
+		const auto cd = ImGui::ColorEdit3("Material Color", &m_materialConstants.color.x);
+		const auto sid = ImGui::SliderFloat("Specular Intensity", &m_materialConstants.specularIntensity, 0.05f, 4.0f, "%.2f", 2);
+		const auto spd = ImGui::SliderFloat("Specular Power", &m_materialConstants.specularPower, 1.0f, 200.0f, "%.2f", 2);
+		dirty = cd || sid || spd;
+	}
+	ImGui::End();
+
+	if (dirty)
+	{
+		SyncMaterial(gfx);
+	}
+}
+
+void Box::SyncMaterial(Graphics& gfx)
+{
+	auto pConstPS = QueryBindable<MaterialContantBuffer>();
+	assert(pConstPS != nullptr);
+	pConstPS->Update(gfx, m_materialConstants);
 }

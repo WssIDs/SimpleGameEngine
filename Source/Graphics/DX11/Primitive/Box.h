@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Tests/TestObject.h"
+#include "../Bindable/ConstantBuffers.h"
 
 
 class Box : public TestObject<Box>
@@ -14,6 +15,19 @@ public:
 		DirectX::XMFLOAT3 material);
 
 	DirectX::XMMATRIX GetTransformXM() const override;
+	void SpawnControlWindow(int id, Graphics& gfx);
+
+private:
+	void SyncMaterial(Graphics& gfx);
+	
+	struct PSMaterialConstant
+	{
+		DirectX::XMFLOAT3 color;
+		float specularIntensity = 0.6f;
+		float specularPower = 30.0f;
+		float padding[3];
+	} m_materialConstants;
+	using MaterialContantBuffer = PixelConstantBuffer<PSMaterialConstant>;
 
 private:
 	// model transform
