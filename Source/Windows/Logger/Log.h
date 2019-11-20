@@ -2,12 +2,13 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include "Windows\Launch\Window\STypes.h"
 
-#define NULLTERMINATOR L"\n"
+#define NULLTERMINATOR TEXT("\n")
 
 //// NEED FOR INI FILE
 #define MAXCOUNTFILE_BACKUPS 3
-#define LOGPATH L"Logs"
+#define LOGPATH TEXT("Logs")
 
 #ifdef _DEBUG
 #  ifdef _MSC_VER
@@ -30,9 +31,9 @@ public:
 
 	~Log();
 	
-	void print(std::wstring logText);
+	void print(TSTRING logText);
 
-	void print(std::wstring logName, std::wstring logText);
+	void print(TSTRING logName, TSTRING logText);
 
 	static Log* get();
 	
@@ -41,13 +42,13 @@ private:
 	bool is_opened;
 	
 	std::filesystem::path logPath;
-	std::wstring m_logfile;
+	TSTRING m_logfile;
 
-	std::wofstream m_logger_out;
+	std::ofstream m_logger_out;
 
-	std::wstring getCurrentTime() const;
+	TSTRING getCurrentTime() const;
 
-	std::wstring getCurrentTimeByFormat(const std::wstring& format = L"%d.%m.%Y %H.%M.%S") const;
-		std::vector<std::filesystem::path> GetFilesByMask(std::filesystem::path& directory,const std::wstring& filemask);
+	TSTRING getCurrentTimeByFormat(const TSTRING& format = TEXT("%d.%m.%Y %H.%M.%S")) const;
+		std::vector<std::filesystem::path> GetFilesByMask(std::filesystem::path& directory,const TSTRING& filemask);
 };
 

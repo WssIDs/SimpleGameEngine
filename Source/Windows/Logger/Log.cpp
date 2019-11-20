@@ -17,24 +17,24 @@ Log::Log()
 	std::tm t_;
 	localtime_s(std::addressof(t_), std::addressof(t));
 
-	logPath = fs::path(L"..\\..\\..\\Saved") / LOGPATH ;
+	logPath = fs::path(TEXT("..\\..\\..\\Saved")) / LOGPATH ;
 
 	if(!fs::exists(logPath))
 	{
 		fs::create_directories(logPath);
 	}
 
-	m_logfile = L"WGEngine.log";
+	m_logfile = TEXT("WGEngine.log");
 
 	if(fs::exists(logPath/m_logfile))
 	{
-		std::wstringstream wss;
-		wss << L"WGEngine-backup-" << std::put_time(&t_, L"%Y.%m.%d-%H.%M.%S") << L".log";
-		std::wstring backupfile = wss.str();
+		TSTRINGSTREAM wss;
+		wss << TEXT("WGEngine-backup-") << std::put_time(&t_, TEXT("%Y.%m.%d-%H.%M.%S")) << TEXT(".log");
+		TSTRING backupfile = wss.str();
 
 		fs::rename(logPath/m_logfile, logPath/backupfile);
 
-		auto paths = GetFilesByMask(logPath, L"WGEngine-backup");
+		auto paths = GetFilesByMask(logPath, TEXT("WGEngine-backup"));
 		
 		if (paths.size() > MAXCOUNTFILE_BACKUPS)
 		{
@@ -52,24 +52,24 @@ Log::Log()
 
 	is_opened = m_logger_out.is_open();
 
-	print(L"Log file open, ");
+	print(TEXT("Log file open, "));
 }
 
 Log::~Log()
 {
 	if (is_opened)
 	{
-		print(L"Log file closed, ");
+		print(TEXT("Log file closed, "));
 		m_logger_out.close();
 		is_opened = false;
 	}	
 }
 
-void Log::print(std::wstring logText)
+void Log::print(TSTRING logText)
 {
 	if (is_opened)
 	{
-		std::wstringstream output;
+		TSTRINGSTREAM output;
 		output << logText << getCurrentTimeByFormat();
 
 		m_logger_out << output.str() << std::endl;
@@ -78,17 +78,17 @@ void Log::print(std::wstring logText)
 	}
 	else
 	{
-		PRINT_OUTPUT(L"Cannot Print Log");
+		PRINT_OUTPUT(TEXT("Cannot Print Log"));
 	}
 
 }
 
-void Log::print(std::wstring logName, std::wstring logText)
+void Log::print(TSTRING logName, TSTRING logText)
 {
 	if (is_opened)
 	{
-		std::wstringstream output;
-		output << getCurrentTime() << logName << L": " << logText;
+		TSTRINGSTREAM output;
+		output << getCurrentTime() << logName << TEXT(": ") << logText;
 
 		m_logger_out << output.str() << std::endl;
 
@@ -97,7 +97,7 @@ void Log::print(std::wstring logName, std::wstring logText)
 	}
 	else
 	{
-		PRINT_OUTPUT(L"Cannot Print Log");
+		PRINT_OUTPUT(TEXT("Cannot Print Log"));
 	}
 }
 
@@ -108,42 +108,47 @@ Log* Log::get()
 	return &log;
 }
 
-std::wstring Log::getCurrentTime() const
+TSTRING Log::getCurrentTime() const
 {
 	auto t = std::time(nullptr);
 
 	std::tm t_;
 	localtime_s(std::addressof(t_), std::addressof(t));
 
-	std::wstringstream dateformat;
-	dateformat << L"["<< std::put_time(&t_, L"%d.%m.%Y-%H.%M.%S") << L"]";
+	TSTRINGSTREAM dateformat;
+	dateformat << TEXT("[")<< std::put_time(&t_, TEXT("%d.%m.%Y-%H.%M.%S")) << TEXT("]");
 	
 	return dateformat.str();
 }
 
 // L"%d.%m.%Y %H.%M.%S")
-std::wstring Log::getCurrentTimeByFormat(const std::wstring& format) const
+TSTRING Log::getCurrentTimeByFormat(const TSTRING& format) const
 {
 	auto t = std::time(nullptr);
 
 	std::tm t_;
 	localtime_s(std::addressof(t_), std::addressof(t));
 
-	std::wstringstream dateformat;
+	TSTRINGSTREAM dateformat;
 	dateformat << std::put_time(&t_, format.c_str());
 
 	return dateformat.str();
 }
 
-std::vector<std::filesystem::path> Log::GetFilesByMask(std::filesystem::path& directory,const std::wstring& filemask)
+std::vector<std::filesystem::path> Log::GetFilesByMask(std::filesystem::path& directory,const TSTRING& filemask)
 {
 	std::vector<fs::path> paths;
 
 	for (const auto& entry : fs::directory_iterator(directory))
 	{
-		std::wstring path = entry.path().c_str();
 
-		if (path.find(filemask) != std::wstring::npos)
+#ifdef UNICODE
+		std::wstring path = entry.path().wstring();
+#else
+		std::string path = entry.path().string();
+#endif
+
+		if (path.find(filemask) != TSTRING::npos)
 		{
 			paths.push_back(entry.path());
 		}

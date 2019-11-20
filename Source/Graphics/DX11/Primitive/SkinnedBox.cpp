@@ -28,15 +28,15 @@ SkinnedBox::SkinnedBox(Graphics& gfx,
 
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
 
-		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(L"..\\..\\..\\Content\\Images\\uv_pattern.png")));
+		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(TEXT("..\\..\\..\\Content\\Images\\uv_pattern.png"))));
 
 		AddStaticBind(std::make_unique<Sampler>(gfx));
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"..\\..\\..\\Shaders\\TexturePhongVS.cso");
+		auto pvs = std::make_unique<VertexShader>(gfx, TEXT("..\\..\\..\\Shaders\\TexturePhongVS.cso"));
 		auto pvsbc = pvs->GetByteCode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"..\\..\\..\\Shaders\\TexturePhongPS.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, TEXT("..\\..\\..\\Shaders\\TexturePhongPS.cso")));
 
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
 

@@ -14,18 +14,23 @@
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
 
+#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+
 
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 ImguiManager imgui;
 
-ApplicationWindow::ApplicationWindow(int width, int height,const wchar_t* name)
+ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	:Window(width,height,name),
 	light(Gfx())
 {
-	S_LOG(L"Application Window", L"Create");
+	S_LOG(TEXT("Application Window"), TEXT("Create"));
 
+	Assimp::Importer imp;
+	auto model = imp.ReadFile(R"(..\..\..\Content\Models\mclaren.FBX)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
 	class Factory
 	{
@@ -101,7 +106,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const wchar_t* name)
 
 ApplicationWindow::~ApplicationWindow()
 {
-	S_LOG(L"Application Window", L"Destroy");
+	S_LOG(TEXT("Application Window"), TEXT("Destroy"));
 }
 
 int ApplicationWindow::Update()

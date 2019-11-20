@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "Windows/Logger/LogDefinitions.h"
+#include "STypes.h"
 
 class Window
 {
@@ -15,7 +16,7 @@ class Window
 	class WindowClass
 	{
 	public:
-		static const wchar_t* getName();
+		static LPCTSTR getName();
 		static HINSTANCE getInstance();
 
 	private:
@@ -23,20 +24,20 @@ class Window
 		~WindowClass();
 		WindowClass(const WindowClass&) = delete;
 		WindowClass& operator=(const WindowClass&) = delete;
-		static constexpr const wchar_t* m_wndClassName = L"WG Engine";
+		static constexpr LPCTSTR m_wndClassName = TEXT("WGEngineClass");
 		static WindowClass m_wndClass;
 		HINSTANCE m_hInst;
 	};
 
 public:
 
-	Window(int width, int height, const wchar_t* name);
+	Window(int width, int height,const TSTRING name);
 	~Window();
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 
-	void SetWindowTitle(const std::wstring& title);
+	void SetWindowTitle(const TSTRING& title);
 
 	// window is run
 	bool isRun() const;

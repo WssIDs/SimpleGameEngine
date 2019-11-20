@@ -8,7 +8,7 @@ int CALLBACK WinMain(
 )
 {
 	
-	ApplicationWindow application_window(1024, 768, L"WG Engine");
+	ApplicationWindow application_window(1024, 768, TEXT("WG Engine"));
 	application_window.Update(); // Update window every frame
 	
 	return 0;

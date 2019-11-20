@@ -17,11 +17,11 @@ Cylinder::Cylinder(Graphics& gfx,
 
 	if (!IsStaticInitialized())
 	{
-		auto pvs = std::make_unique<VertexShader>(gfx, L"..\\..\\..\\Shaders\\PhongVS.cso");
+		auto pvs = std::make_unique<VertexShader>(gfx, TEXT("..\\..\\..\\Shaders\\PhongVS.cso"));
 		auto pvsbc = pvs->GetByteCode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"..\\..\\..\\Shaders\\IndexedPhongPS.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, TEXT("..\\..\\..\\Shaders\\IndexedPhongPS.cso")));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{

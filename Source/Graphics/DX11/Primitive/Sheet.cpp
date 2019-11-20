@@ -42,17 +42,17 @@ Sheet::Sheet(Graphics& gfx,
 		model.m_vertices[2].tex = { 0.0f,1.0f };
 		model.m_vertices[3].tex = { 1.0f,1.0f };
 
-		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(L"..\\..\\..\\Content\\Images\\main.png")));
+		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(TEXT("..\\..\\..\\Content\\Images\\main.png"))));
 
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
 
 		AddStaticBind(std::make_unique<Sampler>(gfx));
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"..\\..\\..\\Shaders\\TextureVS.cso");
+		auto pvs = std::make_unique<VertexShader>(gfx, TEXT("..\\..\\..\\Shaders\\TextureVS.cso"));
 		auto pvsbc = pvs->GetByteCode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"..\\..\\..\\Shaders\\TexturePS.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, TEXT("..\\..\\..\\Shaders\\TexturePS.cso")));
 
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
 

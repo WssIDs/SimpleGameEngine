@@ -14,7 +14,7 @@
 class ApplicationWindow: public Window
 {
 public:
-	ApplicationWindow(int width, int height,const wchar_t* name);
+	ApplicationWindow(int width, int height,const TSTRING name);
 
 	~ApplicationWindow();
 

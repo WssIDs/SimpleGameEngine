@@ -18,11 +18,11 @@ Pyramid::Pyramid(Graphics& gfx,
 
 	if (!IsStaticInitialized())
 	{
-		auto pvs = std::make_unique<VertexShader>(gfx, L"..\\..\\..\\Shaders\\BlendedPhongVS.cso");
+		auto pvs = std::make_unique<VertexShader>(gfx, TEXT("..\\..\\..\\Shaders\\BlendedPhongVS.cso"));
 		auto pvsbc = pvs->GetByteCode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"..\\..\\..\\Shaders\\BlendedPhongPS.cso"));
+		AddStaticBind(std::make_unique<PixelShader>(gfx, TEXT("..\\..\\..\\Shaders\\BlendedPhongPS.cso")));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{

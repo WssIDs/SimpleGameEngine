@@ -14,23 +14,23 @@ namespace dx = DirectX;
 
 Graphics::Graphics(HWND hWnd)
 {
-	S_LOG(L"Graphics", L"Create");
+	S_LOG(TEXT("Graphics"), TEXT("Create"));
 
 	InitDX11_1(hWnd);
 
-	S_LOG(L"Graphics", L"Init");	
+	S_LOG(TEXT("Graphics"), TEXT("Init"));
 	
 	ImGui_ImplDX11_Init(m_pDevice.Get(), m_pContext.Get());
-	S_LOG(L"ImguiDX11", L"Init");
+	S_LOG(TEXT("ImguiDX11"), TEXT("Init"));
 }
 
 Graphics::~Graphics()
 {
 	ImGui_ImplDX11_Shutdown();
-	S_LOG(L"ImguiDX11", L"ShutDown");
+	S_LOG(TEXT("ImguiDX11"), TEXT("ShutDown"));
 
 	// only for log
-	S_LOG(L"Graphics", L"Release");
+	S_LOG(TEXT("Graphics"), TEXT("Release"));
 }
 
 void Graphics::InitDX11(HWND hWnd)
@@ -178,6 +178,7 @@ void Graphics::InitDX11_1(HWND hWnd)
 
 	// set up the swap chain description
 	DXGI_SWAP_CHAIN_DESC1 scd = { 0 };
+	SecureZeroMemory(&scd, sizeof(scd));
 	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;    // how the swap chain should be used
 	scd.BufferCount = 2;                                  // a front buffer and a back buffer
 	scd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;              // the most common swap chain format

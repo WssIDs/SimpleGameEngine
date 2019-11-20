@@ -8,8 +8,6 @@ Window::WindowClass Window::WindowClass::m_wndClass;
 Window::WindowClass::WindowClass()
 	: m_hInst( GetModuleHandle(nullptr))
 {
-	std::wstring lpszWindowTitle = L"Simple Engine";
-
 	WNDCLASSEX wc{ 0 };
 	wc.cbClsExtra = NULL;
 	wc.cbSize = sizeof( wc );
@@ -27,7 +25,7 @@ Window::WindowClass::WindowClass()
 	RegisterClassEx(&wc);
 }
 
-const wchar_t* Window::WindowClass::getName()
+LPCTSTR Window::WindowClass::getName()
 {
 	return m_wndClassName;
 }
@@ -42,7 +40,7 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass(m_wndClassName, getInstance());
 }
 
-Window::Window(int width, int height, const wchar_t* name)
+Window::Window(int width, int height,const TSTRING name)
 	:m_width(width),
 	m_height(height)
 {
@@ -55,12 +53,12 @@ Window::Window(int width, int height, const wchar_t* name)
 
 	if(AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false) == 0)
 	{
-		PRINT_OUTPUT(L"Cannot AdjustWindowRect");
+		PRINT_OUTPUT(TEXT("Cannot AdjustWindowRect"));
 	}
 
 	m_hwnd = CreateWindow(
 		WindowClass::getName(),
-		name,
+		name.c_str(),
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -75,7 +73,7 @@ Window::Window(int width, int height, const wchar_t* name)
 	ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
 	ImGui_ImplWin32_Init(m_hwnd);
-	S_LOG(L"ImGuiWin32", L"Init");
+	S_LOG(TEXT("ImGuiWin32"), TEXT("Init"));
 
 	m_pGfx = std::make_unique<Graphics>(m_hwnd);
 
@@ -85,16 +83,16 @@ Window::Window(int width, int height, const wchar_t* name)
 Window::~Window()
 {
 	ImGui_ImplWin32_Shutdown();
-	S_LOG(L"ImGuiWin32", L"Shutdown");
+	S_LOG(TEXT("ImGuiWin32"),TEXT("Shutdown"));
 
 	DestroyWindow(m_hwnd);
 }
 
-void Window::SetWindowTitle(const std::wstring& title)
+void Window::SetWindowTitle(const TSTRING& title)
 {
 	if(SetWindowText(m_hwnd, title.c_str()) == 0)
 	{
-		PRINT_OUTPUT(L"Cannot Change Title");
+		PRINT_OUTPUT(TEXT("Cannot Change Title"));
 	}
 }
 
@@ -106,7 +104,7 @@ std::optional<int> Window::ProcessMessages()
 	{
 		if(msg.message == WM_QUIT)
 		{
-			return msg.wParam;
+			return static_cast<int>(msg.wParam);
 		}
 
 		TranslateMessage(&msg);
@@ -168,7 +166,7 @@ LRESULT CALLBACK Window::handleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT CALLBACK Window::handleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	auto const window = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWL_USERDATA));
+	auto const window = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
 	return window->handleMsg(hWnd, msg, wParam, lParam);
 }
