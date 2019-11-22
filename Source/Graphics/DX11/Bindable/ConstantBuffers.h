@@ -10,17 +10,17 @@ public:
 		D3D11_MAPPED_SUBRESOURCE msr;
 
 		GetContext(gfx)->Map(
-			m_pConstantBuffer.Get(), 0u,
+			pConstantBuffer.Get(), 0u,
 			D3D11_MAP_WRITE_DISCARD, 0u,
 			&msr
 		);
 
 		memcpy(msr.pData, &consts, sizeof(consts));
-		GetContext(gfx)->Unmap(m_pConstantBuffer.Get(), 0u);
+		GetContext(gfx)->Unmap(pConstantBuffer.Get(), 0u);
 	}
 	ConstantBuffer( Graphics& gfx, const C& consts, UINT slot = 0u)
 		:
-		m_slot(slot)
+		slot(slot)
 	{
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -35,11 +35,11 @@ public:
 		csd.SysMemPitch = 0;
 		csd.SysMemSlicePitch = 0;
 		
-		GetDevice(gfx)->CreateBuffer(&cbd, &csd, &m_pConstantBuffer);
+		GetDevice(gfx)->CreateBuffer(&cbd, &csd, &pConstantBuffer);
 	}
 	ConstantBuffer(Graphics& gfx, UINT slot = 0u)
 		:
-		m_slot(slot)
+		slot(slot)
 	{
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -49,40 +49,40 @@ public:
 		cbd.ByteWidth = sizeof( C );
 		cbd.StructureByteStride = 0u;
 
-		GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &m_pConstantBuffer);
+		GetDevice(gfx)->CreateBuffer(&cbd, nullptr, &pConstantBuffer);
 	}
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pConstantBuffer;
-	UINT m_slot;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer;
+	UINT slot;
 };
 
 template<typename C>
 class VertexConstantBuffer : public ConstantBuffer<C>
 {
-	using ConstantBuffer<C>::m_pConstantBuffer;
-	using ConstantBuffer<C>::m_slot;
+	using ConstantBuffer<C>::pConstantBuffer;
+	using ConstantBuffer<C>::slot;
 	using Bindable::GetContext;
 
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gfx) override
 	{
-		GetContext(gfx)->VSSetConstantBuffers(m_slot, 1u, m_pConstantBuffer.GetAddressOf());
+		GetContext(gfx)->VSSetConstantBuffers(this->slot, 1u, pConstantBuffer.GetAddressOf());
 	}
 };
 
 template<typename C>
 class PixelConstantBuffer : public ConstantBuffer<C>
 {
-	using ConstantBuffer<C>::m_pConstantBuffer;
-	using ConstantBuffer<C>::m_slot;
+	using ConstantBuffer<C>::pConstantBuffer;
+	using ConstantBuffer<C>::slot;
 	using Bindable::GetContext;
 
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
 	void Bind(Graphics& gfx) override
 	{
-		GetContext(gfx)->PSSetConstantBuffers(m_slot, 1u, m_pConstantBuffer.GetAddressOf());
+		GetContext(gfx)->PSSetConstantBuffers(this->slot, 1u, pConstantBuffer.GetAddressOf());
 	}
 };

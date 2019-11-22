@@ -2,10 +2,10 @@
 
 Topology::Topology(Graphics& gfx, D3D_PRIMITIVE_TOPOLOGY type)
 	:
-	m_Type(type)
+	Type(type)
 {}
 
 void Topology::Bind(Graphics& gfx)
 {
-	GetContext(gfx)->IASetPrimitiveTopology(m_Type);
+	GetContext(gfx)->IASetPrimitiveTopology(Type);
 }

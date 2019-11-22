@@ -21,7 +21,7 @@ protected:
 	template<class T>
 	T* QueryBindable()
 	{
-		for (auto& pb : m_binds)
+		for (auto& pb : binds)
 		{
 			if(auto pt = dynamic_cast<T*>(pb.get()))
 			{
@@ -34,7 +34,7 @@ protected:
 	void AddIndexBuffer(std::unique_ptr<class IndexBuffer> iBuf);
 private:
 	virtual const std::vector<std::unique_ptr<Bindable>>& GetStaticBinds() const = 0;
-	const class IndexBuffer* m_pIndexBuffer = nullptr;
-	std::vector<std::unique_ptr<Bindable>> m_binds;
+	const class IndexBuffer* pIndexBuffer = nullptr;
+	std::vector<std::unique_ptr<Bindable>> binds;
 };
 

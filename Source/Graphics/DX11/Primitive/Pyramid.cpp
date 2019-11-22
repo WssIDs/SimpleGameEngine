@@ -54,13 +54,13 @@ Pyramid::Pyramid(Graphics& gfx,
 	const auto tesselation = tdist(rng);
 	auto model = Cone::MakeTesselatedIndependentFaces<Vertex>(tesselation);
 	// set vertex colors for mesh
-	for (auto& vertex : model.m_vertices)
+	for (auto& vertex : model.vertices)
 	{
 		vertex.color = { (char)40, (char)40, (char)255 };
 	}
 	for (int i = 0; i < tesselation; i++)
 	{
-		model.m_vertices[i * 3].color = { (char)255,(char)10,(char)10 };
+		model.vertices[i * 3].color = { (char)255,(char)10,(char)10 };
 	}
 
 	// squash mesh a bit in the z direction
@@ -68,8 +68,8 @@ Pyramid::Pyramid(Graphics& gfx,
 	// add normals
 	model.SetNormalsIndependentFlat();
 
-	AddBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
+	AddBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 }

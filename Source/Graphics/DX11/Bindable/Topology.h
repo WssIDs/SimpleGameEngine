@@ -9,6 +9,6 @@ public:
 	virtual void Bind(Graphics& gfx) override;
 
 protected:
-	D3D_PRIMITIVE_TOPOLOGY m_Type;
+	D3D_PRIMITIVE_TOPOLOGY Type;
 };
 

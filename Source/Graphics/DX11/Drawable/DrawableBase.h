@@ -10,24 +10,24 @@ class DrawableBase : public Drawable
 protected:
 	static bool IsStaticInitialized()
 	{
-		return !m_staticBinds.empty();
+		return !staticBinds.empty();
 	}
 	static void AddStaticBind( std::unique_ptr<Bindable> bind)
 	{
-		m_staticBinds.push_back(std::move(bind));
+		staticBinds.push_back(std::move(bind));
 	}
 	void AddStaticIndexBuffer( std::unique_ptr<IndexBuffer> iBuf)
 	{
-		m_pIndexBuffer = iBuf.get();
-		m_staticBinds.push_back(std::move(iBuf));
+		this->pIndexBuffer = iBuf.get();
+		staticBinds.push_back(std::move(iBuf));
 	}
 	void SetIndexFromStatic()
 	{
-		for (const auto& sbind : m_staticBinds)
+		for (const auto& sbind : staticBinds)
 		{
 			if (const auto pIndexBuffer = dynamic_cast<IndexBuffer*>(sbind.get()))
 			{
-				m_pIndexBuffer = pIndexBuffer;
+				this->pIndexBuffer = pIndexBuffer;
 				return;
 			}
 		}
@@ -35,11 +35,11 @@ protected:
 private:
 	const std::vector<std::unique_ptr<Bindable>>& GetStaticBinds() const override
 	{
-		return m_staticBinds;
+		return staticBinds;
 	}
 
-	static std::vector<std::unique_ptr<Bindable>> m_staticBinds;
+	static std::vector<std::unique_ptr<Bindable>> staticBinds;
 };
 
 template<class T>
-std::vector<std::unique_ptr<Bindable>> DrawableBase<T>::m_staticBinds;
+std::vector<std::unique_ptr<Bindable>> DrawableBase<T>::staticBinds;

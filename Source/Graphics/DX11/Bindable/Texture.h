@@ -8,6 +8,6 @@ public:
 	virtual void Bind(Graphics& gfx) override;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pTextureView;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTextureView;
 };
 

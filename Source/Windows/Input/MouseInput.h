@@ -29,43 +29,43 @@ public:
 			Leave,
 		};
 	private:
-		Type m_type;
-		bool m_leftIsPressed;
-		bool m_rightIsPressed;
-		int m_x;
-		int m_y;
+		Type type;
+		bool leftIsPressed;
+		bool rightIsPressed;
+		int x;
+		int y;
 	public:
 		Event(Type type, const MouseInput& parent)
 			:
-			m_type(type),
-			m_leftIsPressed(parent.m_leftIsPressed),
-			m_rightIsPressed(parent.m_rightIsPressed),
-			m_x(parent.m_x),
-			m_y(parent.m_y)
+			type(type),
+			leftIsPressed(parent.leftIsPressed),
+			rightIsPressed(parent.rightIsPressed),
+			x(parent.x),
+			y(parent.y)
 		{}
 		Type GetType() const
 		{
-			return m_type;
+			return type;
 		}
 		std::pair<int, int> GetPos() const
 		{
-			return{ m_x, m_y };
+			return{ x, y };
 		}
 		int GetPosX() const
 		{
-			return m_x;
+			return x;
 		}
 		int GetPosY() const
 		{
-			return m_y;
+			return y;
 		}
 		bool LeftIsPressed() const
 		{
-			return m_leftIsPressed;
+			return leftIsPressed;
 		}
 		bool RightIsPressed() const
 		{
-			return m_rightIsPressed;
+			return rightIsPressed;
 		}
 	};
 public:
@@ -82,7 +82,7 @@ public:
 	std::optional<MouseInput::Event> Read();
 	bool IsEmpty() const
 	{
-		return m_buffer.empty();
+		return buffer.empty();
 	}
 	void Flush();
 	void EnableRaw();
@@ -103,14 +103,14 @@ private:
 	void TrimRawInputBuffer();
 	void OnWheelDelta(int x, int y, int delta);
 private:
-	static constexpr unsigned int m_bufferSize = 16u;
-	int m_x = 0;
-	int m_y = 0;
-	bool m_leftIsPressed = false;
-	bool m_rightIsPressed = false;
-	bool m_isInWindow = false;
-	int m_wheelDeltaCarry = 0;
-	bool m_rawEnabled = false;
-	std::queue<Event> m_buffer;
-	std::queue<RawDelta> m_rawDeltaBuffer;
+	static constexpr unsigned int bufferSize = 16u;
+	int x = 0;
+	int y = 0;
+	bool leftIsPressed = false;
+	bool rightIsPressed = false;
+	bool isInWindow = false;
+	int wheelDeltaCarry = 0;
+	bool rawEnabled = false;
+	std::queue<Event> buffer;
+	std::queue<RawDelta> rawDeltaBuffer;
 };

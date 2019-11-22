@@ -8,10 +8,10 @@ PixelShader::PixelShader(Graphics& gfx, const TSTRING& path)
 
 	std::wstring wpath(path.begin(), path.end());
 	D3DReadFileToBlob(wpath.c_str(), &pBlob);
-	GetDevice(gfx)->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &m_pPixelShader);
+	GetDevice(gfx)->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
 }
 
 void PixelShader::Bind(Graphics& gfx)
 {
-	GetContext(gfx)->PSSetShader(m_pPixelShader.Get(), nullptr, 0u);
+	GetContext(gfx)->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 }

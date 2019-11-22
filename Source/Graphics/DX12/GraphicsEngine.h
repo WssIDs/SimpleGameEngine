@@ -52,10 +52,10 @@ private:
 	static const UINT FrameCount = 3;
 
 	// we will exit the program when this becomes false
-	bool m_running = true;
+	bool running = true;
 
-	bool m_useWarpDevice;
-	IDXGIFactory4* m_dxgi_factory;
+	bool useWarpDevice;
+	IDXGIFactory4* dxgi_factory;
 
 	void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter);
 
@@ -64,24 +64,24 @@ private:
 	UINT height;
 
 	// Pipeline objects.
-	D3D12_VIEWPORT m_viewport;
-	D3D12_RECT m_scissorRect;
-	IDXGISwapChain3* m_swapChain;
-	ID3D12Device* m_device;
-	ID3D12Resource* m_renderTargets[FrameCount];
-	ID3D12CommandAllocator* m_commandAllocator[FrameCount];
-	ID3D12CommandQueue* m_commandQueue;
-	ComPtr<ID3D12RootSignature> m_rootSignature;
-	ID3D12DescriptorHeap* m_rtvHeap;
-	ComPtr<ID3D12PipelineState> m_pipelineState;
-	ID3D12GraphicsCommandList* m_commandList;
-	UINT m_rtvDescriptorSize;
+	D3D12_VIEWPORT viewport;
+	D3D12_RECT scissorRect;
+	IDXGISwapChain3* swapChain;
+	ID3D12Device* device;
+	ID3D12Resource* renderTargets[FrameCount];
+	ID3D12CommandAllocator* commandAllocator[FrameCount];
+	ID3D12CommandQueue* commandQueue;
+	ComPtr<ID3D12RootSignature> rootSignature;
+	ID3D12DescriptorHeap* rtvHeap;
+	ComPtr<ID3D12PipelineState> pipelineState;
+	ID3D12GraphicsCommandList* commandList;
+	UINT rtvDescriptorSize;
 
 	// Synchronization objects.
-	UINT m_frameIndex;
-	HANDLE m_fenceEvent;
-	ID3D12Fence* m_fence[FrameCount];
-	UINT64 m_fenceValue[FrameCount];
+	UINT frameIndex;
+	HANDLE fenceEvent;
+	ID3D12Fence* fence[FrameCount];
+	UINT64 fenceValue[FrameCount];
 
 
 

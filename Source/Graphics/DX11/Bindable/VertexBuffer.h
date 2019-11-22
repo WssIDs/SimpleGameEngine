@@ -8,7 +8,7 @@ class VertexBuffer : public Bindable
 public:
 	template<class V>
 	VertexBuffer(Graphics& gfx, const std::vector<V>& verticles)
-		: m_stride (sizeof(V))
+		: stride (sizeof(V))
 	{
 		D3D11_BUFFER_DESC bd = {};
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -21,12 +21,12 @@ public:
 		D3D11_SUBRESOURCE_DATA sd = {};
 		sd.pSysMem = verticles.data();
 
-		GetDevice(gfx)->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
+		GetDevice(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer);
 	}
 
 	VertexBuffer(Graphics& gfx, const VL::VertexBuffer& vbuf)
 		:
-		m_stride((UINT)vbuf.GetLayout().Size())
+		stride((UINT)vbuf.GetLayout().Size())
 	{
 
 		D3D11_BUFFER_DESC bd = {};
@@ -35,18 +35,18 @@ public:
 		bd.CPUAccessFlags = 0u;
 		bd.MiscFlags = 0u;
 		bd.ByteWidth = UINT(vbuf.SizeBytes());
-		bd.StructureByteStride = m_stride;
+		bd.StructureByteStride = stride;
 		D3D11_SUBRESOURCE_DATA sd = {};
 
 		sd.pSysMem = vbuf.GetData();
 
-		GetDevice(gfx)->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
+		GetDevice(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer);
 	}
 
 	void Bind(Graphics& gfx) override;
 
 protected:
-	const UINT m_stride;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pVertexBuffer;
+	const UINT stride;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
 };
 

@@ -16,7 +16,7 @@ public:
 	virtual void Bind(Graphics& gfx) override;
 
 private:
-	static std::unique_ptr<VertexConstantBuffer<Transforms>> m_VertexConstantBuffer;
-	const Drawable& m_Parent;
+	static std::unique_ptr<VertexConstantBuffer<Transforms>> pVertexConstantBuffer;
+	const Drawable& Parent;
 };
 

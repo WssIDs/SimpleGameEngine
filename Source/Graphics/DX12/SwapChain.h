@@ -14,6 +14,6 @@ public:
 	IDXGISwapChain* getSwapChain();
 
 private:
-	IDXGISwapChain* m_swap_chain;
+	IDXGISwapChain* swap_chain;
 };
 

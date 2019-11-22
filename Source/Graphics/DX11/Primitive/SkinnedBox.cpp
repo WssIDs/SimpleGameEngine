@@ -26,7 +26,7 @@ SkinnedBox::SkinnedBox(Graphics& gfx,
 		};
 		auto model = Cube::MakeIndependentTextured<Vertex>();
 
-		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
+		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(TEXT("..\\..\\..\\Content\\Images\\uv_pattern.png"))));
 
@@ -38,7 +38,7 @@ SkinnedBox::SkinnedBox(Graphics& gfx,
 
 		AddStaticBind(std::make_unique<PixelShader>(gfx, TEXT("..\\..\\..\\Shaders\\TexturePhongPS.cso")));
 
-		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
+		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{

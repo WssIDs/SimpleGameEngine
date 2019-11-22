@@ -8,25 +8,25 @@ namespace Gdiplus
 #include <gdiplus.h>
 
 
-ULONG_PTR GDIPlusManager::m_token;
-int GDIPlusManager::m_refCount;
+ULONG_PTR GDIPlusManager::token;
+int GDIPlusManager::refCount;
 
 GDIPlusManager::GDIPlusManager()
 {
-	if (m_refCount++ == 0)
+	if (refCount++ == 0)
 	{
 		Gdiplus::GdiplusStartupInput input;
 		input.GdiplusVersion = 1;
 		input.DebugEventCallback = nullptr;
 		input.SuppressBackgroundThread = false;
-		Gdiplus::GdiplusStartup(&m_token, &input, nullptr);
+		Gdiplus::GdiplusStartup(&token, &input, nullptr);
 	}
 }
 
 GDIPlusManager::~GDIPlusManager()
 {
-	if (--m_refCount == 0)
+	if (--refCount == 0)
 	{
-		Gdiplus::GdiplusShutdown(m_token);
+		Gdiplus::GdiplusShutdown(token);
 	}
 }

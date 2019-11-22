@@ -29,7 +29,7 @@ private:
 		float specularIntensity = 0.6f;
 		float specularPower = 30.0f;
 		float padding[3];
-	} m_materialConstants;
+	} materialConstants;
 	using MaterialContantBuffer = PixelConstantBuffer<PSMaterialConstant>;
 
 private:

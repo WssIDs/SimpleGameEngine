@@ -17,8 +17,8 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 		model.Transform(dx::XMMatrixScaling(radius,radius,radius));
 
 
-		AddBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
-		AddIndexBuffer(std::make_unique<class IndexBuffer>(gfx, model.m_indices));
+		AddBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+		AddIndexBuffer(std::make_unique<class IndexBuffer>(gfx, model.indices));
 
 		auto pvs = std::make_unique<VertexShader>(gfx, TEXT("..\\..\\..\\Shaders\\SolidVS.cso"));
 		auto pvsbc = pvs->GetByteCode();
@@ -54,10 +54,10 @@ void SolidSphere::Update(float deltaSeconds) {}
 
 void SolidSphere::SetPosition(DirectX::XMFLOAT3 position)
 {
-	m_pos = position;
+	pos = position;
 }
 
 DirectX::XMMATRIX SolidSphere::GetTransformXM() const
 {
-	return DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
+	return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 }

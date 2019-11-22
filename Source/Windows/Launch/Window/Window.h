@@ -24,9 +24,9 @@ class Window
 		~WindowClass();
 		WindowClass(const WindowClass&) = delete;
 		WindowClass& operator=(const WindowClass&) = delete;
-		static constexpr LPCTSTR m_wndClassName = TEXT("WGEngineClass");
-		static WindowClass m_wndClass;
-		HINSTANCE m_hInst;
+		static constexpr LPCTSTR wndClassName = TEXT("WGEngineClass");
+		static WindowClass wndClass;
+		HINSTANCE hInst;
 	};
 
 public:
@@ -52,7 +52,7 @@ public:
 	Graphics& Gfx();
 
 protected:
-	bool m_is_run;
+	bool is_run;
 
 	RECT GetWindowSize() const;
 
@@ -61,11 +61,11 @@ public:
 	MouseInput mouseInput;
 private:
 
-	HWND m_hwnd;
-	int m_width = 0;
-	int m_height = 0;
+	HWND hwnd;
+	int width = 0;
+	int height = 0;
 
-	std::unique_ptr<Graphics> m_pGfx;
+	std::unique_ptr<Graphics> pGfx;
 
 	void onCreate();
 	void onDestroy();

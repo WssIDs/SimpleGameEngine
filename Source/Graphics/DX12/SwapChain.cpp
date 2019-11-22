@@ -17,7 +17,7 @@ bool SwapChain::init(ID3D12CommandQueue* commandqueue, HWND hwnd, UINT width, UI
 	swapChainDesc.Windowed = TRUE;
 
 
-	HRESULT hr = GraphicsEngine::get()->m_dxgi_factory->CreateSwapChain(commandqueue, &swapChainDesc, &m_swap_chain);
+	HRESULT hr = GraphicsEngine::get()->dxgi_factory->CreateSwapChain(commandqueue, &swapChainDesc, &swap_chain);
 
 	if (FAILED(hr))
 	{
@@ -29,9 +29,9 @@ bool SwapChain::init(ID3D12CommandQueue* commandqueue, HWND hwnd, UINT width, UI
 
 bool SwapChain::release()
 {
-	if (m_swap_chain)
+	if (swap_chain)
 	{
-		m_swap_chain->Release();
+		swap_chain->Release();
 	}
 	
 	//delete this;
@@ -40,5 +40,5 @@ bool SwapChain::release()
 
 IDXGISwapChain* SwapChain::getSwapChain()
 {
-	return m_swap_chain;
+	return swap_chain;
 }

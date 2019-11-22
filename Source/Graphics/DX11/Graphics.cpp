@@ -20,7 +20,7 @@ Graphics::Graphics(HWND hWnd)
 
 	S_LOG(TEXT("Graphics"), TEXT("Init"));
 	
-	ImGui_ImplDX11_Init(m_pDevice.Get(), m_pContext.Get());
+	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
 	S_LOG(TEXT("ImguiDX11"), TEXT("Init"));
 }
 
@@ -79,14 +79,14 @@ void Graphics::InitDX11(HWND hWnd)
 		&devcon11
 	);
 
-	dev11.As(&m_pDevice);
-	devcon11.As(&m_pContext);
-	devswap11.As(&m_pSwap);
+	dev11.As(&pDevice);
+	devcon11.As(&pContext);
+	devswap11.As(&pSwap);
 
 	wrl::ComPtr<ID3D11Resource> pBackBuffer;
 
-	m_pSwap->GetBuffer(0, __uuidof(ID3D11Resource),	&pBackBuffer);
-	m_pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &m_pTargetView);
+	pSwap->GetBuffer(0, __uuidof(ID3D11Resource),	&pBackBuffer);
+	pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTargetView);
 
 
 	// create depth stencil state
@@ -95,10 +95,10 @@ void Graphics::InitDX11(HWND hWnd)
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
-	m_pDevice->CreateDepthStencilState(&dsDesc, &pDSState);
+	pDevice->CreateDepthStencilState(&dsDesc, &pDSState);
 
 	// bind depth state
-	m_pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+	pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
@@ -113,7 +113,7 @@ void Graphics::InitDX11(HWND hWnd)
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-	m_pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+	pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
 
 	// create view of depth stencil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDepthV = {};
@@ -121,11 +121,11 @@ void Graphics::InitDX11(HWND hWnd)
 	descDepthV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDepthV.Texture2D.MipSlice = 0u;
 
-	m_pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &m_pDepthStencilView);
+	pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &pDepthStencilView);
 
 
 	// bind depth stencil view to OM
-	m_pContext->OMSetRenderTargets(1u, m_pTargetView.GetAddressOf(), m_pDepthStencilView.Get());
+	pContext->OMSetRenderTargets(1u, pTargetView.GetAddressOf(), pDepthStencilView.Get());
 
 
 	// configure viewport
@@ -137,7 +137,7 @@ void Graphics::InitDX11(HWND hWnd)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 
-	m_pContext->RSSetViewports(1u, &vp); // one viewport, not split screen
+	pContext->RSSetViewports(1u, &vp); // one viewport, not split screen
 }
 
 void Graphics::InitDX11_1(HWND hWnd)
@@ -160,12 +160,12 @@ void Graphics::InitDX11_1(HWND hWnd)
 		&devcon11);
 
 	// Convert the pointers from the DirectX 11 versions to the DirectX 11.1 versions
-	dev11.As(&m_pDevice);
-	devcon11.As(&m_pContext);
+	dev11.As(&pDevice);
+	devcon11.As(&pContext);
 
 	// First, convert our ID3D11Device1 into an IDXGIDevice1
 	wrl::ComPtr<IDXGIDevice1> dxgiDevice;
-	m_pDevice.As(&dxgiDevice);
+	pDevice.As(&dxgiDevice);
 
 	// Second, use the IDXGIDevice1 interface to get access to the adapter
 	wrl::ComPtr<IDXGIAdapter> dxgiAdapter;
@@ -190,15 +190,15 @@ void Graphics::InitDX11_1(HWND hWnd)
 	scfd.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	scfd.Windowed = TRUE;
 
-	dxgiFactory->CreateSwapChainForHwnd(m_pDevice.Get(), hWnd, &scd, &scfd,nullptr, &m_pSwap);
+	dxgiFactory->CreateSwapChainForHwnd(pDevice.Get(), hWnd, &scd, &scfd,nullptr, &pSwap);
 
 
 
 	/// Back buffer
 	wrl::ComPtr<ID3D11Texture2D> pBackBuffer;
 
-	m_pSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer);
-	m_pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &m_pTargetView);
+	pSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer);
+	pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTargetView);
 
 
 	// create depth stencil state
@@ -207,10 +207,10 @@ void Graphics::InitDX11_1(HWND hWnd)
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
-	m_pDevice->CreateDepthStencilState(&dsDesc, &pDSState);
+	pDevice->CreateDepthStencilState(&dsDesc, &pDSState);
 
 	// bind depth state
-	m_pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+	pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
@@ -225,7 +225,7 @@ void Graphics::InitDX11_1(HWND hWnd)
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-	m_pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+	pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
 
 	// create view of depth stencil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDepthV = {};
@@ -233,10 +233,10 @@ void Graphics::InitDX11_1(HWND hWnd)
 	descDepthV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDepthV.Texture2D.MipSlice = 0u;
 
-	m_pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &m_pDepthStencilView);
+	pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &pDepthStencilView);
 
 	// bind depth stencil view to OM
-	m_pContext->OMSetRenderTargets(1u, m_pTargetView.GetAddressOf(), m_pDepthStencilView.Get());
+	pContext->OMSetRenderTargets(1u, pTargetView.GetAddressOf(), pDepthStencilView.Get());
 
 	// configure viewport
 	D3D11_VIEWPORT vp;
@@ -247,23 +247,23 @@ void Graphics::InitDX11_1(HWND hWnd)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 
-	m_pContext->RSSetViewports(1u, &vp); // one viewport, not split screen
+	pContext->RSSetViewports(1u, &vp); // one viewport, not split screen
 }
 
 void Graphics::EndFrame()
 {
-	if(m_imguiEnabled)
+	if(imguiEnabled)
 	{
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 
-	m_pSwap->Present(1u, 0u);
+	pSwap->Present(1u, 0u);
 }
 
 void Graphics::BeginFrame(float red, float green, float blue)
 {
-	if(m_imguiEnabled)
+	if(imguiEnabled)
 	{
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -272,49 +272,49 @@ void Graphics::BeginFrame(float red, float green, float blue)
 
 
 	// bind depth stencil view to OM
-	m_pContext->OMSetRenderTargets(1u, m_pTargetView.GetAddressOf(), m_pDepthStencilView.Get());
+	pContext->OMSetRenderTargets(1u, pTargetView.GetAddressOf(), pDepthStencilView.Get());
 
 	const float color[] = { red, green, blue, 1.0f };
-	m_pContext->ClearRenderTargetView(m_pTargetView.Get(), color);
-	m_pContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	pContext->ClearRenderTargetView(pTargetView.Get(), color);
+	pContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Graphics::DrawIndexed(UINT count)
 {
-	m_pContext->DrawIndexed(count,0u, 0u);
+	pContext->DrawIndexed(count,0u, 0u);
 }
 
 void Graphics::EnableImgui()
 {
-	m_imguiEnabled = true;
+	imguiEnabled = true;
 }
 
 void Graphics::DisableImgui()
 {
-	m_imguiEnabled = false;
+	imguiEnabled = false;
 }
 
 bool Graphics::IsImguiEnabled() const
 {
-	return m_imguiEnabled;
+	return imguiEnabled;
 }
 
 void Graphics::SetProjection(DirectX::XMMATRIX projection)
 {
-	m_projection = projection;
+	this->projection = projection;
 }
 
 DirectX::XMMATRIX Graphics::GetProjection() const
 {
-	return m_projection;
+	return projection;
 }
 
 void Graphics::SetCamera(DirectX::XMMATRIX camera)
 {
-	m_camera = camera;
+	this->camera = camera;
 }
 
 DirectX::XMMATRIX Graphics::GetCamera() const
 {
-	return m_camera;
+	return camera;
 }

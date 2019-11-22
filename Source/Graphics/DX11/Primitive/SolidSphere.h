@@ -11,6 +11,6 @@ public:
 	DirectX::XMMATRIX GetTransformXM() const override;
 
 private:
-	DirectX::XMFLOAT3 m_pos = { 1.0f,1.0f,1.0f };
+	DirectX::XMFLOAT3 pos = { 1.0f,1.0f,1.0f };
 };
 

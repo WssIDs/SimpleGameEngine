@@ -3,10 +3,10 @@
 #include "Imgui/imgui_impl_win32.h"
 #include "Imgui/imgui_impl_dx11.h"
 
-Window::WindowClass Window::WindowClass::m_wndClass;
+Window::WindowClass Window::WindowClass::wndClass;
 
 Window::WindowClass::WindowClass()
-	: m_hInst( GetModuleHandle(nullptr))
+	: hInst( GetModuleHandle(nullptr))
 {
 	WNDCLASSEX wc{ 0 };
 	wc.cbClsExtra = NULL;
@@ -14,8 +14,8 @@ Window::WindowClass::WindowClass()
 	wc.cbWndExtra = NULL;
 	wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW);
 	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wc.hIcon = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 64, 64, 0));
-	wc.hIconSm = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 32, 32, 0));
+	wc.hIcon = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 64, 64, 0));
+	wc.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 32, 32, 0));
 	wc.hInstance = getInstance();
 	wc.lpszClassName = getName();
 	wc.lpszMenuName = nullptr;
@@ -27,36 +27,36 @@ Window::WindowClass::WindowClass()
 
 LPCTSTR Window::WindowClass::getName()
 {
-	return m_wndClassName;
+	return wndClassName;
 }
 
 HINSTANCE Window::WindowClass::getInstance()
 {
-	return m_wndClass.m_hInst;
+	return wndClass.hInst;
 }
 
 Window::WindowClass::~WindowClass()
 {
-	UnregisterClass(m_wndClassName, getInstance());
+	UnregisterClass(wndClassName, getInstance());
 }
 
 Window::Window(int width, int height,const TSTRING name)
-	:m_width(width),
-	m_height(height)
+	:width(width),
+	height(height)
 {
 	RECT wr;
 
 	wr.left = 100;
-	wr.right = m_width + wr.left;
+	wr.right = this->width + wr.left;
 	wr.top = 100;
-	wr.bottom = m_height + wr.top;
+	wr.bottom = this->height + wr.top;
 
 	if(AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false) == 0)
 	{
 		PRINT_OUTPUT(TEXT("Cannot AdjustWindowRect"));
 	}
 
-	m_hwnd = CreateWindow(
+	hwnd = CreateWindow(
 		WindowClass::getName(),
 		name.c_str(),
 		WS_OVERLAPPEDWINDOW,
@@ -70,14 +70,14 @@ Window::Window(int width, int height,const TSTRING name)
 		this
 	);
 
-	ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+	ShowWindow(hwnd, SW_SHOWDEFAULT);
 
-	ImGui_ImplWin32_Init(m_hwnd);
+	ImGui_ImplWin32_Init(hwnd);
 	S_LOG(TEXT("ImGuiWin32"), TEXT("Init"));
 
-	m_pGfx = std::make_unique<Graphics>(m_hwnd);
+	pGfx = std::make_unique<Graphics>(hwnd);
 
-	m_is_run = true;
+	is_run = true;
 }
 
 Window::~Window()
@@ -85,12 +85,12 @@ Window::~Window()
 	ImGui_ImplWin32_Shutdown();
 	S_LOG(TEXT("ImGuiWin32"),TEXT("Shutdown"));
 
-	DestroyWindow(m_hwnd);
+	DestroyWindow(hwnd);
 }
 
 void Window::SetWindowTitle(const TSTRING& title)
 {
-	if(SetWindowText(m_hwnd, title.c_str()) == 0)
+	if(SetWindowText(hwnd, title.c_str()) == 0)
 	{
 		PRINT_OUTPUT(TEXT("Cannot Change Title"));
 	}
@@ -116,12 +116,12 @@ std::optional<int> Window::ProcessMessages()
 
 Graphics& Window::Gfx()
 {
-	return *m_pGfx;
+	return *pGfx;
 }
 
 bool Window::isRun() const
 {
-	return m_is_run;
+	return is_run;
 }
 
 void Window::onCreate()
@@ -136,14 +136,14 @@ void Window::onUpdate()
 
 void Window::onDestroy()
 {
-	m_is_run = false;
+	is_run = false;
 	// When window destroy
 }
 
 RECT Window::GetWindowSize() const
 {
 	RECT rc;
-	GetClientRect(m_hwnd, &rc);
+	GetClientRect(hwnd, &rc);
 
 	return rc;
 }
@@ -254,12 +254,12 @@ void Window::Wnd_OnMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
 	if (!ImGui::GetIO().WantCaptureKeyboard)
 	{
-		if (x >= 0 && x < m_width && y >= 0 && y < m_height)
+		if (x >= 0 && x < width && y >= 0 && y < height)
 		{
 			mouseInput.OnMouseMove(x, y);
 			if (!mouseInput.IsInWindow())
 			{
-				SetCapture(m_hwnd);
+				SetCapture(hwnd);
 				mouseInput.OnMouseEnter();
 			}
 		}

@@ -4,7 +4,7 @@
 
 void Drawable::Draw(Graphics& gfx) const
 {
-	for (auto& bind : m_binds)
+	for (auto& bind : binds)
 	{
 		bind->Bind(gfx);
 	}
@@ -12,16 +12,16 @@ void Drawable::Draw(Graphics& gfx) const
 	{
 		sbind->Bind(gfx);
 	}
-	gfx.DrawIndexed(m_pIndexBuffer->GetCount());
+	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
 void Drawable::AddBind(std::unique_ptr<Bindable> bind)
 {
-	m_binds.push_back(std::move(bind));
+	binds.push_back(std::move(bind));
 }
 
 void Drawable::AddIndexBuffer(std::unique_ptr<IndexBuffer> iBuf)
 {
-	m_pIndexBuffer = iBuf.get();
-	m_binds.push_back(std::move(iBuf));
+	pIndexBuffer = iBuf.get();
+	binds.push_back(std::move(iBuf));
 }

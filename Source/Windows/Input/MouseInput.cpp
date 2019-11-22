@@ -3,53 +3,53 @@
 
 std::pair<int, int> MouseInput::GetPos() const
 {
-	return { m_x, m_y };
+	return { x, y };
 }
 
 std::optional<MouseInput::RawDelta> MouseInput::ReadRawDelta()
 {
-	if(m_rawDeltaBuffer.empty())
+	if(rawDeltaBuffer.empty())
 	{
 		return std::nullopt;
 	}
 
-	const RawDelta delta = m_rawDeltaBuffer.front();
-	m_rawDeltaBuffer.pop();
+	const RawDelta delta = rawDeltaBuffer.front();
+	rawDeltaBuffer.pop();
 
 	return delta;
 }
 
 int MouseInput::GetPosX() const
 {
-	return m_x;
+	return x;
 }
 
 int MouseInput::GetPosY() const
 {
-	return m_y;
+	return y;
 }
 
 bool MouseInput::IsInWindow() const
 {
-	return m_isInWindow;
+	return isInWindow;
 }
 
 bool MouseInput::LeftIsPressed() const
 {
-	return m_leftIsPressed;
+	return leftIsPressed;
 }
 
 bool MouseInput::RightIsPressed() const
 {
-	return m_rightIsPressed;
+	return rightIsPressed;
 }
 
 std::optional<MouseInput::Event> MouseInput::Read()
 {
-	if( m_buffer.size() > 0u )
+	if( buffer.size() > 0u )
 	{
-		MouseInput::Event e = m_buffer.front();
-		m_buffer.pop();
+		MouseInput::Event e = buffer.front();
+		buffer.pop();
 		return e;
 	}
 
@@ -58,121 +58,121 @@ std::optional<MouseInput::Event> MouseInput::Read()
 
 void MouseInput::Flush()
 {
-	m_buffer = std::queue<Event>();
+	buffer = std::queue<Event>();
 }
 
 void MouseInput::EnableRaw()
 {
-	m_rawEnabled = true;
+	rawEnabled = true;
 }
 
 void MouseInput::DisableRaw()
 {
-	m_rawEnabled = false;
+	rawEnabled = false;
 }
 
 bool MouseInput::RawEnabled() const
 {
-	return m_rawEnabled;
+	return rawEnabled;
 }
 
 void MouseInput::OnMouseMove(int x, int y)
 {
-	m_x = x;
-	m_y = y;
+	this->x = x;
+	this->y = y;
 
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::Move, *this));
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::Move, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnMouseLeave()
 {
-	m_isInWindow = false;
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::Leave, *this));
+	isInWindow = false;
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::Leave, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnMouseEnter()
 {
-	m_isInWindow = true;
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::Enter, *this));
+	isInWindow = true;
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::Enter, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnRawDelta(int dx, int dy)
 {
-	m_rawDeltaBuffer.push({ dx,dy });
+	rawDeltaBuffer.push({ dx,dy });
 	TrimBuffer();
 }
 
 void MouseInput::OnLeftPressed(int x, int y)
 {
-	m_leftIsPressed = true;
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::LeftPress, *this));
+	leftIsPressed = true;
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::LeftPress, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnLeftReleased(int x, int y)
 {
-	m_leftIsPressed = false;
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::LeftRelease, *this));
+	leftIsPressed = false;
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::LeftRelease, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnRightPressed(int x, int y)
 {
-	m_rightIsPressed = true;
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::RightPress, *this));
+	rightIsPressed = true;
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::RightPress, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnRightReleased(int x, int y)
 {
-	m_rightIsPressed = false;
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::RightRelease, *this));
+	rightIsPressed = false;
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::RightRelease, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnWheelUp(int x, int y)
 {
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::WheelUp, *this));
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::WheelUp, *this));
 	TrimBuffer();
 }
 
 void MouseInput::OnWheelDown(int x, int y)
 {
-	m_buffer.push(MouseInput::Event(MouseInput::Event::Type::WheelDown, *this));
+	buffer.push(MouseInput::Event(MouseInput::Event::Type::WheelDown, *this));
 	TrimBuffer();
 }
 
 void MouseInput::TrimBuffer()
 {
-	while (m_buffer.size() > m_bufferSize)
+	while (buffer.size() > bufferSize)
 	{
-		m_buffer.pop();
+		buffer.pop();
 	}
 }
 
 void MouseInput::TrimRawInputBuffer()
 {
-	while (m_rawDeltaBuffer.size() > m_bufferSize)
+	while (rawDeltaBuffer.size() > bufferSize)
 	{
-		m_rawDeltaBuffer.pop();
+		rawDeltaBuffer.pop();
 	}
 }
 
 void MouseInput::OnWheelDelta(int x, int y, int delta)
 {
-	m_wheelDeltaCarry += delta;
+	wheelDeltaCarry += delta;
 	// generate events for every 120 
-	while (m_wheelDeltaCarry >= WHEEL_DELTA)
+	while (wheelDeltaCarry >= WHEEL_DELTA)
 	{
-		m_wheelDeltaCarry -= WHEEL_DELTA;
+		wheelDeltaCarry -= WHEEL_DELTA;
 		OnWheelUp(x, y);
 	}
-	while (m_wheelDeltaCarry <= -WHEEL_DELTA)
+	while (wheelDeltaCarry <= -WHEEL_DELTA)
 	{
-		m_wheelDeltaCarry += WHEEL_DELTA;
+		wheelDeltaCarry += WHEEL_DELTA;
 		OnWheelDown(x, y);
 	}
 }

@@ -2,15 +2,15 @@
 
 bool KeyboardInput::KeyIsPressed(unsigned char keycode) const
 {
-	return m_keystates[keycode];
+	return keystates[keycode];
 }
 
 std::optional<KeyboardInput::Event> KeyboardInput::ReadKey()
 {
-	if( m_keybuffer.size() > 0u)
+	if( keybuffer.size() > 0u)
 	{
-		KeyboardInput::Event e = m_keybuffer.front();
-		m_keybuffer.pop();
+		KeyboardInput::Event e = keybuffer.front();
+		keybuffer.pop();
 
 		return e;
 	}
@@ -20,20 +20,20 @@ std::optional<KeyboardInput::Event> KeyboardInput::ReadKey()
 
 bool KeyboardInput::KeyIsEmpty() const
 {
-	return m_keybuffer.empty();
+	return keybuffer.empty();
 }
 
 void KeyboardInput::FlushKey()
 {
-	m_keybuffer = std::queue<Event>();
+	keybuffer = std::queue<Event>();
 }
 
 std::optional<char> KeyboardInput::ReadChar()
 {
-	if( m_charbuffer.size() > 0u )
+	if( charbuffer.size() > 0u )
 	{
-		unsigned char charcode = m_charbuffer.front();
-		m_charbuffer.pop();
+		unsigned char charcode = charbuffer.front();
+		charbuffer.pop();
 		return charcode;
 	}
 	return {};
@@ -41,12 +41,12 @@ std::optional<char> KeyboardInput::ReadChar()
 
 bool KeyboardInput::CharIsEmpty() const
 {
-	return m_charbuffer.empty();
+	return charbuffer.empty();
 }
 
 void KeyboardInput::FlushChar()
 {
-	m_charbuffer = std::queue<char>();
+	charbuffer = std::queue<char>();
 }
 
 void KeyboardInput::Flush()
@@ -57,40 +57,40 @@ void KeyboardInput::Flush()
 
 void KeyboardInput::EnableAutorepeat()
 {
-	m_autorepeatEnabled = true;
+	autorepeatEnabled = true;
 }
 
 void KeyboardInput::DisableAutorepeat()
 {
-	m_autorepeatEnabled = false;
+	autorepeatEnabled = false;
 }
 
 bool KeyboardInput::AutorepeatIsEnabled() const
 {
-	return m_autorepeatEnabled;
+	return autorepeatEnabled;
 }
 
 void KeyboardInput::OnKeyPressed(unsigned char keycode)
 {
-	m_keystates[keycode] = true;
-	m_keybuffer.push(KeyboardInput::Event(KeyboardInput::Event::Type::Press, keycode));
-	TrimBuffer(m_keybuffer);
+	keystates[keycode] = true;
+	keybuffer.push(KeyboardInput::Event(KeyboardInput::Event::Type::Press, keycode));
+	TrimBuffer(keybuffer);
 }
 
 void KeyboardInput::OnKeyReleased(unsigned char keycode)
 {
-	m_keystates[keycode] = false;
-	m_keybuffer.push(KeyboardInput::Event(KeyboardInput::Event::Type::Press, keycode));
-	TrimBuffer(m_keybuffer);
+	keystates[keycode] = false;
+	keybuffer.push(KeyboardInput::Event(KeyboardInput::Event::Type::Press, keycode));
+	TrimBuffer(keybuffer);
 }
 
 void KeyboardInput::OnChar(char character)
 {
-	m_charbuffer.push(character);
-	TrimBuffer(m_charbuffer);
+	charbuffer.push(character);
+	TrimBuffer(charbuffer);
 }
 
 void KeyboardInput::ClearState()
 {
-	m_keystates.reset();
+	keystates.reset();
 }

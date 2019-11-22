@@ -9,7 +9,7 @@
 
 GraphicsEngine::GraphicsEngine()
 {
-	m_useWarpDevice = false;
+	useWarpDevice = false;
 }
 
 bool GraphicsEngine::init()
@@ -26,28 +26,28 @@ bool GraphicsEngine::init()
 	}
 #endif
 
-	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&m_dxgi_factory)));
+	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&dxgi_factory)));
 
-	if (m_useWarpDevice)
+	if (useWarpDevice)
 	{
 		ComPtr<IDXGIAdapter> warpAdapter;
-		ThrowIfFailed(m_dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
+		ThrowIfFailed(dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
 
 		ThrowIfFailed(D3D12CreateDevice(
 			warpAdapter.Get(),
 			D3D_FEATURE_LEVEL_11_0,
-			IID_PPV_ARGS(&m_device)
+			IID_PPV_ARGS(&device)
 		));
 	}
 	else
 	{
 		ComPtr<IDXGIAdapter1> hardwareAdapter;
-		GetHardwareAdapter(m_dxgi_factory, &hardwareAdapter);
+		GetHardwareAdapter(dxgi_factory, &hardwareAdapter);
 
 		ThrowIfFailed(D3D12CreateDevice(
 			hardwareAdapter.Get(),
 			D3D_FEATURE_LEVEL_11_0,
-			IID_PPV_ARGS(&m_device)
+			IID_PPV_ARGS(&device)
 		));
 	}
 
@@ -174,37 +174,37 @@ bool GraphicsEngine::release()
 
 
 	// close the fence event
-	CloseHandle(m_fenceEvent);
+	CloseHandle(fenceEvent);
 
 	// get swapchain out of full screen before exiting
 	//BOOL fs = false;
 	//if (m_swapChain->GetFullscreenState(&fs, NULL))
 	//	m_swapChain->SetFullscreenState(false, NULL);
 
-	if (m_dxgi_factory)
+	if (dxgi_factory)
 	{
-		m_dxgi_factory->Release();
+		dxgi_factory->Release();
 	}
 
-	if (m_device)
+	if (device)
 	{
-		m_device->Release();
+		device->Release();
 	}
 
 	//swapchain->release();
 
 	//commandqueue->release();
 
-	SAFE_RELEASE(m_commandQueue);
-	SAFE_RELEASE(m_swapChain);
-	SAFE_RELEASE(m_rtvHeap);
-	SAFE_RELEASE(m_commandList);
+	SAFE_RELEASE(commandQueue);
+	SAFE_RELEASE(swapChain);
+	SAFE_RELEASE(rtvHeap);
+	SAFE_RELEASE(commandList);
 
 	for (int i = 0; i < FrameCount; ++i)
 	{
-		SAFE_RELEASE(m_renderTargets[i]);
-		SAFE_RELEASE(m_commandAllocator[i]);
-		SAFE_RELEASE(m_fence[i]);
+		SAFE_RELEASE(renderTargets[i]);
+		SAFE_RELEASE(commandAllocator[i]);
+		SAFE_RELEASE(fence[i]);
 	};
 
 
@@ -254,7 +254,7 @@ void GraphicsEngine::updatePipeline()
 
 	// we can only reset an allocator once the gpu is done with it
 	// resetting an allocator frees the memory that the command list was stored in
-	hr = m_commandAllocator[m_frameIndex]->Reset();
+	hr = commandAllocator[frameIndex]->Reset();
 	if (FAILED(hr))
 	{
 	}
@@ -269,7 +269,7 @@ void GraphicsEngine::updatePipeline()
 	// but in this tutorial we are only clearing the rtv, and do not actually need
 	// anything but an initial default pipeline, which is what we get by setting
 	// the second parameter to NULL
-	hr = m_commandList->Reset(m_commandAllocator[m_frameIndex], NULL);
+	hr = commandList->Reset(commandAllocator[frameIndex], NULL);
 	if (FAILED(hr))
 	{
 	}
@@ -277,23 +277,23 @@ void GraphicsEngine::updatePipeline()
 	// here we start recording commands into the commandList (which all the commands will be stored in the commandAllocator)
 
 	// transition the "frameIndex" render target from the present state to the render target state so the command list draws to it starting from here
-	m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_frameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+	commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	// here we again get the handle to our current render target view so we can set it as the render target in the output merger stage of the pipeline
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart(), m_frameIndex, m_rtvDescriptorSize);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart(), frameIndex, rtvDescriptorSize);
 
 	// set the render target for the output merger stage (the output of the pipeline)
-	m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+	commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
 	// Clear the render target by using the ClearRenderTargetView command
 	const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
-	m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
 	// transition the "frameIndex" render target from the render target state to the present state. If the debug layer is enabled, you will receive a
 	// warning if present is called on the render target when it's not in the present state
-	m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_frameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+	commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-	hr = m_commandList->Close();
+	hr = commandList->Close();
 	if (FAILED(hr))
 	{
 	}
@@ -304,25 +304,25 @@ void GraphicsEngine::waitForPreviousFrame()
 	HRESULT hr;
 
 	// swap the current rtv buffer index so we draw on the correct buffer
-	m_frameIndex = m_swapChain->GetCurrentBackBufferIndex();
+	frameIndex = swapChain->GetCurrentBackBufferIndex();
 
 	// if the current fence value is still less than "fenceValue", then we know the GPU has not finished executing
 	// the command queue since it has not reached the "commandQueue->Signal(fence, fenceValue)" command
-	if (m_fence[m_frameIndex]->GetCompletedValue() < m_fenceValue[m_frameIndex])
+	if (fence[frameIndex]->GetCompletedValue() < fenceValue[frameIndex])
 	{
 		// we have the fence create an event which is signaled once the fence's current value is "fenceValue"
-		hr = m_fence[m_frameIndex]->SetEventOnCompletion(m_fenceValue[m_frameIndex], m_fenceEvent);
+		hr = fence[frameIndex]->SetEventOnCompletion(fenceValue[frameIndex], fenceEvent);
 		if (FAILED(hr))
 		{
 		}
 
 		// We will wait until the fence has triggered the event that it's current value has reached "fenceValue". once it's value
 		// has reached "fenceValue", we know the command queue has finished executing
-		WaitForSingleObject(m_fenceEvent, INFINITE);
+		WaitForSingleObject(fenceEvent, INFINITE);
 	}
 
 	// increment fenceValue for next frame
-	m_fenceValue[m_frameIndex]++;
+	fenceValue[frameIndex]++;
 
 
 	// WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.
@@ -351,21 +351,21 @@ void GraphicsEngine::render()
 	updatePipeline(); // update the pipeline by sending commands to the commandqueue
 
 	// create an array of command lists (only one command list here)
-	ID3D12CommandList* ppCommandLists[] = { m_commandList };
+	ID3D12CommandList* ppCommandLists[] = { commandList };
 
 	// execute the array of command lists
-	m_commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+	commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
 	// this command goes in at the end of our command queue. we will know when our command queue 
 	// has finished because the fence value will be set to "fenceValue" from the GPU since the command
 	// queue is being executed on the GPU
-	hr = m_commandQueue->Signal(m_fence[m_frameIndex], m_fenceValue[m_frameIndex]);
+	hr = commandQueue->Signal(fence[frameIndex], fenceValue[frameIndex]);
 	if (FAILED(hr))
 	{
 	}
 
 	// present the current backbuffer
-	hr = m_swapChain->Present(0, 0);
+	hr = swapChain->Present(0, 0);
 	if (FAILED(hr))
 	{
 	}
@@ -373,12 +373,12 @@ void GraphicsEngine::render()
 
 bool GraphicsEngine::getIsRunning()
 {
-	return m_running;
+	return running;
 }
 
 void GraphicsEngine::setIsRunning(bool isRunning)
 {
-	m_running = isRunning;
+	running = isRunning;
 }
 
 void GraphicsEngine::GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter)

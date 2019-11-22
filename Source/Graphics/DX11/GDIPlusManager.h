@@ -8,7 +8,7 @@ public:
 	~GDIPlusManager();
 
 private:
-	static ULONG_PTR m_token;
-	static int m_refCount;
+	static ULONG_PTR token;
+	static int refCount;
 };
 

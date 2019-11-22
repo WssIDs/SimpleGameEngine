@@ -8,10 +8,10 @@ Sampler::Sampler(Graphics& gfx)
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-	GetDevice(gfx)->CreateSamplerState(&samplerDesc, &m_pSampler);
+	GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSampler);
 }
 
 void Sampler::Bind(Graphics& gfx)
 {
-	GetContext(gfx)->PSSetSamplers(0u, 1u, m_pSampler.GetAddressOf());
+	GetContext(gfx)->PSSetSamplers(0u, 1u, pSampler.GetAddressOf());
 }

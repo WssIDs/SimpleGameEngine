@@ -36,15 +36,15 @@ public:
 	bool IsImguiEnabled() const;
 
 private:
-	DirectX::XMMATRIX m_projection;
-	DirectX::XMMATRIX m_camera;
+	DirectX::XMMATRIX projection;
+	DirectX::XMMATRIX camera;
 
-	bool m_imguiEnabled = true;
+	bool imguiEnabled = true;
 
-	Microsoft::WRL::ComPtr<ID3D11Device1> m_pDevice = nullptr;
-	Microsoft::WRL::ComPtr<IDXGISwapChain1> m_pSwap = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_pContext = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pTargetView = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDepthStencilView = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Device1> pDevice = nullptr;
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwap = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> pContext = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTargetView = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView = nullptr;
 };
 

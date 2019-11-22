@@ -12,7 +12,7 @@ public:
 	UINT GetCount() const;
 
 protected:
-	UINT m_count;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pIndexBuffer;
+	UINT count;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
 };
 

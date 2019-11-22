@@ -15,7 +15,7 @@ public:
 	void Draw(Graphics& gfx) const;
 	void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const;
 private:
-	struct PointLightContantBuffer
+	struct PointLightConstantBuffer
 	{
 		alignas(16) DirectX::XMFLOAT3 pos;
 		alignas(16) DirectX::XMFLOAT3 ambient;
@@ -26,8 +26,8 @@ private:
 		float attQuad;
 	};
 private:
-	PointLightContantBuffer m_pcbData;
-	mutable SolidSphere m_mesh;
-	mutable PixelConstantBuffer<PointLightContantBuffer> m_contantBuffer;
+	PointLightConstantBuffer pcbData;
+	mutable SolidSphere mesh;
+	mutable PixelConstantBuffer<PointLightConstantBuffer> constantBuffer;
 };
 

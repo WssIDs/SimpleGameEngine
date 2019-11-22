@@ -28,7 +28,7 @@ Box::Box(Graphics& gfx,
 		auto model = Cube::MakeIndependent<Vertex>();
 		model.SetNormalsIndependentFlat();
 
-		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
+		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		auto pvs = std::make_unique<VertexShader>(gfx, TEXT("..\\..\\..\\Shaders\\PhongVS.cso"));
 		auto pvsbc = pvs->GetByteCode();
@@ -36,7 +36,7 @@ Box::Box(Graphics& gfx,
 
 		AddStaticBind(std::make_unique<PixelShader>(gfx, TEXT("..\\..\\..\\Shaders\\PhongPS.cso")));
 
-		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
+		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
@@ -54,8 +54,8 @@ Box::Box(Graphics& gfx,
 
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 
-	m_materialConstants.color = material;
-	AddBind(std::make_unique<MaterialContantBuffer>(gfx, m_materialConstants, 1u));
+	materialConstants.color = material;
+	AddBind(std::make_unique<MaterialContantBuffer>(gfx, materialConstants, 1u));
 
 	// model deformation transform (per instance, not stored as bind)
 	dx::XMStoreFloat3x3(
@@ -79,9 +79,9 @@ bool Box::SpawnControlWindow(int id, Graphics& gfx)
 	if (ImGui::Begin(("Box "s + std::to_string(id)).c_str(),&bOpen))
 	{
 		ImGui::Text("Material Properties");
-		const auto cd = ImGui::ColorEdit3("Material Color", &m_materialConstants.color.x);
-		const auto sid = ImGui::SliderFloat("Specular Intensity", &m_materialConstants.specularIntensity, 0.05f, 4.0f, "%.2f", 2);
-		const auto spd = ImGui::SliderFloat("Specular Power", &m_materialConstants.specularPower, 1.0f, 200.0f, "%.2f", 2);
+		const auto cd = ImGui::ColorEdit3("Material Color", &materialConstants.color.x);
+		const auto sid = ImGui::SliderFloat("Specular Intensity", &materialConstants.specularIntensity, 0.05f, 4.0f, "%.2f", 2);
+		const auto spd = ImGui::SliderFloat("Specular Power", &materialConstants.specularPower, 1.0f, 200.0f, "%.2f", 2);
 		bDirty = cd || sid || spd;
 
 		ImGui::Text("Position");
@@ -107,5 +107,5 @@ void Box::SyncMaterial(Graphics& gfx)
 {
 	auto pConstPS = QueryBindable<MaterialContantBuffer>();
 	assert(pConstPS != nullptr);
-	pConstPS->Update(gfx, m_materialConstants);
+	pConstPS->Update(gfx, materialConstants);
 }

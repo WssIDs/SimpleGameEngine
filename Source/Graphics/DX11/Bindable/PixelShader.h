@@ -10,6 +10,6 @@ public:
 	virtual void Bind(Graphics& gfx) override;
 
 private:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
 };
 

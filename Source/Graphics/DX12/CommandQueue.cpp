@@ -3,14 +3,14 @@
 
 bool CommandQueue::init()
 {
-	ID3D12Device* device = GraphicsEngine::get()->m_device;
+	ID3D12Device* device = GraphicsEngine::get()->device;
 
 	// Describe and create the command queue.
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
-	ThrowIfFailed(device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)));
+	ThrowIfFailed(device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue)));
 
 
 	return true;
@@ -19,9 +19,9 @@ bool CommandQueue::init()
 bool CommandQueue::release()
 {
 
-	if(m_commandQueue)
+	if(commandQueue)
 	{
-		m_commandQueue->Release();
+		commandQueue->Release();
 	}
 	
 	//delete this;
@@ -30,5 +30,5 @@ bool CommandQueue::release()
 
 ID3D12CommandQueue* CommandQueue::getCommandQueue()
 {
-	return m_commandQueue;
+	return commandQueue;
 }

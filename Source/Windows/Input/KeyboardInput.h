@@ -24,27 +24,27 @@ public:
 		};
 
 	private:
-		Type m_type;
-		unsigned char m_code;
+		Type type;
+		unsigned char code;
 
 	public:
 		Event(Type type, unsigned char code):
-			m_type( type ),
-			m_code( code ) {}
+			type( type ),
+			code( code ) {}
 
 		bool IsPress() const
 		{
-			return m_type == Type::Press;
+			return type == Type::Press;
 		}
 
 		bool IsRelease() const
 		{
-			return m_type == Type::Release;
+			return type == Type::Release;
 		}
 
 		unsigned char GetCode() const
 		{
-			return m_code;
+			return code;
 		}
 	};
 
@@ -76,12 +76,12 @@ private:
 	static void TrimBuffer(std::queue<T>& buffer);
 
 private:
-	static constexpr unsigned int m_nKeys = 256u;
-	static constexpr unsigned int m_bufferSize = 16u;
-	bool m_autorepeatEnabled = false;
-	std::bitset<m_nKeys> m_keystates;
-	std::queue<Event> m_keybuffer;
-	std::queue<char> m_charbuffer;
+	static constexpr unsigned int nKeys = 256u;
+	static constexpr unsigned int bufferSize = 16u;
+	bool autorepeatEnabled = false;
+	std::bitset<nKeys> keystates;
+	std::queue<Event> keybuffer;
+	std::queue<char> charbuffer;
 
 
 };
@@ -89,7 +89,7 @@ private:
 template<typename T>
 void KeyboardInput::TrimBuffer(std::queue<T>& buffer) 
 {
-	while (buffer.size() > m_bufferSize)
+	while (buffer.size() > bufferSize)
 	{
 		buffer.pop();
 	}

@@ -42,9 +42,9 @@ private:
 	bool is_opened;
 	
 	std::filesystem::path logPath;
-	TSTRING m_logfile;
+	TSTRING logfile;
 
-	std::ofstream m_logger_out;
+	std::ofstream logger_out;
 
 	TSTRING getCurrentTime() const;
 

@@ -11,6 +11,6 @@ public:
 	void Bind(Graphics& gfx) override;
 
 protected:
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
 };
 

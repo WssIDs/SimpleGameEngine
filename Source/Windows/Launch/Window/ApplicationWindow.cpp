@@ -33,7 +33,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	{
 	public:
 		Factory(Graphics& gfx)
-			: m_gfx(gfx)
+			: gfx(gfx)
 		{}
 		std::unique_ptr<Drawable> operator()()
 		{
@@ -43,27 +43,27 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 			switch (sdist(rng))
 			{
 			case 0:
-				return std::make_unique<Box>(m_gfx,
+				return std::make_unique<Box>(this->gfx,
 					rng, adist, ddist,
 					odist, rdist, bdist, material
 					);
 			case 1:
-				return std::make_unique<Cylinder>(m_gfx,
+				return std::make_unique<Cylinder>(this->gfx,
 					rng, adist, ddist, odist,
 					rdist, bdist, tdist
 					);
 			case 2:
-				return std::make_unique<Pyramid>(m_gfx,
+				return std::make_unique<Pyramid>(this->gfx,
 					rng, adist, ddist, odist,
 					rdist, tdist
 					);
 			case 3:
-				return std::make_unique<SkinnedBox>(m_gfx,
+				return std::make_unique<SkinnedBox>(this->gfx,
 					rng, adist, ddist, odist,
 					rdist
 					);
 			case 4:
-				return std::make_unique<AssetTest>(m_gfx,
+				return std::make_unique<AssetTest>(this->gfx,
 					rng, adist, ddist,
 					odist, rdist, material, scale
 					);
@@ -78,7 +78,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 		}
 
 	private:
-		Graphics& m_gfx;
+		Graphics& gfx;
 		std::mt19937 rng{ std::random_device{}() };
 		std::uniform_int_distribution<int> sdist{ 0, 4 };
 		std::uniform_real_distribution<float> adist{ 0.0f,PI * 2.0f };

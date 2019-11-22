@@ -16,23 +16,23 @@ namespace Gdiplus
 
 Surface::Surface(unsigned int width, unsigned int height)
 	:
-	m_pBuffer(std::make_unique<Color[]>(width * height)),
-	m_width(width),
-	m_height(height)
+	pBuffer(std::make_unique<Color[]>(width * height)),
+	width(width),
+	height(height)
 {}
 
 Surface::Surface(Surface&& source)
 	:
-	m_pBuffer(std::move( source.m_pBuffer )),
-	m_width( source.m_width),
-	m_height( source.m_height)
+	pBuffer(std::move( source.pBuffer )),
+	width( source.width),
+	height( source.height)
 {}
 
 Surface::Surface(unsigned int width, unsigned int height, std::unique_ptr<Color[]> pBufferParam)
 	:
-	m_width(width),
-	m_height(height),
-	m_pBuffer(std::move(pBufferParam))
+	width(width),
+	height(height),
+	pBuffer(std::move(pBufferParam))
 {
 
 }
@@ -42,47 +42,47 @@ Surface::~Surface()
 
 void Surface::Clear(Color fillValue)
 {
-	memset(m_pBuffer.get(), fillValue.dword, m_width * m_height * sizeof(Color)); // Update color
+	memset(pBuffer.get(), fillValue.dword, width * height * sizeof(Color)); // Update color
 }
 
 void Surface::PutPixel(unsigned int x, unsigned int y, Color c)
 {
 	assert(x >= 0);
 	assert(y >= 0);
-	assert(x <= m_width);
-	assert(y < m_height);
+	assert(x <= width);
+	assert(y < height);
 
-	m_pBuffer[y * m_width + x] = c;
+	pBuffer[y * width + x] = c;
 }
 
 Surface::Color Surface::GetPixel(unsigned int x, unsigned int y) const
 {
 	assert(x >= 0);
 	assert(y >= 0);
-	assert(x <= m_width);
-	assert(y < m_height);
+	assert(x <= width);
+	assert(y < height);
 
-	return m_pBuffer[y * m_width + x];
+	return pBuffer[y * width + x];
 }
 
 unsigned int Surface::GetWidth() const
 {
-	return m_width;
+	return width;
 }
 
 unsigned int Surface::GetHeight() const
 {
-	return m_height;
+	return height;
 }
 
 Surface::Color* Surface::GetBufferPtr() const
 {
-	return m_pBuffer.get();
+	return pBuffer.get();
 }
 
 const Surface::Color* Surface::GetBufferPtrConst() const
 {
-	return m_pBuffer.get();
+	return pBuffer.get();
 }
 
 Surface Surface::FromFile(const TSTRING& name)
@@ -171,7 +171,7 @@ void Surface::Save(const TSTRING& filename) const
 	GetEncoderClsid("image/bmp", &bmpID);
 
 
-	Gdiplus::Bitmap bitmap(m_width, m_height, m_width * sizeof(Color), PixelFormat32bppARGB, (BYTE*)m_pBuffer.get());
+	Gdiplus::Bitmap bitmap(width, height, width * sizeof(Color), PixelFormat32bppARGB, (BYTE*)pBuffer.get());
 
 	std::wstring wfilename(filename.begin(), filename.end());
 
@@ -186,16 +186,16 @@ void Surface::Save(const TSTRING& filename) const
 
 void Surface::Copy(const Surface& source)
 {
-	assert(m_width == source.m_width);
-	assert(m_height == source.m_height);
-	memcpy(m_pBuffer.get(), source.m_pBuffer.get(), m_width * m_height * sizeof(Color));
+	assert(width == source.width);
+	assert(height == source.height);
+	memcpy(pBuffer.get(), source.pBuffer.get(), width * height * sizeof(Color));
 }
 
 Surface& Surface::operator=(Surface&& donor)
 {
-	m_width = donor.m_width;
-	m_height = donor.m_height;
-	m_pBuffer = std::move(donor.m_pBuffer);
-	donor.m_pBuffer = nullptr;
+	this->width = donor.width;
+	this->height = donor.height;
+	this->pBuffer = std::move(donor.pBuffer);
+	donor.pBuffer = nullptr;
 	return *this;
 }

@@ -14,6 +14,6 @@ public:
 	ID3D12CommandQueue* getCommandQueue();
 
 private:
-	ID3D12CommandQueue* m_commandQueue;
+	ID3D12CommandQueue* commandQueue;
 };
 

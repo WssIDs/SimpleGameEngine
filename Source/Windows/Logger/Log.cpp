@@ -24,15 +24,15 @@ Log::Log()
 		fs::create_directories(logPath);
 	}
 
-	m_logfile = TEXT("WGEngine.log");
+	logfile = TEXT("WGEngine.log");
 
-	if(fs::exists(logPath/m_logfile))
+	if(fs::exists(logPath/logfile))
 	{
 		TSTRINGSTREAM wss;
 		wss << TEXT("WGEngine-backup-") << std::put_time(&t_, TEXT("%Y.%m.%d-%H.%M.%S")) << TEXT(".log");
 		TSTRING backupfile = wss.str();
 
-		fs::rename(logPath/m_logfile, logPath/backupfile);
+		fs::rename(logPath/logfile, logPath/backupfile);
 
 		auto paths = GetFilesByMask(logPath, TEXT("WGEngine-backup"));
 		
@@ -46,11 +46,11 @@ Log::Log()
 
 	}
 
-	m_logger_out.open(logPath/m_logfile, std::ios::out);
+	logger_out.open(logPath/logfile, std::ios::out);
 
 	//m_logger_out.imbue(locale(), new utf8cvt<false>);
 
-	is_opened = m_logger_out.is_open();
+	is_opened = logger_out.is_open();
 
 	print(TEXT("Log file open, "));
 }
@@ -60,7 +60,7 @@ Log::~Log()
 	if (is_opened)
 	{
 		print(TEXT("Log file closed, "));
-		m_logger_out.close();
+		logger_out.close();
 		is_opened = false;
 	}	
 }
@@ -72,7 +72,7 @@ void Log::print(TSTRING logText)
 		TSTRINGSTREAM output;
 		output << logText << getCurrentTimeByFormat();
 
-		m_logger_out << output.str() << std::endl;
+		logger_out << output.str() << std::endl;
 
 		PRINT_OUTPUT(output.str().c_str());
 	}
@@ -90,7 +90,7 @@ void Log::print(TSTRING logName, TSTRING logText)
 		TSTRINGSTREAM output;
 		output << getCurrentTime() << logName << TEXT(": ") << logText;
 
-		m_logger_out << output.str() << std::endl;
+		logger_out << output.str() << std::endl;
 
 
 		PRINT_OUTPUT(output.str().c_str());

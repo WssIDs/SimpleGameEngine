@@ -104,8 +104,8 @@ private:
 	Surface(unsigned int width, unsigned int height, std::unique_ptr<Color[]> pBufferParam);
 
 private:
-	std::unique_ptr<Color[]> m_pBuffer;
-	unsigned int m_width;
-	unsigned int m_height;
+	std::unique_ptr<Color[]> pBuffer;
+	unsigned int width;
+	unsigned int height;
 };
 

@@ -2,10 +2,10 @@
 
 ID3D11DeviceContext* Bindable::GetContext(Graphics& gfx)
 {
-	return gfx.m_pContext.Get();
+	return gfx.pContext.Get();
 }
 
 ID3D11Device* Bindable::GetDevice(Graphics& gfx)
 {
-	return gfx.m_pDevice.Get();
+	return gfx.pDevice.Get();
 }

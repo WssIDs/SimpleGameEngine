@@ -34,10 +34,10 @@ Texture::Texture(Graphics& gfx, const class Surface& surface)
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	GetDevice(gfx)->CreateShaderResourceView(pTexture.Get(), &srvDesc, &m_pTextureView);
+	GetDevice(gfx)->CreateShaderResourceView(pTexture.Get(), &srvDesc, &pTextureView);
 }
 
 void Texture::Bind(Graphics& gfx)
 {
-	GetContext(gfx)->PSSetShaderResources(0u, 1u, m_pTextureView.GetAddressOf());
+	GetContext(gfx)->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf());
 }

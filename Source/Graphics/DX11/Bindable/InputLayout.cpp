@@ -6,10 +6,10 @@ InputLayout::InputLayout(Graphics& gfx, const std::vector<D3D11_INPUT_ELEMENT_DE
 		(UINT)layout.size(),
 		pVertexShaderByteCode->GetBufferPointer(),
 		pVertexShaderByteCode->GetBufferSize(),
-		&m_pInputLayout);
+		&pInputLayout);
 }
 
 void InputLayout::Bind(Graphics& gfx)
 {
-	GetContext(gfx)->IASetInputLayout(m_pInputLayout.Get());
+	GetContext(gfx)->IASetInputLayout(pInputLayout.Get());
 }

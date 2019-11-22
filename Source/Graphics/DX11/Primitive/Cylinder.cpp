@@ -56,8 +56,8 @@ Cylinder::Cylinder(Graphics& gfx,
 	};
 	auto model = Prism::MakeTesselatedIndependentCapNormals<Vertex>(tdist(rng));
 
-	AddBind(std::make_unique<VertexBuffer>(gfx, model.m_vertices));
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.m_indices));
+	AddBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
 
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 }
