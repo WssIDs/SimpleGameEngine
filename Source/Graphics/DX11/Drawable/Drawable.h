@@ -15,7 +15,7 @@ public:
 	Drawable(const Drawable&) = delete;
 	virtual DirectX::XMMATRIX GetTransformXM() const = 0;
 	void Draw(Graphics& gfx) const;
-	virtual void Update(float deltaSeconds) = 0;
+	virtual void Update(float deltaSeconds) {}
 	virtual ~Drawable() = default;
 protected:
 	template<class T>

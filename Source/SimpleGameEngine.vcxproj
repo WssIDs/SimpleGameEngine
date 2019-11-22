@@ -252,12 +252,13 @@ xcopy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win
     <ClCompile Include="Windows\Launch\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\DX11\Primitive\Model.h" />
     <ClInclude Include="Graphics\Tests\AssetTest.h" />
     <ClInclude Include="Graphics\DX11\Primitive\Cylinder.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
     <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\BindableBase.h" />
+    <ClInclude Include="Graphics\DX11\Bindable\BindableCommon.h" />
     <ClInclude Include="Graphics\DX11\Bindable\ConstantBuffers.h" />
     <ClInclude Include="Graphics\DX11\Bindable\IndexBuffer.h" />
     <ClInclude Include="Graphics\DX11\Bindable\InputLayout.h" />

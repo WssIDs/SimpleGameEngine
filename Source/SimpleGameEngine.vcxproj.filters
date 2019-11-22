@@ -230,9 +230,6 @@
     <ClInclude Include="Graphics\DX11\Math\WGMath.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\DX11\Bindable\BindableBase.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="ThirdParty\Imgui\imconfig.h" />
     <ClInclude Include="ThirdParty\Imgui\imgui.h" />
     <ClInclude Include="ThirdParty\Imgui\imgui_impl_dx11.h" />
@@ -470,6 +467,10 @@
     <ClInclude Include="ThirdParty\Assimp\include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="Graphics\Tests\AssetTest.h" />
     <ClInclude Include="Graphics\DX11\Render\Vertex.h" />
+    <ClInclude Include="Graphics\DX11\Primitive\Model.h" />
+    <ClInclude Include="Graphics\DX11\Bindable\BindableCommon.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

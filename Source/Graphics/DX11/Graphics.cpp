@@ -36,8 +36,8 @@ Graphics::~Graphics()
 void Graphics::InitDX11(HWND hWnd)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
-	sd.BufferDesc.Width = 1024;
-	sd.BufferDesc.Height = 768;
+	sd.BufferDesc.Width = 1920;
+	sd.BufferDesc.Height = 1080;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -103,8 +103,8 @@ void Graphics::InitDX11(HWND hWnd)
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 1024u;
-	descDepth.Height = 768u;
+	descDepth.Width = 1920u;
+	descDepth.Height = 1080u;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -130,8 +130,8 @@ void Graphics::InitDX11(HWND hWnd)
 
 	// configure viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 1024;
-	vp.Height = 768;
+	vp.Width = 1920;
+	vp.Height = 1080;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
@@ -215,8 +215,8 @@ void Graphics::InitDX11_1(HWND hWnd)
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 1024u;
-	descDepth.Height = 768u;
+	descDepth.Width = 1920u;
+	descDepth.Height = 1080u;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -240,8 +240,8 @@ void Graphics::InitDX11_1(HWND hWnd)
 
 	// configure viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 1024;
-	vp.Height = 768;
+	vp.Width = 1920;
+	vp.Height = 1080;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
