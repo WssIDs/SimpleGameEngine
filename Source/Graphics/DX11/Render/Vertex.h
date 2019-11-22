@@ -2,6 +2,7 @@
 #include <vector>
 #include <DirectXMath.h>
 #include <type_traits>
+#include "Graphics/DX11/Graphics.h"
 
 namespace VL
 {
@@ -14,70 +15,71 @@ namespace VL
 		unsigned char A;
 	};
 
+	enum class ElementType
+	{
+		Position2D,
+		Position3D,
+		Texture2D,
+		Normal,
+		Float3Color,
+		Float4Color,
+		RGBAColor,
+		Count,
+	};
+
 
 	class VertexLayout
 	{
 	public:
-		enum class ElementType
-		{
-			Position2D,
-			Position3D,
-			Texture2D,
-			Normal,
-			Float3Color,
-			Float4Color,
-			RGBAColor,
-			Count,
-		};
 
 		template<ElementType> struct ElemType;
-		template<> struct ElemType<VertexLayout::ElementType::Position2D>
+		template<> struct ElemType<ElementType::Position2D>
 		{
 			using Type = DirectX::XMFLOAT2;
-			DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-			const char* semantic = "Position";
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Position";
 		};
 
-		template<> struct ElemType<VertexLayout::ElementType::Position3D>
+		template<> struct ElemType<ElementType::Position3D>
 		{
 			using Type = DirectX::XMFLOAT3;
-			DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-			const char* semantic = "Position";
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Position";
 		};
 
-		template<> struct ElemType<VertexLayout::ElementType::Texture2D>
+		template<> struct ElemType<ElementType::Texture2D>
 		{
 			using Type = DirectX::XMFLOAT2;
-			DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
-			const char* semantic = "Texcoord";
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
+			static constexpr const char* semantic = "Texcoord";
 		};
 
-		template<> struct ElemType<VertexLayout::ElementType::Normal>
+		template<> struct ElemType<ElementType::Normal>
 		{
 			using Type = DirectX::XMFLOAT3;
-			DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-			const char* semantic = "Normal";
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Normal";
 		};
 
-		template<> struct ElemType<VertexLayout::ElementType::Float3Color>
+		template<> struct ElemType<ElementType::Float3Color>
 		{
 			using Type = DirectX::XMFLOAT3;
-			DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-			const char* semantic = "Color";
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Color";
 		};
 
-		template<> struct ElemType<VertexLayout::ElementType::Float4Color>
+		template<> struct ElemType<ElementType::Float4Color>
 		{
 			using Type = DirectX::XMFLOAT4;
-			DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-			const char* semantic = "Color";
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Color";
 		};
 
-		template<> struct ElemType<VertexLayout::ElementType::RGBAColor>
+		template<> struct ElemType<ElementType::RGBAColor>
 		{
 			using Type = VL::RGBAColor;
-			DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-			const char* semantic = "Color";
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+			static constexpr const char* semantic = "Color";
 		};
 
 		class Element
@@ -106,23 +108,22 @@ namespace VL
 
 			static constexpr size_t SizeOf(ElementType type)
 			{
-				using namespace DirectX;
 				switch (type)
 				{
-				case VertexLayout::ElementType::Position2D:
-					return sizeof(ElemType<VertexLayout::ElementType::Position2D>::Type);
-				case VertexLayout::ElementType::Position3D:
-					return sizeof(ElemType<VertexLayout::ElementType::Position3D>::Type);
-				case VertexLayout::ElementType::Texture2D:
-					return sizeof(ElemType<VertexLayout::ElementType::Texture2D>::Type);
-				case VertexLayout::ElementType::Normal:
-					return sizeof(ElemType<VertexLayout::ElementType::Normal>::Type);
-				case VertexLayout::ElementType::Float3Color:
-					return sizeof(ElemType<VertexLayout::ElementType::Float3Color>::Type);
-				case VertexLayout::ElementType::Float4Color:
-					return sizeof(ElemType<VertexLayout::ElementType::Float4Color>::Type);
-				case VertexLayout::ElementType::RGBAColor:
-					return sizeof(ElemType<VertexLayout::ElementType::RGBAColor>::Type);
+				case ElementType::Position2D:
+					return sizeof(ElemType<ElementType::Position2D>::Type);
+				case ElementType::Position3D:
+					return sizeof(ElemType<ElementType::Position3D>::Type);
+				case ElementType::Texture2D:
+					return sizeof(ElemType<ElementType::Texture2D>::Type);
+				case ElementType::Normal:
+					return sizeof(ElemType<ElementType::Normal>::Type);
+				case ElementType::Float3Color:
+					return sizeof(ElemType<ElementType::Float3Color>::Type);
+				case ElementType::Float4Color:
+					return sizeof(ElemType<ElementType::Float4Color>::Type);
+				case ElementType::RGBAColor:
+					return sizeof(ElemType<ElementType::RGBAColor>::Type);
 				}
 				assert("Invalid element type" && false);
 				return 0u;
@@ -131,6 +132,36 @@ namespace VL
 			ElementType GetType() const
 			{
 				return type;
+			}
+
+			D3D11_INPUT_ELEMENT_DESC GetDesc() const
+			{
+				switch (type)
+				{
+				case ElementType::Position2D:
+					return GenerateDesc<ElementType::Position2D>(GetOffset());
+				case ElementType::Position3D:
+					return GenerateDesc<ElementType::Position3D>(GetOffset());
+				case ElementType::Texture2D:
+					return GenerateDesc<ElementType::Texture2D>(GetOffset());
+				case ElementType::Normal:
+					return GenerateDesc<ElementType::Normal>(GetOffset());
+				case ElementType::Float3Color:
+					return GenerateDesc<ElementType::Float3Color>(GetOffset());
+				case ElementType::Float4Color:
+					return GenerateDesc<ElementType::Float4Color>(GetOffset());
+				case ElementType::RGBAColor:
+					return GenerateDesc<ElementType::RGBAColor>(GetOffset());
+				}
+				assert("Invalid element type" && false);
+				return { "INVALID",0,DXGI_FORMAT_UNKNOWN,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 };
+			}
+
+		private:
+			template<ElementType type>
+			static D3D11_INPUT_ELEMENT_DESC GenerateDesc(size_t offset)
+			{
+				return { ElemType<type>::semantic,0,ElemType<type>::dxgiFormat,0,(UINT)offset, D3D11_INPUT_PER_VERTEX_DATA,0 };
 			}
 
 		private:
@@ -174,6 +205,17 @@ namespace VL
 			return elements.size();
 		}
 
+		std::vector<D3D11_INPUT_ELEMENT_DESC> GetD3DLayout() const
+		{
+			std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
+			desc.reserve(GetElementCount());
+			for (const auto& e : elements)
+			{
+				desc.push_back(e.GetDesc());
+			}
+			return desc;
+		}
+
 	private:
 		std::vector<Element> elements;
 	};
@@ -182,11 +224,11 @@ namespace VL
 	{
 		friend class VertexBuffer;
 	public:
-		template<VertexLayout::ElementType Type>
+		template<ElementType Type>
 		auto& Attr()
 		{
 			auto pAttribute = pData + layout.Resolve<Type>().GetOffset();
-			return *reinterpret_cast<typename VertexLayout::ElemType<Type>::Type*>(pAttribute);
+			return *reinterpret_cast<typename ElemType<Type>::Type*>(pAttribute);
 		}
 		template<typename T>
 		void SetAttributeByIndex(size_t i, T&& val)
@@ -196,26 +238,26 @@ namespace VL
 			auto pAttribute = pData + element.GetOffset();
 			switch (element.GetType())
 			{
-			case VertexLayout::ElementType::Position2D:
-				SetAttribute<VertexLayout::ElementType::Position2D>(pAttribute, std::forward<T>(val));
+			case ElementType::Position2D:
+				SetAttribute<ElementType::Position2D>(pAttribute, std::forward<T>(val));
 				break;
-			case VertexLayout::ElementType::Position3D:
-				SetAttribute<VertexLayout::ElementType::Position3D>(pAttribute, std::forward<T>(val));
+			case ElementType::Position3D:
+				SetAttribute<ElementType::Position3D>(pAttribute, std::forward<T>(val));
 				break;
-			case VertexLayout::ElementType::Texture2D:
-				SetAttribute<VertexLayout::ElementType::Texture2D>(pAttribute, std::forward<T>(val));
+			case ElementType::Texture2D:
+				SetAttribute<ElementType::Texture2D>(pAttribute, std::forward<T>(val));
 				break;
-			case VertexLayout::ElementType::Normal:
-				SetAttribute<VertexLayout::ElementType::Normal>(pAttribute, std::forward<T>(val));
+			case ElementType::Normal:
+				SetAttribute<ElementType::Normal>(pAttribute, std::forward<T>(val));
 				break;
-			case VertexLayout::ElementType::Float3Color:
-				SetAttribute<VertexLayout::ElementType::Float3Color>(pAttribute, std::forward<T>(val));
+			case ElementType::Float3Color:
+				SetAttribute<ElementType::Float3Color>(pAttribute, std::forward<T>(val));
 				break;
-			case VertexLayout::ElementType::Float4Color:
-				SetAttribute<VertexLayout::ElementType::Float4Color>(pAttribute, std::forward<T>(val));
+			case ElementType::Float4Color:
+				SetAttribute<ElementType::Float4Color>(pAttribute, std::forward<T>(val));
 				break;
-			case VertexLayout::ElementType::RGBAColor:
-				SetAttribute<VertexLayout::ElementType::RGBAColor>(pAttribute, std::forward<T>(val));
+			case ElementType::RGBAColor:
+				SetAttribute<ElementType::RGBAColor>(pAttribute, std::forward<T>(val));
 				break;
 			default:
 				assert("Bad element type" && false);
@@ -242,7 +284,7 @@ protected:
 		}
 
 		// helper to reduce code duplication in SetAttributeByIndex
-		template<VertexLayout::ElementType DestLayoutType, typename SrcType>
+		template<ElementType DestLayoutType, typename SrcType>
 		void SetAttribute(char* pAttribute, SrcType&& val)
 		{
 			using Dest = typename VertexLayout::ElemType<DestLayoutType>::Type;
@@ -265,7 +307,7 @@ protected:
 			vertex(v)
 		{}
 
-		template<VertexLayout::ElementType Type>
+		template<ElementType Type>
 		const auto& Attr() const
 		{
 			return const_cast<Vertex&>(vertex).Attr<Type>();
