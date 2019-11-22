@@ -1,5 +1,5 @@
 #include "Sheet.h"
-#include "Graphics/DX11/Bindable/BindableBase.h"
+#include "Graphics/DX11/Bindable/BindableCommon.h"
 #include "Graphics/DX11/Geometry/Plane.h"
 #include "Graphics/DX11/Bindable/Texture.h"
 #include "Graphics/DX11/Bindable/Sampler.h"

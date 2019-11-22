@@ -1,5 +1,5 @@
 #include "SkinnedBox.h"
-#include "Graphics/DX11/Bindable/BindableBase.h"
+#include "Graphics/DX11/Bindable/BindableCommon.h"
 #include "Graphics/DX11/Geometry/Cube.h"
 #include "Graphics/DX11/Render/Surface.h"
 #include "Graphics/DX11/Bindable/Texture.h"

@@ -1,5 +1,5 @@
 #include "AssetTest.h"
-#include "Graphics\DX11\Bindable\BindableBase.h"
+#include "Graphics\DX11\Bindable\BindableCommon.h"
 
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>

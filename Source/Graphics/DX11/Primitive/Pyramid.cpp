@@ -1,5 +1,5 @@
 #include "Pyramid.h"
-#include "Graphics/DX11/Bindable/BindableBase.h"
+#include "Graphics/DX11/Bindable/BindableCommon.h"
 #include "Graphics/DX11/Geometry/Cone.h"
 #include <array>
 

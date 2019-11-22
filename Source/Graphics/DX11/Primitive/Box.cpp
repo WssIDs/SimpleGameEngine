@@ -1,5 +1,5 @@
 #include "Box.h"
-#include "Graphics/DX11/Bindable/BindableBase.h"
+#include "Graphics/DX11/Bindable/BindableCommon.h"
 #include "Graphics/DX11/Geometry/Cube.h"
 #include "Imgui/imgui.h"
 

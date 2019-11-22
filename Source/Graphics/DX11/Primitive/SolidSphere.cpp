@@ -1,5 +1,5 @@
 #include "SolidSphere.h"
-#include "..\Bindable\BindableBase.h"
+#include "..\Bindable\BindableCommon.h"
 #include "..\Geometry\Sphere.h"
 
 SolidSphere::SolidSphere(Graphics& gfx, float radius)
