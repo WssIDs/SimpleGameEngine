@@ -12,6 +12,6 @@ public:
 		std::uniform_real_distribution<float>& odist,
 		std::uniform_real_distribution<float>& rdist,
 		DirectX::XMFLOAT3 material,
-		float scale);
+		DirectX::XMFLOAT3 scale);
 };
 

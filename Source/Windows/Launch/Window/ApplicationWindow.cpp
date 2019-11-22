@@ -39,6 +39,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 		std::unique_ptr<Drawable> operator()()
 		{
 			const DirectX::XMFLOAT3 material = { cdist(rng), cdist(rng), cdist(rng) };
+			const DirectX::XMFLOAT3 scale = { 0.005f, 0.005f, 0.005f };
 			
 			switch (sdist(rng))
 			{
@@ -65,7 +66,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 			case 4:
 				return std::make_unique<AssetTest>(m_gfx,
 					rng, adist, ddist,
-					odist, rdist, material, 0.005f
+					odist, rdist, material, scale
 					);
 			default:
 				assert(false && "impossible drawable option in factory");
