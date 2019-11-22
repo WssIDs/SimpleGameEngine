@@ -7,7 +7,7 @@ bool KeyboardInput::KeyIsPressed(unsigned char keycode) const
 
 std::optional<KeyboardInput::Event> KeyboardInput::ReadKey()
 {
-	if( keybuffer.size() > 0u)
+	if( !keybuffer.empty())
 	{
 		KeyboardInput::Event e = keybuffer.front();
 		keybuffer.pop();
@@ -30,7 +30,7 @@ void KeyboardInput::FlushKey()
 
 std::optional<char> KeyboardInput::ReadChar()
 {
-	if( charbuffer.size() > 0u )
+	if( !charbuffer.empty() )
 	{
 		unsigned char charcode = charbuffer.front();
 		charbuffer.pop();

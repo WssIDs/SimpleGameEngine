@@ -46,7 +46,7 @@ bool MouseInput::RightIsPressed() const
 
 std::optional<MouseInput::Event> MouseInput::Read()
 {
-	if( buffer.size() > 0u )
+	if( !buffer.empty() )
 	{
 		MouseInput::Event e = buffer.front();
 		buffer.pop();
