@@ -469,6 +469,7 @@
     <ClInclude Include="ThirdParty\Assimp\include\assimp\XMLTools.h" />
     <ClInclude Include="ThirdParty\Assimp\include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="Graphics\Tests\AssetTest.h" />
+    <ClInclude Include="Graphics\DX11\Render\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

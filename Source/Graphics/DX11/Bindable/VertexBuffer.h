@@ -1,6 +1,7 @@
 #pragma once
 #include "Bindable.h"
 #include <vector>
+#include "..\Render\Vertex.h"
 
 class VertexBuffer : public Bindable
 {
@@ -22,6 +23,26 @@ public:
 
 		GetDevice(gfx)->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
 	}
+
+	VertexBuffer(Graphics& gfx, const VL::VertexBuffer& vbuf)
+		:
+		m_stride((UINT)vbuf.GetLayout().Size())
+	{
+
+		D3D11_BUFFER_DESC bd = {};
+		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.CPUAccessFlags = 0u;
+		bd.MiscFlags = 0u;
+		bd.ByteWidth = UINT(vbuf.SizeBytes());
+		bd.StructureByteStride = m_stride;
+		D3D11_SUBRESOURCE_DATA sd = {};
+
+		sd.pSysMem = vbuf.GetData();
+
+		GetDevice(gfx)->CreateBuffer(&bd, &sd, &m_pVertexBuffer);
+	}
+
 	void Bind(Graphics& gfx) override;
 
 protected:

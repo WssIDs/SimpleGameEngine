@@ -5,6 +5,8 @@
 #include <assimp\postprocess.h>
 #include "assimp\scene.h"
 
+#include "Graphics/DX11/Render/Vertex.h"
+
 //#include <windows.h>
 
 AssetTest::AssetTest(Graphics& gfx,
@@ -29,20 +31,24 @@ AssetTest::AssetTest(Graphics& gfx,
 			dx::XMFLOAT3 n;
 		};
 
+		using VL::VertexLayout;
+
+		VL::VertexBuffer vBuff(std::move(
+			VertexLayout{}
+			.Append<VertexLayout::ElementType::Position3D>()
+			.Append<VertexLayout::ElementType::Normal>()
+		));
+
 		Assimp::Importer imp;
 		const auto pModel = imp.ReadFile(R"(..\..\..\Content\Models\mclaren.FBX)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 		const auto pMesh = pModel->mMeshes[0];
 
-		std::vector<Vertex> vertices;
-		vertices.reserve(pMesh->mNumVertices);
-
 		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
 		{
-			vertices.push_back(
-				{
-					{ pMesh->mVertices[i].x * scale.x, pMesh->mVertices[i].y * scale.y, pMesh->mVertices[i].z * scale.z },
-					*reinterpret_cast<dx::XMFLOAT3*>(&pMesh->mNormals[i])
-				});
+			vBuff.EmplaceBack(
+				dx::XMFLOAT3{ pMesh->mVertices[i].x * scale.x, pMesh->mVertices[i].y * scale.y, pMesh->mVertices[i].z * scale.z },
+				*reinterpret_cast<dx::XMFLOAT3*>(&pMesh->mNormals[i])
+			);
 		}
 
 		std::vector<unsigned short> indices;
@@ -57,7 +63,7 @@ AssetTest::AssetTest(Graphics& gfx,
 			indices.push_back(face.mIndices[2]);
 		}
 
-		AddStaticBind(std::make_unique<VertexBuffer>(gfx, vertices));
+		AddStaticBind(std::make_unique<VertexBuffer>(gfx, vBuff));
 
 		AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
 

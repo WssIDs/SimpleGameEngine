@@ -17,12 +17,11 @@
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
 
-
-
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 ImguiManager imgui;
+
 
 ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	:Window(width,height,name),

@@ -42,19 +42,19 @@ SkinnedBox::SkinnedBox(Graphics& gfx,
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
-			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "Normal",0,DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "TexCoord",0,DXGI_FORMAT_R32G32_FLOAT,0,24,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Position",0,::DXGI_FORMAT_R32G32B32_FLOAT,0,0, ::D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Normal",0,::DXGI_FORMAT_R32G32B32_FLOAT,0,12, ::D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "TexCoord",0,::DXGI_FORMAT_R32G32_FLOAT,0,24, ::D3D11_INPUT_PER_VERTEX_DATA,0 },
 		};
 		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
 
-		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+		AddStaticBind(std::make_unique<Topology>(gfx, ::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 		struct PSMaterialConstant
 		{
 			float specularIntensity = 0.6f;
 			float specularPower = 30.0f;
-			float padding[2];
+			float padding[2] = {0.0f, 0.0f};
 		} colorConst;
 
 		AddStaticBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(gfx, colorConst, 1u));
