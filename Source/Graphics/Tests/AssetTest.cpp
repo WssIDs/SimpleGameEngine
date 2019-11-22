@@ -35,8 +35,8 @@ AssetTest::AssetTest(Graphics& gfx,
 
 		VL::VertexBuffer vBuff(std::move(
 			VertexLayout{}
-			.Append<VertexLayout::ElementType::Position3D>()
-			.Append<VertexLayout::ElementType::Normal>()
+			.Append(VertexLayout::ElementType::Position3D)
+			.Append(VertexLayout::ElementType::Normal)
 		));
 
 		Assimp::Importer imp;
