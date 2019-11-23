@@ -29,7 +29,7 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 
-	Model model{ Gfx(), R"(..\..\..\Content\Models\Juliette.FBX)" };
+	Model model{ Gfx(), R"(..\..\..\Content\Models\Myriam.FBX)" };
 	struct
 	{
 		float roll = 0.0f;
