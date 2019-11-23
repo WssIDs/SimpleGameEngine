@@ -5,9 +5,16 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 
+
+namespace Bind
+{
+	class Bindable;
+}
+
+
 class Graphics
 {
-	friend class Bindable;
+	friend Bind::Bindable;
 public:
 	Graphics(HWND hWnd);
 	Graphics(const Graphics&) = delete;

@@ -5,12 +5,11 @@
 //#include "Graphics/DX12/CommandQueue.h"
 #include "Windows/Timer/Timer.h"
 #include <memory>
-#include "Graphics/DX11/Primitive/Box.h"
 #include "Graphics/GUI/ImguiManager.h"
 #include "Graphics/Engine/Actors/Camera.h"
 #include <Graphics\DX11\Render\PointLight.h>
 #include <set>
-#include "Graphics/DX11/Primitive/Model.h"
+#include "Graphics/DX11/Primitive/Mesh.h"
 
 class ApplicationWindow: public Window
 {
@@ -30,7 +29,7 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 
-	Model model{ Gfx(), R"(..\..\..\Content\Models\Juliette.fbx)" };
+	Model model{ Gfx(), R"(..\..\..\Content\Models\Juliette.FBX)" };
 	struct
 	{
 		float roll = 0.0f;

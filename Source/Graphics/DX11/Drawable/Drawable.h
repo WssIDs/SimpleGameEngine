@@ -4,7 +4,11 @@
 #include <memory>
 #include <vector>
 
-class Bindable;
+namespace Bind
+{
+	class Bindable;
+	class IndexBuffer;
+}
 
 class Drawable
 {
@@ -30,11 +34,11 @@ protected:
 		}
 		return nullptr;
 	}
-	void AddBind(std::unique_ptr<Bindable> bind);
-	void AddIndexBuffer(std::unique_ptr<class IndexBuffer> iBuf);
+	void AddBind(std::unique_ptr<Bind::Bindable> bind);
+	void AddIndexBuffer(std::unique_ptr<Bind::IndexBuffer> iBuf);
 private:
-	virtual const std::vector<std::unique_ptr<Bindable>>& GetStaticBinds() const = 0;
-	const class IndexBuffer* pIndexBuffer = nullptr;
-	std::vector<std::unique_ptr<Bindable>> binds;
+	virtual const std::vector<std::unique_ptr<Bind::Bindable>>& GetStaticBinds() const = 0;
+	const Bind::IndexBuffer* pIndexBuffer = nullptr;
+	std::vector<std::unique_ptr<Bind::Bindable>> binds;
 };
 

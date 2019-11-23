@@ -28,6 +28,6 @@ private:
 private:
 	PointLightConstantBuffer pcbData;
 	mutable SolidSphere mesh;
-	mutable PixelConstantBuffer<PointLightConstantBuffer> constantBuffer;
+	mutable Bind::PixelConstantBuffer<PointLightConstantBuffer> constantBuffer;
 };
 

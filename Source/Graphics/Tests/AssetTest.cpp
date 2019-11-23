@@ -9,6 +9,9 @@
 
 //#include <windows.h>
 
+
+using namespace Bind;
+
 AssetTest::AssetTest(Graphics& gfx,
 	std::mt19937& rng,
 	std::uniform_real_distribution<float>& adist,
@@ -31,12 +34,12 @@ AssetTest::AssetTest(Graphics& gfx,
 			dx::XMFLOAT3 n;
 		};
 
-		using VL::VertexLayout;
+		using DynamicVtx::VertexLayout;
 
-		VL::VertexBuffer vBuff(std::move(
+		DynamicVtx::VertexBuffer vBuff(std::move(
 			VertexLayout{}
-			.Append(VL::ElementType::Position3D)
-			.Append(VL::ElementType::Normal)
+			.Append(DynamicVtx::ElementType::Position3D)
+			.Append(DynamicVtx::ElementType::Normal)
 		));
 
 		Assimp::Importer imp;
@@ -73,11 +76,6 @@ AssetTest::AssetTest(Graphics& gfx,
 
 		AddStaticBind(std::make_unique<PixelShader>(gfx, TEXT("..\\..\\..\\Shaders\\PhongPS.cso")));
 
-		//const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
-		//{
-		//	{ "Position",0,DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		//	{ "Normal",0,DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		//};
 		AddStaticBind(std::make_unique<InputLayout>(gfx, vBuff.GetLayout().GetD3DLayout(), pvsbc));
 
 		AddStaticBind(std::make_unique<Topology>(gfx, D3D_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));

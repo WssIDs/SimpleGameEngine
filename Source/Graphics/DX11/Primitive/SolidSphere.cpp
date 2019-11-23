@@ -4,6 +4,7 @@
 
 SolidSphere::SolidSphere(Graphics& gfx, float radius)
 {
+	using namespace Bind;
 	namespace dx = DirectX;
 
 	if (!IsStaticInitialized())

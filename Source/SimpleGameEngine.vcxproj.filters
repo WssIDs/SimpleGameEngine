@@ -45,18 +45,6 @@
     <ClCompile Include="Graphics\DX11\Graphics.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\DX11\Primitive\Box.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\DX11\Primitive\Pyramid.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\DX11\Primitive\Sheet.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\DX11\Primitive\SkinnedBox.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DX11\Render\Surface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -103,8 +91,9 @@
     <ClCompile Include="Graphics\Engine\Actors\Camera.cpp" />
     <ClCompile Include="Graphics\DX11\Render\PointLight.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\SolidSphere.cpp" />
-    <ClCompile Include="Graphics\DX11\Primitive\Cylinder.cpp" />
     <ClCompile Include="Graphics\Tests\AssetTest.cpp" />
+    <ClCompile Include="Graphics\DX11\Render\Vertex.cpp" />
+    <ClCompile Include="Graphics\DX11\Primitive\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -170,18 +159,6 @@
     <ClInclude Include="Graphics\DX11\Graphics.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\DX11\Primitive\Box.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX11\Primitive\Pyramid.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX11\Primitive\Sheet.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX11\Primitive\SkinnedBox.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\DX11\Render\Surface.h">
       <Filter>Source</Filter>
     </ClInclude>
@@ -243,7 +220,6 @@
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
     <ClInclude Include="Graphics\Tests\TestObject.h" />
-    <ClInclude Include="Graphics\DX11\Primitive\Cylinder.h" />
     <ClInclude Include="Windows\Launch\Window\STypes.h" />
     <ClInclude Include="ThirdParty\Assimp\Compiler\poppack1.h" />
     <ClInclude Include="ThirdParty\Assimp\Compiler\pstdint.h" />
@@ -467,10 +443,11 @@
     <ClInclude Include="ThirdParty\Assimp\include\assimp\ZipArchiveIOSystem.h" />
     <ClInclude Include="Graphics\Tests\AssetTest.h" />
     <ClInclude Include="Graphics\DX11\Render\Vertex.h" />
-    <ClInclude Include="Graphics\DX11\Primitive\Model.h" />
     <ClInclude Include="Graphics\DX11\Bindable\BindableCommon.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DX11\Render\Color.h" />
+    <ClInclude Include="Graphics\DX11\Primitive\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">
@@ -512,19 +489,10 @@
     <ResourceCompile Include="Resources\SimpleGameEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\ColorBlendPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\ColorBlendVS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\TexturePS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\TextureVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\PhongPS.hlsl" />
     <FxCompile Include="Graphics\Shaders\PhongVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\SolidVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\SolidPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\IndexedPhongPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\BlendedPhongVS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\BlendedPhongPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\TexturePhongVS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\TexturePhongPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />

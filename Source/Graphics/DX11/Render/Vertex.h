@@ -2,19 +2,11 @@
 #include <vector>
 #include <DirectXMath.h>
 #include <type_traits>
+#include "Color.h"
 #include "Graphics/DX11/Graphics.h"
 
-namespace VL
+namespace DynamicVtx
 {
-
-	struct RGBAColor
-	{
-		unsigned char R;
-		unsigned char G;
-		unsigned char B;
-		unsigned char A;
-	};
-
 	enum class ElementType
 	{
 		Position2D,
@@ -77,7 +69,7 @@ namespace VL
 
 		template<> struct ElemType<ElementType::RGBAColor>
 		{
-			using Type = VL::RGBAColor;
+			using Type = ::RGBAColor;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 			static constexpr const char* semantic = "Color";
 		};
@@ -85,77 +77,13 @@ namespace VL
 		class Element
 		{
 		public:
-			Element(ElementType type, size_t offset)
-				:
-				type(type),
-				offset(offset)
-			{}
-
-			size_t GetOffsetAfter() const
-			{
-				return offset + Size();
-			}
-
-			size_t GetOffset() const
-			{
-				return offset;
-			}
-
-			size_t Size() const
-			{
-				return SizeOf(type);
-			}
-
-			static constexpr size_t SizeOf(ElementType type)
-			{
-				switch (type)
-				{
-				case ElementType::Position2D:
-					return sizeof(ElemType<ElementType::Position2D>::Type);
-				case ElementType::Position3D:
-					return sizeof(ElemType<ElementType::Position3D>::Type);
-				case ElementType::Texture2D:
-					return sizeof(ElemType<ElementType::Texture2D>::Type);
-				case ElementType::Normal:
-					return sizeof(ElemType<ElementType::Normal>::Type);
-				case ElementType::Float3Color:
-					return sizeof(ElemType<ElementType::Float3Color>::Type);
-				case ElementType::Float4Color:
-					return sizeof(ElemType<ElementType::Float4Color>::Type);
-				case ElementType::RGBAColor:
-					return sizeof(ElemType<ElementType::RGBAColor>::Type);
-				}
-				assert("Invalid element type" && false);
-				return 0u;
-			}
-
-			ElementType GetType() const
-			{
-				return type;
-			}
-
-			D3D11_INPUT_ELEMENT_DESC GetDesc() const
-			{
-				switch (type)
-				{
-				case ElementType::Position2D:
-					return GenerateDesc<ElementType::Position2D>(GetOffset());
-				case ElementType::Position3D:
-					return GenerateDesc<ElementType::Position3D>(GetOffset());
-				case ElementType::Texture2D:
-					return GenerateDesc<ElementType::Texture2D>(GetOffset());
-				case ElementType::Normal:
-					return GenerateDesc<ElementType::Normal>(GetOffset());
-				case ElementType::Float3Color:
-					return GenerateDesc<ElementType::Float3Color>(GetOffset());
-				case ElementType::Float4Color:
-					return GenerateDesc<ElementType::Float4Color>(GetOffset());
-				case ElementType::RGBAColor:
-					return GenerateDesc<ElementType::RGBAColor>(GetOffset());
-				}
-				assert("Invalid element type" && false);
-				return { "INVALID",0,DXGI_FORMAT_UNKNOWN,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 };
-			}
+			Element(ElementType type, size_t offset);
+			size_t GetOffsetAfter() const;
+			size_t GetOffset() const;
+			size_t Size() const;
+			static constexpr size_t SizeOf(ElementType type);
+			ElementType GetType() const;
+			D3D11_INPUT_ELEMENT_DESC GetDesc() const;
 
 		private:
 			template<ElementType type>
@@ -184,37 +112,11 @@ namespace VL
 			return elements.front();
 		}
 
-		const Element& ResolveByIndex(size_t i) const
-		{
-			return elements[i];
-		}
-
-		VertexLayout& Append(ElementType type)
-		{
-			elements.emplace_back(type, Size());
-			return *this;
-		}
-
-		size_t Size() const
-		{
-			return elements.empty() ? 0u : elements.back().GetOffsetAfter();
-		}
-
-		size_t GetElementCount() const
-		{
-			return elements.size();
-		}
-
-		std::vector<D3D11_INPUT_ELEMENT_DESC> GetD3DLayout() const
-		{
-			std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
-			desc.reserve(GetElementCount());
-			for (const auto& e : elements)
-			{
-				desc.push_back(e.GetDesc());
-			}
-			return desc;
-		}
+		const Element& ResolveByIndex(size_t i) const;
+		VertexLayout& Append(ElementType type);
+		size_t Size() const;
+		size_t GetElementCount() const;
+		std::vector<D3D11_INPUT_ELEMENT_DESC> GetD3DLayout() const;
 
 	private:
 		std::vector<Element> elements;
@@ -264,17 +166,10 @@ namespace VL
 			}
 		}
 
-protected:
-		Vertex(char* pData, const VertexLayout& layout)
-			:
-			pData(pData),
-			layout(layout)
-		{
-			assert(pData != nullptr);
-		}
+	protected:
+		Vertex(char* pData, const VertexLayout& layout);
 
 	private:
-
 		template<typename First, typename ...Rest>
 		// enables parameter pack setting of multiple parameters by element index
 		void SetAttributeByIndex(size_t i, First&& first, Rest&&... rest)
@@ -298,14 +193,10 @@ protected:
 		const VertexLayout& layout;
 	};
 
-
 	class ConstantVertex
 	{
 	public:
-		ConstantVertex(const Vertex& v)
-			:
-			vertex(v)
-		{}
+		ConstantVertex(const Vertex& v);
 
 		template<ElementType Type>
 		const auto& Attr() const
@@ -317,33 +208,15 @@ protected:
 		Vertex vertex;
 	};
 
-
 	class VertexBuffer
 	{
 	public:
-		VertexBuffer(VertexLayout layout)
-			:
-			layout(std::move(layout))
-		{}
+		VertexBuffer(VertexLayout layout);
 
-		const char* GetData() const
-		{
-			return buffer.data();
-		}
-		const VertexLayout& GetLayout() const
-		{
-			return layout;
-		}
-
-		size_t Size() const
-		{
-			return buffer.size() / layout.Size();
-		}
-
-		size_t SizeBytes() const
-		{
-			return buffer.size();
-		}
+		const char* GetData() const;
+		const VertexLayout& GetLayout() const;
+		size_t Size() const;
+		size_t SizeBytes() const;
 
 		template<typename ...Params>
 		void EmplaceBack(Params&&... params)
@@ -353,38 +226,12 @@ protected:
 			Back().SetAttributeByIndex(0u, std::forward<Params>(params)...);
 		}
 
-		Vertex Back()
-		{
-			assert(buffer.size() != 0u);
-			return Vertex{ buffer.data() + buffer.size() - layout.Size(),layout };
-		}
-
-		Vertex Front()
-		{
-			assert(buffer.size() != 0u);
-			return Vertex{ buffer.data(),layout };
-		}
-
-		Vertex operator[](size_t i)
-		{
-			assert(i < Size());
-			return Vertex{ buffer.data() + layout.Size() * i,layout };
-		}
-
-		ConstantVertex Back() const
-		{
-			return const_cast<VertexBuffer*>(this)->Back();
-		}
-
-		ConstantVertex Front() const
-		{
-			return const_cast<VertexBuffer*>(this)->Front();
-		}
-
-		ConstantVertex operator[](size_t i) const
-		{
-			return const_cast<VertexBuffer&>(*this)[i];
-		}
+		Vertex Back();
+		Vertex Front();
+		Vertex operator[](size_t i);
+		ConstantVertex Back() const;
+		ConstantVertex Front() const;
+		ConstantVertex operator[](size_t i) const;
 
 	private:
 		std::vector<char> buffer;

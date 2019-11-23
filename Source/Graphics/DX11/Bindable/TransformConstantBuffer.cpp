@@ -1,29 +1,33 @@
 #include "TransformConstantBuffer.h"
 
-TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Drawable& parent, UINT slot /*0u*/)
-	:
-	Parent(parent)
+
+namespace Bind
 {
-	if( !pVertexConstantBuffer)
+	TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Drawable& parent, UINT slot /*0u*/)
+		:
+		Parent(parent)
 	{
-		pVertexConstantBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(gfx, slot);
+		if (!pVertexConstantBuffer)
+		{
+			pVertexConstantBuffer = std::make_unique<VertexConstantBuffer<Transforms>>(gfx, slot);
+		}
 	}
-}
 
-void TransformConstantBuffer::Bind(Graphics& gfx)
-{
-	const auto modelView = Parent.GetTransformXM() * gfx.GetCamera();
-	const Transforms tf =
+	void TransformConstantBuffer::Bind(Graphics& gfx)
 	{
-		DirectX::XMMatrixTranspose(modelView),
-		DirectX::XMMatrixTranspose(
-			modelView *
-			gfx.GetProjection()
-		)
-	};
+		const auto modelView = Parent.GetTransformXM() * gfx.GetCamera();
+		const Transforms tf =
+		{
+			DirectX::XMMatrixTranspose(modelView),
+			DirectX::XMMatrixTranspose(
+				modelView *
+				gfx.GetProjection()
+			)
+		};
 
-	pVertexConstantBuffer->Update(gfx, tf);
-	pVertexConstantBuffer->Bind(gfx);
+		pVertexConstantBuffer->Update(gfx, tf);
+		pVertexConstantBuffer->Bind(gfx);
+	}
+
+	std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::pVertexConstantBuffer;
 }
-
-std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::pVertexConstantBuffer;
