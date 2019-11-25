@@ -22,7 +22,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	S_LOG(TEXT("Application Window"), TEXT("Create"));
 
 
-	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 200.0f));
+	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
 	//Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
 }
 
@@ -64,8 +64,14 @@ void ApplicationWindow::onUpdate()
 
 	while (const auto e = keyboardInput.ReadKey())
 	{
-		if (e->IsPress() && e->GetCode() == VK_INSERT)
+		if (!e->IsPress())
 		{
+			continue;
+		}
+
+		switch (e->GetCode())
+		{
+		case VK_ESCAPE:
 			if (IsCursorEnabled())
 			{
 				DisableCursor();
@@ -76,26 +82,65 @@ void ApplicationWindow::onUpdate()
 				EnableCursor();
 				mouseInput.DisableRaw();
 			}
+			break;
+		case VK_F1:
+			showDemoWindow = true;
 		}
 	}
 
+	if(!IsCursorEnabled())
+	{
+		float step = 3.0f;
+
+		if(keyboardInput.KeyIsPressed('W'))
+		{
+			camera.Translate({ 0.0f, 0.0f, deltaSeconds * step });
+		}
+		if (keyboardInput.KeyIsPressed('A'))
+		{
+			camera.Translate({ -deltaSeconds * step, 0.0f, 0.0f });
+		}
+		if (keyboardInput.KeyIsPressed('S'))
+		{
+			camera.Translate({ 0.0f, 0.0f, -deltaSeconds * step });
+		}
+		if (keyboardInput.KeyIsPressed('D'))
+		{
+			camera.Translate({ deltaSeconds * step, 0.0f, 0.0f });
+		}
+		if (keyboardInput.KeyIsPressed('R'))
+		{
+			camera.Translate({ 0.0f, deltaSeconds * step, 0.0f });
+		}
+		if (keyboardInput.KeyIsPressed('F'))
+		{
+			camera.Translate({ 0.0f, -deltaSeconds * step, 0.0f });
+		}
+	}
+
+	while (const auto delta = mouseInput.ReadRawDelta())
+	{
+		if(!IsCursorEnabled())
+		{
+			camera.Rotate((float)delta->x, (float)delta->y);
+		}
+	}
 
 	// render imgui windows
 	camera.SpawnControlWindow();
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
 	model.ShowWindow();
-	ShowRawInputWindow();
+	//ShowRawInputWindow();
 
 	Gfx().EndFrame(); // EndFrame
 }
 
 void ApplicationWindow::ShowImguiDemoWindow()
 {
-	static bool show_demo_window = true;
-	if (show_demo_window)
+	if (showDemoWindow)
 	{
-		ImGui::ShowDemoWindow(&show_demo_window);
+		ImGui::ShowDemoWindow(&showDemoWindow);
 	}
 }
 

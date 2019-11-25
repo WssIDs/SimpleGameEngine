@@ -25,6 +25,7 @@ public:
 	void ShowRawInputWindow();
 private:
 	int x = 0, y = 0;
+	bool showDemoWindow = false;
 	Timer timer;
 	Camera camera;
 	PointLight light;
