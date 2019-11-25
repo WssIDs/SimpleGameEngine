@@ -23,7 +23,6 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 
 
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 200.0f));
-	
 	//Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
 }
 
@@ -63,12 +62,30 @@ void ApplicationWindow::onUpdate()
 
 	light.Draw(Gfx());
 
+	while (const auto e = keyboardInput.ReadKey())
+	{
+		if (e->IsPress() && e->GetCode() == VK_INSERT)
+		{
+			if (IsCursorEnabled())
+			{
+				DisableCursor();
+				mouseInput.EnableRaw();
+			}
+			else
+			{
+				EnableCursor();
+				mouseInput.DisableRaw();
+			}
+		}
+	}
+
 
 	// render imgui windows
 	camera.SpawnControlWindow();
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
 	model.ShowWindow();
+	ShowRawInputWindow();
 
 	Gfx().EndFrame(); // EndFrame
 }
@@ -80,4 +97,19 @@ void ApplicationWindow::ShowImguiDemoWindow()
 	{
 		ImGui::ShowDemoWindow(&show_demo_window);
 	}
+}
+
+void ApplicationWindow::ShowRawInputWindow()
+{
+	while (const auto d = mouseInput.ReadRawDelta())
+	{
+		x += d->x;
+		y += d->y;
+	}
+	if (ImGui::Begin("Raw Input"))
+	{
+		ImGui::Text("Tally: (%d,%d)", x, y);
+		ImGui::Text("Cursor: %s", IsCursorEnabled() ? "enabled" : "disabled");
+	}
+	ImGui::End();
 }

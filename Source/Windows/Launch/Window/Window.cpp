@@ -77,6 +77,17 @@ Window::Window(int width, int height,const TSTRING name)
 
 	pGfx = std::make_unique<Graphics>(hwnd, width, height);
 
+	// register mouse raw input device
+	RAWINPUTDEVICE rid;
+	rid.usUsagePage = 0x01; // mouse page
+	rid.usUsage = 0x02; // mouse usage
+	rid.dwFlags = 0;
+	rid.hwndTarget = nullptr;
+	if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
+	{
+		throw TEXT("Register Raw input Devices failed");
+	}
+
 	is_run = true;
 }
 
@@ -94,6 +105,27 @@ void Window::SetWindowTitle(const TSTRING& title)
 	{
 		PRINT_OUTPUT(TEXT("Cannot Change Title"));
 	}
+}
+
+void Window::EnableCursor()
+{
+	cursorEnabled = true;
+	ShowCursor();
+	EnableImguiMouse();
+	FreeCursor();
+}
+
+void Window::DisableCursor()
+{
+	cursorEnabled = false;
+	HideCursor();
+	DisableImguiMouse();
+	ConfineCursor();
+}
+
+bool Window::IsCursorEnabled() const
+{
+	return cursorEnabled;
 }
 
 std::optional<int> Window::ProcessMessages()
@@ -122,6 +154,39 @@ Graphics& Window::Gfx()
 bool Window::isRun() const
 {
 	return is_run;
+}
+
+void Window::ConfineCursor()
+{
+	RECT rect;
+	GetClientRect(hwnd, &rect);
+	MapWindowPoints(hwnd, nullptr, reinterpret_cast<POINT*>(&rect), 2);
+	ClipCursor(&rect);
+}
+
+void Window::FreeCursor()
+{
+	ClipCursor(nullptr);
+}
+
+void Window::ShowCursor()
+{
+	while (::ShowCursor(true) < 0);
+}
+
+void Window::HideCursor()
+{
+	while (::ShowCursor(false) >= 0);
+}
+
+void Window::EnableImguiMouse()
+{
+	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+}
+
+void Window::DisableImguiMouse()
+{
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 }
 
 void Window::onCreate()
@@ -183,6 +248,7 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		HANDLE_MSG(hWnd, WM_CREATE, Wnd_OnCreate);
 		HANDLE_MSG(hWnd, WM_CLOSE, Wnd_OnClose);
 		HANDLE_MSG(hWnd, WM_KILLFOCUS, Wnd_OnKillFocus);
+		HANDLE_MSG(hWnd, WM_ACTIVATE, Wnd_OnActivate);
 
 
 		HANDLE_MSG(hWnd, WM_KEYDOWN, Wnd_OnKeyDown);
@@ -190,9 +256,10 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		HANDLE_MSG(hWnd, WM_KEYUP, Wnd_OnKeyUp);
 		HANDLE_MSG(hWnd, WM_SYSKEYUP, Wnd_OnKeyUp);
 		HANDLE_MSG(hWnd, WM_CHAR, Wnd_OnChar);
+		HANDLE_MSG(hWnd, WM_INPUT, Wnd_OnInput);
 
 
-		HANDLE_MSG(hWnd, WM_MOUSEMOVE, Wnd_OnMove);
+		HANDLE_MSG(hWnd, WM_MOUSEMOVE, Wnd_OnMouseMove);
 		HANDLE_MSG(hWnd, WM_MOUSEWHEEL, Wnd_OnMouseWheel);
 		HANDLE_MSG(hWnd, WM_LBUTTONDOWN, Wnd_OnLeftButtonDown);
 		HANDLE_MSG(hWnd, WM_LBUTTONUP, Wnd_OnLeftButtonUp);
@@ -218,6 +285,32 @@ void Window::Wnd_OnClose(HWND hwnd)
 void Window::Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus)
 {
 	keyboardInput.ClearState();
+}
+
+void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
+{
+	if(!cursorEnabled)
+	{
+		TSTRINGSTREAM out;
+
+		out << TEXT("Mouse state = ") << state;
+
+		//S_LOG(TEXT("Window"), out.str().c_str());
+		S_LOG(TEXT("Window"), TEXT("Mouse state = %d"), state);
+
+		if(state == 1)
+		{
+			S_LOG(TEXT("Window"), TEXT("Cursor confine"));
+			ConfineCursor();
+			HideCursor();
+		}
+		else
+		{
+			S_LOG(TEXT("Window"), TEXT("Cursor free"));
+			FreeCursor();
+			ShowCursor();
+		}
+	}
 }
 
 void Window::Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -248,10 +341,48 @@ void Window::Wnd_OnChar(HWND hwnd, TCHAR ch, int cRepeat)
 }
 
 
+void Window::Wnd_OnInput(HWND hwnd, UINT code, HRAWINPUT hRawInput)
+{
+	if(!mouseInput.RawEnabled())
+	{
+		return;
+	}
+
+	UINT size;
+	if (GetRawInputData(hRawInput, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)) == -1)
+	{
+		// bail msg processing if error
+		return;
+	}
+
+	rawBuffer.resize(size);
+	if(GetRawInputData(hRawInput, RID_INPUT, rawBuffer.data(), &size, sizeof(RAWINPUTHEADER)) != size)
+	{
+		// bail msg processing if error
+		return;
+	}
+
+	auto& ri = reinterpret_cast<const RAWINPUT&>(*rawBuffer.data());
+	if (ri.header.dwType == RIM_TYPEMOUSE &&
+		(ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
+	{
+		mouseInput.OnRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
+	}
+}
+
 /**************** MOUSE MESSAGES *************************/
 
-void Window::Wnd_OnMove(HWND hwnd, int x, int y, UINT keyFlags)
+void Window::Wnd_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
+	if(!cursorEnabled)
+	{
+		if( !mouseInput.IsInWindow())
+		{
+			SetCapture(hwnd);
+			mouseInput.OnMouseEnter();
+			HideCursor();
+		}
+	}
 	if (!ImGui::GetIO().WantCaptureKeyboard)
 	{
 		if (x >= 0 && x < width && y >= 0 && y < height)
@@ -288,6 +419,14 @@ void Window::Wnd_OnMouseWheel(HWND hwnd, int xPos, int yPos, int zDelta, UINT fw
 
 void Window::Wnd_OnLeftButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
+	SetForegroundWindow(hwnd);
+	if(!cursorEnabled)
+	{
+		S_LOG(TEXT("Window"), TEXT("mouse left click - recapture"));
+		ConfineCursor();
+		HideCursor();
+
+	}
 	if (!ImGui::GetIO().WantCaptureKeyboard)
 	{
 		mouseInput.OnLeftPressed(x, y);

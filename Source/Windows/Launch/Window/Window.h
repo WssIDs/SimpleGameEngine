@@ -10,6 +10,11 @@
 #include "Windows/Logger/LogDefinitions.h"
 #include "STypes.h"
 
+/* void Cls_OnInput(HWND hWnd, UINT inputCode, HRAWINPUT hRawInput) */
+#define HANDLE_WM_INPUT(hWnd, wParam, lParam, fn) \
+  ((fn)((hWnd), GET_RAWINPUT_CODE_WPARAM(wParam), (HRAWINPUT)(lParam)), 0L)
+
+
 class Window
 {
 	// singleton register/cleanup of window class
@@ -39,6 +44,11 @@ public:
 
 	void SetWindowTitle(const TSTRING& title);
 
+	void EnableCursor();
+	void DisableCursor();
+
+	bool IsCursorEnabled() const;
+
 	// window is run
 	bool isRun() const;
 	
@@ -52,20 +62,16 @@ public:
 	Graphics& Gfx();
 
 protected:
-	bool is_run;
 
 	RECT GetWindowSize() const;
 
-public:
-	KeyboardInput keyboardInput;
-	MouseInput mouseInput;
 private:
-
-	HWND hwnd;
-	int width = 0;
-	int height = 0;
-
-	std::unique_ptr<Graphics> pGfx;
+	void ConfineCursor();
+	void FreeCursor();
+	void ShowCursor();
+	void HideCursor();
+	void EnableImguiMouse();
+	void DisableImguiMouse();
 
 	void onCreate();
 	void onDestroy();
@@ -75,31 +81,41 @@ private:
 
 	LRESULT handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-	//static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-	//LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
-
 	// window event
 	BOOL Wnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
 	void Wnd_OnClose(HWND hwnd);
 	void Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus);
-
-
+	void Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
 
 	/// keyboard event
 	void Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags);
 	void Wnd_OnKeyUp(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags);
 	void Wnd_OnChar(HWND hwnd, TCHAR ch, int cRepeat);
+	void Wnd_OnInput(HWND hwnd, UINT code, HRAWINPUT hRawInput);
 
 	// mouse event
-	void Wnd_OnMove(HWND hwnd, int x, int y, UINT keyFlags);
+	void Wnd_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags);
 	void Wnd_OnMouseWheel(HWND hwnd, int xPos, int yPos, int zDelta, UINT fwKeys);
 
 	void Wnd_OnLeftButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags);
 	void Wnd_OnLeftButtonUp(HWND hwnd, int x, int y, UINT keyFlags);
 
-	
 	void Wnd_OnRightButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags);
 	void Wnd_OnRightButtonUp(HWND hwnd, int x, int y, UINT keyFlags);
+
+public:
+	KeyboardInput keyboardInput;
+	MouseInput mouseInput;
+private:
+
+	HWND hwnd;
+	bool is_run;
+	bool cursorEnabled = true;
+
+	int width = 0;
+	int height = 0;
+
+	std::unique_ptr<Graphics> pGfx;
+	std::vector<BYTE> rawBuffer;
 };
 

@@ -22,8 +22,9 @@ public:
 	virtual void onUpdate() override;
 
 	void ShowImguiDemoWindow();
-
+	void ShowRawInputWindow();
 private:
+	int x = 0, y = 0;
 	Timer timer;
 	Camera camera;
 	PointLight light;
