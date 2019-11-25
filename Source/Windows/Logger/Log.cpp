@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <iomanip>
+#include <stdarg.h>
 
 namespace fs = std::filesystem;
 
@@ -65,12 +66,17 @@ Log::~Log()
 	}	
 }
 
-void Log::print(TSTRING logText)
+void Log::print(TSTRING logText, ...)
 {
 	if (is_opened)
 	{
+		va_list Args;
+		va_start(Args, logText);
+		TSTRING buffer;
+		std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
+
 		TSTRINGSTREAM output;
-		output << logText << getCurrentTimeByFormat();
+		output << buffer.c_str() << getCurrentTimeByFormat();
 
 		logger_out << output.str() << std::endl;
 
@@ -80,18 +86,21 @@ void Log::print(TSTRING logText)
 	{
 		PRINT_OUTPUT(TEXT("Cannot Print Log"));
 	}
-
 }
 
-void Log::print(TSTRING logName, TSTRING logText)
+void Log::print(TSTRING logName, TSTRING logText, ...)
 {
 	if (is_opened)
 	{
+		va_list Args;
+		va_start(Args, logText);
+		TSTRING buffer;
+		std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
+
 		TSTRINGSTREAM output;
-		output << getCurrentTime() << logName << TEXT(": ") << logText;
+		output << getCurrentTime() << logName << TEXT(": ") << buffer.c_str();
 
 		logger_out << output.str() << std::endl;
-
 
 		PRINT_OUTPUT(output.str().c_str());
 	}

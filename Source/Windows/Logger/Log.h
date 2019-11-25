@@ -31,9 +31,9 @@ public:
 
 	~Log();
 	
-	void print(TSTRING logText);
+	void print(TSTRING logText, ...);
 
-	void print(TSTRING logName, TSTRING logText);
+	void print(TSTRING logName, TSTRING logText, ...);
 
 	static Log* get();
 	
