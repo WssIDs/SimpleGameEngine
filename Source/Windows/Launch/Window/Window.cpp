@@ -75,7 +75,7 @@ Window::Window(int width, int height,const TSTRING name)
 	ImGui_ImplWin32_Init(hwnd);
 	S_LOG(TEXT("ImGuiWin32"), TEXT("Init"));
 
-	pGfx = std::make_unique<Graphics>(hwnd);
+	pGfx = std::make_unique<Graphics>(hwnd, width, height);
 
 	is_run = true;
 }

@@ -12,7 +12,10 @@ namespace dx = DirectX;
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"d3dcompiler.lib")
 
-Graphics::Graphics(HWND hWnd)
+Graphics::Graphics(HWND hWnd, int width, int height)
+	:
+	width(width),
+	height(height)
 {
 	S_LOG(TEXT("Graphics"), TEXT("Create"));
 
@@ -36,8 +39,8 @@ Graphics::~Graphics()
 void Graphics::InitDX11(HWND hWnd)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
-	sd.BufferDesc.Width = 1920;
-	sd.BufferDesc.Height = 1080;
+	sd.BufferDesc.Width = width;
+	sd.BufferDesc.Height = height;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -103,8 +106,8 @@ void Graphics::InitDX11(HWND hWnd)
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 1920u;
-	descDepth.Height = 1080u;
+	descDepth.Width = width;
+	descDepth.Height = height;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -130,8 +133,8 @@ void Graphics::InitDX11(HWND hWnd)
 
 	// configure viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 1920;
-	vp.Height = 1080;
+	vp.Width = (float)width;
+	vp.Height = (float)height;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
@@ -179,6 +182,8 @@ void Graphics::InitDX11_1(HWND hWnd)
 	// set up the swap chain description
 	DXGI_SWAP_CHAIN_DESC1 scd = { 0 };
 	SecureZeroMemory(&scd, sizeof(scd));
+	scd.Width = width;
+	scd.Height = height;
 	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;    // how the swap chain should be used
 	scd.BufferCount = 2;                                  // a front buffer and a back buffer
 	scd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;              // the most common swap chain format
@@ -186,6 +191,8 @@ void Graphics::InitDX11_1(HWND hWnd)
 	scd.SampleDesc.Count = 1;                             // disable anti-aliasing
 
 	DXGI_SWAP_CHAIN_FULLSCREEN_DESC scfd = {};
+	scfd.RefreshRate.Denominator = 1;
+	scfd.RefreshRate.Numerator = 120;
 	scfd.Scaling =  DXGI_MODE_SCALING_UNSPECIFIED;
 	scfd.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	scfd.Windowed = TRUE;
@@ -215,8 +222,8 @@ void Graphics::InitDX11_1(HWND hWnd)
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 1920u;
-	descDepth.Height = 1080u;
+	descDepth.Width = width;
+	descDepth.Height = height;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -240,8 +247,8 @@ void Graphics::InitDX11_1(HWND hWnd)
 
 	// configure viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 1920;
-	vp.Height = 1080;
+	vp.Width = (float)width;
+	vp.Height = (float)height;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
