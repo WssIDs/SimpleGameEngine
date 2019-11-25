@@ -2,9 +2,6 @@
 #include <iomanip>
 #include <memory>
 
-// Test Imported mesh
-#include "Graphics/Tests/AssetTest.h"
-
 #include "Graphics/DX11/Math/WGMath.h"
 #include <algorithm>
 

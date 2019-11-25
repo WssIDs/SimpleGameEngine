@@ -211,7 +211,6 @@ xcopy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win
   <ItemGroup>
     <ClCompile Include="Graphics\DX11\Primitive\Mesh.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Vertex.cpp" />
-    <ClCompile Include="Graphics\Tests\AssetTest.cpp" />
     <ClCompile Include="Graphics\DX11\Render\PointLight.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Camera.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Bindable.cpp" />
@@ -251,7 +250,6 @@ xcopy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Primitive\Mesh.h" />
     <ClInclude Include="Graphics\DX11\Render\Color.h" />
-    <ClInclude Include="Graphics\Tests\AssetTest.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
     <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h" />
@@ -269,11 +267,7 @@ xcopy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win
     <ClInclude Include="Graphics\DX11\Drawable\Drawable.h" />
     <ClInclude Include="Graphics\DX11\Drawable\DrawableBase.h" />
     <ClInclude Include="Graphics\DX11\GDIPlusManager.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\Cone.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\Cube.h" />
     <ClInclude Include="Graphics\DX11\Geometry\IndexedTriangleList.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\Plane.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\Prism.h" />
     <ClInclude Include="Graphics\DX11\Geometry\Sphere.h" />
     <ClInclude Include="Graphics\DX11\Graphics.h" />
     <ClInclude Include="Graphics\DX11\Render\Surface.h" />
@@ -286,7 +280,6 @@ xcopy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win
     <ClInclude Include="Graphics\Helpers\DirectXHelper.h" />
     <ClInclude Include="Graphics\GUI\ImguiManager.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
-    <ClInclude Include="Graphics\Tests\TestObject.h" />
     <ClInclude Include="ThirdParty\Assimp\aabb.h" />
     <ClInclude Include="ThirdParty\Assimp\ai_assert.h" />
     <ClInclude Include="ThirdParty\Assimp\anim.h" />

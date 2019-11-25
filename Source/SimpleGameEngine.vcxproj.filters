@@ -91,7 +91,6 @@
     <ClCompile Include="Graphics\Engine\Actors\Camera.cpp" />
     <ClCompile Include="Graphics\DX11\Render\PointLight.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\SolidSphere.cpp" />
-    <ClCompile Include="Graphics\Tests\AssetTest.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Vertex.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\Mesh.cpp" />
   </ItemGroup>
@@ -138,19 +137,7 @@
     <ClInclude Include="Graphics\DX11\GDIPlusManager.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\DX11\Geometry\Cone.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX11\Geometry\Cube.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\DX11\Geometry\IndexedTriangleList.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX11\Geometry\Plane.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX11\Geometry\Prism.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DX11\Geometry\Sphere.h">
@@ -219,7 +206,6 @@
     <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
-    <ClInclude Include="Graphics\Tests\TestObject.h" />
     <ClInclude Include="Windows\Launch\Window\STypes.h" />
     <ClInclude Include="ThirdParty\Assimp\Compiler\poppack1.h" />
     <ClInclude Include="ThirdParty\Assimp\Compiler\pstdint.h" />
@@ -441,7 +427,6 @@
     <ClInclude Include="ThirdParty\Assimp\include\assimp\Vertex.h" />
     <ClInclude Include="ThirdParty\Assimp\include\assimp\XMLTools.h" />
     <ClInclude Include="ThirdParty\Assimp\include\assimp\ZipArchiveIOSystem.h" />
-    <ClInclude Include="Graphics\Tests\AssetTest.h" />
     <ClInclude Include="Graphics\DX11\Render\Vertex.h" />
     <ClInclude Include="Graphics\DX11\Bindable\BindableCommon.h">
       <Filter>Source</Filter>
