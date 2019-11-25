@@ -21,7 +21,7 @@ public:
 	int Update();
 	virtual void onUpdate() override;
 
-	void ShowModelWindow();
+	void ShowImguiDemoWindow();
 
 private:
 	Timer timer;
@@ -29,15 +29,6 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 
-	Model model{ Gfx(), R"(..\..\..\Content\Models\Myriam.FBX)" };
-	struct
-	{
-		float roll = 0.0f;
-		float pitch = 0.0f;
-		float yaw = 0.0f;
-		float x = 0.0f;
-		float y = 0.0f;
-		float z = 0.0f;
-	} pos;
+	Model model{ Gfx(), R"(..\..\..\Content\Models\xbot.fbx)" };
 };
 

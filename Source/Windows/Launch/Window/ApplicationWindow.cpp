@@ -25,7 +25,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	S_LOG(TEXT("Application Window"), TEXT("Create"));
 
 
-	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 200.0f));
 	
 	//Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
 }
@@ -62,9 +62,7 @@ void ApplicationWindow::onUpdate()
 	light.Bind(Gfx(), camera.GetMatrix());
 
 
-	const auto transform = dx::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
-		dx::XMMatrixTranslation(pos.x, pos.y, pos.z);
-	model.Draw(Gfx(), transform);
+	model.Draw(Gfx());
 
 	light.Draw(Gfx());
 
@@ -72,26 +70,17 @@ void ApplicationWindow::onUpdate()
 	// render imgui windows
 	camera.SpawnControlWindow();
 	light.SpawnControlWindow();
-	ShowModelWindow();
+	ShowImguiDemoWindow();
+	model.ShowWindow();
 
 	Gfx().EndFrame(); // EndFrame
 }
 
-void ApplicationWindow::ShowModelWindow()
+void ApplicationWindow::ShowImguiDemoWindow()
 {
-	if (ImGui::Begin("Model"))
+	static bool show_demo_window = true;
+	if (show_demo_window)
 	{
-		using namespace std::string_literals;
-
-		ImGui::Text("Orientation");
-		ImGui::SliderAngle("Roll", &pos.roll, -180.0f, 180.0f);
-		ImGui::SliderAngle("Pitch", &pos.pitch, -180.0f, 180.0f);
-		ImGui::SliderAngle("Yaw", &pos.yaw, -180.0f, 180.0f);
-
-		ImGui::Text("Position");
-		ImGui::SliderFloat("X", &pos.x, -20.0f, 20.0f);
-		ImGui::SliderFloat("Y", &pos.y, -20.0f, 20.0f);
-		ImGui::SliderFloat("Z", &pos.z, -20.0f, 20.0f);
+		ImGui::ShowDemoWindow(&show_demo_window);
 	}
-	ImGui::End();
 }
