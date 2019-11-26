@@ -31,6 +31,6 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 
-	Model model{ Gfx(), R"(..\..\..\Content\Models\xbot.fbx)" };
+	Model model{ Gfx(), R"(..\..\..\Content\Models\Girl.fbx)" };
 };
 
