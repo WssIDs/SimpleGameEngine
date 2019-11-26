@@ -1,7 +1,8 @@
 #include "Texture.h"
 #include "Graphics/DX11/Render/Surface.h"
 
-
+#include "DDSTextureLoader.h"
+#include "DirectXTex.h"
 
 namespace Bind
 {
@@ -37,6 +38,15 @@ namespace Bind
 		srvDesc.Texture2D.MipLevels = 1;
 
 		GetDevice(gfx)->CreateShaderResourceView(pTexture.Get(), &srvDesc, &pTextureView);
+	}
+
+	Texture::Texture(Graphics& gfx, const std::string& fileName)
+	{
+		//DirectX::TexMetadata info;
+		auto image = std::make_unique<DirectX::ScratchImage>();
+		const std::wstring wfile = std::wstring(fileName.begin(), fileName.end());
+		DirectX::LoadFromTGAFile(wfile.c_str(), nullptr, *image);
+		DirectX::CreateShaderResourceView(GetDevice(gfx), image->GetImages(), image->GetImageCount(), image->GetMetadata(), &pTextureView);
 	}
 
 	void Texture::Bind(Graphics& gfx)
