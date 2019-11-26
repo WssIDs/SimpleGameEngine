@@ -1,6 +1,11 @@
 #include "Mesh.h"
 #include "Imgui\imgui.h"
 #include <unordered_map>
+#include "assimp\material.h"
+#include "..\Bindable\Texture.h"
+#include "..\Bindable\Sampler.h"
+#include "..\Render\Surface.h"
+#include "Windows\Logger\LogDefinitions.h"
 
 namespace dx = DirectX;
 
@@ -185,14 +190,14 @@ Model::Model(Graphics& gfx, const std::string fileName)
 
 	for (size_t i = 0; i < pScene->mNumMeshes; i++)
 	{
-		meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i]));
+		meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials));
 	}
 
 	int nextId = 0;
 	pRoot = ParseNode(nextId, *pScene->mRootNode);
 }
 
-std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh)
+std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials)
 {
 	using DynamicVtx::VertexLayout;
 
@@ -200,13 +205,15 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh)
 		VertexLayout{}
 		.Append(DynamicVtx::ElementType::Position3D)
 		.Append(DynamicVtx::ElementType::Normal)
+		.Append(DynamicVtx::ElementType::Texture2D)
 	));
 
 	for (unsigned int i = 0; i < mesh.mNumVertices; i++)
 	{
 		vbuf.EmplaceBack(
 			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
-			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i])
+			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+			*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
 		);
 	}
 
@@ -223,6 +230,20 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh)
 
 	std::vector<std::unique_ptr<Bind::Bindable>> bindablePtrs;
 
+	if (mesh.mMaterialIndex >= 0)
+	{
+		using namespace std::string_literals;
+		auto& material = *pMaterials[mesh.mMaterialIndex];
+		aiString texFileName;
+		material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName);
+		bindablePtrs.push_back(std::make_unique<Bind::Texture>(gfx, R"(..\..\..\Content\Models\)"s + texFileName.C_Str()));
+		bindablePtrs.push_back(std::make_unique<Bind::Sampler>(gfx));
+	}
+ //	aiString texture_file;
+	//material.GetTexture(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
+	//bindablePtrs.push_back(std::make_unique<Bind::Texture>(gfx, Surface::FromFile(texture->mFilename.C_Str())));
+	//bindablePtrs.push_back(std::make_unique<Bind::Sampler>(gfx));
+
 	bindablePtrs.push_back(std::make_unique<Bind::VertexBuffer>(gfx, vbuf));
 
 	bindablePtrs.push_back(std::make_unique<Bind::IndexBuffer>(gfx, indices));
@@ -237,10 +258,9 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh)
 
 	struct PSMaterialConstant
 	{
-		DirectX::XMFLOAT3 color = { 0.6f,0.6f,0.8f };
 		float specularIntensity = 0.6f;
 		float specularPower = 30.0f;
-		float padding[3];
+		float padding[2];
 	} pmc;
 	bindablePtrs.push_back(std::make_unique<Bind::PixelConstantBuffer<PSMaterialConstant>>(gfx, pmc, 1u));
 
