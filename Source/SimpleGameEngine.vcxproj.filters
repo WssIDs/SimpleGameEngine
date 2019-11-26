@@ -433,6 +433,15 @@
     </ClInclude>
     <ClInclude Include="Graphics\DX11\Render\Color.h" />
     <ClInclude Include="Graphics\DX11\Primitive\Mesh.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\DirectXTex.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\DDSTextureLoader.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\DirectXTexP.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\BC.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\BCDirectCompute.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\d3dx12.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\DDS.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\filters.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\include\scoped.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">
@@ -469,6 +478,7 @@
     <None Include="ThirdParty\Assimp\include\assimp\config.h.in" />
     <None Include="ThirdParty\Assimp\libs\assimp-vc142-mt.dll" />
     <None Include="ThirdParty\Assimp\libs\zlib.dll" />
+    <None Include="ThirdParty\DirectXTex\include\DirectXTex.inl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\SimpleGameEngine.rc" />
@@ -481,5 +491,7 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />
+    <Library Include="ThirdParty\DirectXTex\libs\DirectXTex.lib" />
+    <Library Include="ThirdParty\DirectXTex\libs\DirectXTex_d.lib" />
   </ItemGroup>
 </Project>
