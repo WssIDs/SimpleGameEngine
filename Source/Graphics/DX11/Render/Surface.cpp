@@ -100,7 +100,7 @@ Surface Surface::FromFile(const TSTRING& name)
 		{
 			TSTRINGSTREAM tss;
 			tss << TEXT("Loading image [") << name << TEXT("]: failed to load.");
-			PRINT_OUTPUT(tss.str().c_str());
+			//PRINT_OUTPUT(tss.str().c_str());
 		}
 
 		width = bitmap.GetWidth();
@@ -135,7 +135,7 @@ void Surface::Save(const TSTRING& filename) const
 		{
 			TSTRINGSTREAM tss;
 			tss << TEXT("Saving surface to [") << filename << TEXT("]: failed to get encoder; size == 0.");
-			PRINT_OUTPUT(tss.str().c_str());
+			//PRINT_OUTPUT(tss.str().c_str());
 		}
 
 		pImageCodecInfo = (Gdiplus::ImageCodecInfo*)(malloc(size));
@@ -143,7 +143,7 @@ void Surface::Save(const TSTRING& filename) const
 		{
 			TSTRINGSTREAM tss;
 			tss << TEXT("Saving surface to [") << filename << TEXT("]: failed to get encoder; failed to allocate memory.");
-			PRINT_OUTPUT(tss.str().c_str());
+			//PRINT_OUTPUT(tss.str().c_str());
 		}
 
 		GetImageEncoders(num, size, pImageCodecInfo);
@@ -164,7 +164,7 @@ void Surface::Save(const TSTRING& filename) const
 		TSTRINGSTREAM tss;
 		tss << TEXT("Saving surface to [") << filename <<
 			TEXT("]: failed to get encoder; failed to find matching encoder.");
-		PRINT_OUTPUT(tss.str().c_str());
+		//PRINT_OUTPUT(tss.str().c_str());
 	};
 
 	CLSID bmpID;
@@ -179,7 +179,7 @@ void Surface::Save(const TSTRING& filename) const
 	{
 		TSTRINGSTREAM tss;
 		tss << TEXT("Saving surface to [") << filename << TEXT("]: failed to save.");
-		PRINT_OUTPUT(tss.str().c_str());
+		//PRINT_OUTPUT(tss.str().c_str());
 	}
 
 }

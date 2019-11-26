@@ -8,18 +8,18 @@
 
 //// NEED FOR INI FILE
 #define MAXCOUNTFILE_BACKUPS 3
-#define LOGPATH TEXT("Logs")
+#define LOGPATH "..\\..\\..\\Saved\\Logs"
 
 #ifdef _DEBUG
-#  ifdef _MSC_VER
+#	ifdef _MSC_VER
 #    include <windows.h>
 #    include <sstream>
 #    define PRINT_OUTPUT(x) OutputDebugString(x); \
 		OutputDebugString(NULLTERMINATOR)
-#  else
+#	endif
+#else
 #    include <iostream>
 #    define PRINT_OUTPUT(x)  std::clog << (x)
-#  endif        // or std::cerr << (x) << std::flush
 #endif
 
 class Log
@@ -31,9 +31,9 @@ public:
 
 	~Log();
 	
-	void print(TSTRING logText, ...);
+	void print(std::string logText, ...);
 
-	void print(TSTRING logName, TSTRING logText, ...);
+	void print(std::string logName, std::string logText, ...);
 
 	static Log* get();
 	
@@ -42,13 +42,13 @@ private:
 	bool is_opened;
 	
 	std::filesystem::path logPath;
-	TSTRING logfile;
+	std::string logfile;
 
 	std::ofstream logger_out;
 
-	TSTRING getCurrentTime() const;
+	std::string getCurrentTime() const;
 
-	TSTRING getCurrentTimeByFormat(const TSTRING& format = TEXT("%d.%m.%Y %H.%M.%S")) const;
-		std::vector<std::filesystem::path> GetFilesByMask(std::filesystem::path& directory,const TSTRING& filemask);
+	std::string getCurrentTimeByFormat(const std::string& format = "%d.%m.%Y %H.%M.%S") const;
+		std::vector<std::filesystem::path> GetFilesByMask(std::filesystem::path& directory,const std::string& filemask);
 };
 

@@ -2,6 +2,7 @@
 #include "Resources/resource.h"
 #include "Imgui/imgui_impl_win32.h"
 #include "Imgui/imgui_impl_dx11.h"
+#include <sstream>
 
 Window::WindowClass Window::WindowClass::wndClass;
 
@@ -291,7 +292,7 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 {
 	if(!cursorEnabled)
 	{
-		TSTRINGSTREAM out;
+		std::stringstream out;
 
 		out << TEXT("Mouse state = ") << state;
 
