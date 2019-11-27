@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Drawable\DrawableBase.h"
+#include "..\Drawable\Drawable.h"
 #include "..\Bindable\BindableCommon.h"
 #include "..\Render\Vertex.h"
 #include <assimp\scene.h>
@@ -10,10 +10,10 @@
 
 
 
-class Mesh : public DrawableBase<Mesh>
+class Mesh : public Drawable
 {
 public:
-	Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bind::Bindable>> bindPtrs);
+	Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs);
 	void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const;
 	DirectX::XMMATRIX GetTransformXM() const override;
 

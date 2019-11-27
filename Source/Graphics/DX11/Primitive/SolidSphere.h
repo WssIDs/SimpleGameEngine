@@ -1,8 +1,8 @@
 #pragma once
-#include "..\Drawable\DrawableBase.h"
+#include "..\Drawable\Drawable.h"
 
 
-class SolidSphere : public DrawableBase<SolidSphere>
+class SolidSphere : public Drawable
 {
 public:
 	SolidSphere(Graphics& gfx, float radius);
