@@ -488,6 +488,7 @@
     <FxCompile Include="Graphics\Shaders\PhongVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\SolidVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\SolidPS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PhongPSSpecularMap.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />

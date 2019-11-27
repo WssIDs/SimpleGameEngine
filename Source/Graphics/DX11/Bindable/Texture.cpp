@@ -8,7 +8,9 @@ namespace Bind
 {
 	namespace wrl = Microsoft::WRL;
 
-	Texture::Texture(Graphics& gfx, const class Surface& surface)
+	Texture::Texture(Graphics& gfx, const class Surface& surface, unsigned int slot)
+		:
+		slot(slot)
 	{
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = surface.GetWidth();
@@ -40,7 +42,9 @@ namespace Bind
 		GetDevice(gfx)->CreateShaderResourceView(pTexture.Get(), &srvDesc, &pTextureView);
 	}
 
-	Texture::Texture(Graphics& gfx, const std::string& fileName)
+	Texture::Texture(Graphics& gfx, const std::string& fileName, unsigned int slot)
+		:
+		slot(slot)
 	{
 		//DirectX::TexMetadata info;
 		auto image = std::make_unique<DirectX::ScratchImage>();
@@ -51,6 +55,6 @@ namespace Bind
 
 	void Texture::Bind(Graphics& gfx)
 	{
-		GetContext(gfx)->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf());
+		GetContext(gfx)->PSSetShaderResources(slot, 1u, pTextureView.GetAddressOf());
 	}
 }
