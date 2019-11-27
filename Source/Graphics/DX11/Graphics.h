@@ -26,6 +26,8 @@ public:
 	// init DX11_1
 	void InitDX11_1(HWND hWnd);
 
+	void SetViewport(int width, int height);
+
 	// Clearbuffers and set a new TragetView 
 	void BeginFrame(float red, float green, float blue);
 	// Show scene

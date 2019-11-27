@@ -17,23 +17,23 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	width(width),
 	height(height)
 {
-	S_LOG(TEXT("Graphics"), TEXT("Create"));
+	S_LOG(TEXT("Graphics"), Verbosity::Default, TEXT("Create"));
 
 	InitDX11_1(hWnd);
 
-	S_LOG(TEXT("Graphics"), TEXT("Init"));
+	S_LOG(TEXT("Graphics"), Verbosity::Default, TEXT("Init"));
 	
 	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
-	S_LOG(TEXT("ImguiDX11"), TEXT("Init"));
+	S_LOG(TEXT("ImguiDX11"), Verbosity::Default, TEXT("Init"));
 }
 
 Graphics::~Graphics()
 {
 	ImGui_ImplDX11_Shutdown();
-	S_LOG(TEXT("ImguiDX11"), TEXT("ShutDown"));
+	S_LOG(TEXT("ImguiDX11"), Verbosity::Default, TEXT("ShutDown"));
 
 	// only for log
-	S_LOG(TEXT("Graphics"), TEXT("Release"));
+	S_LOG(TEXT("Graphics"), Verbosity::Default, TEXT("Release"));
 }
 
 void Graphics::InitDX11(HWND hWnd)
@@ -132,15 +132,7 @@ void Graphics::InitDX11(HWND hWnd)
 
 
 	// configure viewport
-	D3D11_VIEWPORT vp;
-	vp.Width = (float)width;
-	vp.Height = (float)height;
-	vp.MinDepth = 0;
-	vp.MaxDepth = 1;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-
-	pContext->RSSetViewports(1u, &vp); // one viewport, not split screen
+	SetViewport(width, height);
 }
 
 void Graphics::InitDX11_1(HWND hWnd)
@@ -245,6 +237,12 @@ void Graphics::InitDX11_1(HWND hWnd)
 	// bind depth stencil view to OM
 	pContext->OMSetRenderTargets(1u, pTargetView.GetAddressOf(), pDepthStencilView.Get());
 
+	// configure viewport
+	SetViewport(width, height);
+}
+
+void Graphics::SetViewport(int width, int height)
+{
 	// configure viewport
 	D3D11_VIEWPORT vp;
 	vp.Width = (float)width;
