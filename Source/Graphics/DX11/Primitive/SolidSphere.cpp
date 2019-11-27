@@ -13,7 +13,7 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 	AddBind(std::make_shared<VertexBuffer>(gfx, model.vertices));
 	AddBind(std::make_shared<class IndexBuffer>(gfx, model.indices));
 
-	auto pvs = std::make_shared<VertexShader>(gfx, TEXT("..\\..\\..\\Shaders\\SolidVS.cso"));
+	auto pvs = std::make_shared<VertexShader>(gfx, R"(..\..\..\Shaders\SolidVS.cso)");
 	auto pvsbc = pvs->GetByteCode();
 	AddBind(std::move(pvs));
 

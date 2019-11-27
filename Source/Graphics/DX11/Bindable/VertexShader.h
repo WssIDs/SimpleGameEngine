@@ -1,7 +1,7 @@
 #pragma once
 #include "Bindable.h"
 #include <string>
-#include "Windows\Launch\Window\STypes.h"
+#include <memory>
 
 
 namespace Bind
@@ -9,11 +9,16 @@ namespace Bind
 	class VertexShader : public Bindable
 	{
 	public:
-		VertexShader(Graphics& gfx, const TSTRING& path);
+		VertexShader(Graphics& gfx, const std::string& path);
 		virtual void Bind(Graphics& gfx) override;
 		ID3DBlob* GetByteCode() const;
 
+		static std::shared_ptr<Bindable> Resolve(Graphics& gfx, const std::string& path);
+		static std::string GenerateUID(const std::string& path);
+		std::string GetUID() const override;
+
 	private:
+		std::string path;
 		Microsoft::WRL::ComPtr<ID3DBlob> pByteCode;
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
 	};

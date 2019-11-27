@@ -6,7 +6,7 @@
 
 namespace Bind
 {
-	PixelShader::PixelShader(Graphics& gfx, const TSTRING& path)
+	PixelShader::PixelShader(Graphics& gfx, const std::string& path)
 	{
 		Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Bindable.h"
 #include <string>
-#include "Windows\Launch\Window\STypes.h"
 
 
 
@@ -10,7 +9,7 @@ namespace Bind
 	class PixelShader : public Bindable
 	{
 	public:
-		PixelShader(Graphics& gfx, const TSTRING& path);
+		PixelShader(Graphics& gfx, const std::string& path);
 		virtual void Bind(Graphics& gfx) override;
 
 	private:

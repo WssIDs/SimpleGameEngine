@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/DX11/Graphics.h"
 #include <vector>
+#include <string>
 
 namespace Bind
 {
@@ -8,6 +9,11 @@ namespace Bind
 	{
 	public:
 		virtual void Bind(Graphics& gfx) = 0;
+		virtual std::string GetUID() const
+		{
+			assert(false);
+			return "";
+		}
 		virtual ~Bindable() = default;
 
 	protected:
