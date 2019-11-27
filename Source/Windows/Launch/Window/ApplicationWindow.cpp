@@ -19,7 +19,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 	:Window(width,height,name),
 	light(Gfx())
 {
-	S_LOG(TEXT("Application Window"), TEXT("Create"));
+	S_LOG(TEXT("Application Window"), Verbosity::Default, TEXT("Create"));
 
 
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
@@ -28,7 +28,7 @@ ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
 
 ApplicationWindow::~ApplicationWindow()
 {
-	S_LOG(TEXT("Application Window"), TEXT("Destroy"));
+	S_LOG(TEXT("Application Window"), Verbosity::Default, TEXT("Destroy"));
 }
 
 int ApplicationWindow::Update()

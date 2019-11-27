@@ -76,6 +76,10 @@ private:
 	void onCreate();
 	void onDestroy();
 
+	//Console Init
+	void InitConsole(std::string title);
+	static BOOL WINAPI CtrlHandler(DWORD fdwCtrlType);
+
 	static LRESULT CALLBACK handleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK handleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -86,6 +90,7 @@ private:
 	void Wnd_OnClose(HWND hwnd);
 	void Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus);
 	void Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
+	void Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy);
 
 	/// keyboard event
 	void Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags);
@@ -111,6 +116,7 @@ private:
 	HWND hwnd;
 	bool is_run;
 	bool cursorEnabled = true;
+	bool bConsole = false;
 
 	int width = 0;
 	int height = 0;

@@ -2,6 +2,7 @@
 #include "Resources/resource.h"
 #include "Imgui/imgui_impl_win32.h"
 #include "Imgui/imgui_impl_dx11.h"
+#include <iostream>
 #include <sstream>
 
 Window::WindowClass Window::WindowClass::wndClass;
@@ -45,6 +46,9 @@ Window::Window(int width, int height,const TSTRING name)
 	:width(width),
 	height(height)
 {
+	bConsole = true;
+	InitConsole("WGEngine Log");
+
 	RECT wr;
 
 	wr.left = 100;
@@ -54,7 +58,7 @@ Window::Window(int width, int height,const TSTRING name)
 
 	if(AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false) == 0)
 	{
-		PRINT_OUTPUT(TEXT("Cannot AdjustWindowRect"));
+		S_LOG("Window", Verbosity::Error, "Cannot AdjustWindowRect");
 	}
 
 	hwnd = CreateWindow(
@@ -74,7 +78,7 @@ Window::Window(int width, int height,const TSTRING name)
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
 
 	ImGui_ImplWin32_Init(hwnd);
-	S_LOG(TEXT("ImGuiWin32"), TEXT("Init"));
+	S_LOG(TEXT("ImGuiWin32"), Verbosity::Default, TEXT("Init"));
 
 	pGfx = std::make_unique<Graphics>(hwnd, width, height);
 
@@ -86,6 +90,7 @@ Window::Window(int width, int height,const TSTRING name)
 	rid.hwndTarget = nullptr;
 	if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
 	{
+		S_LOG("Window", Verbosity::Fatal, "Register Raw input Devices failed");
 		throw TEXT("Register Raw input Devices failed");
 	}
 
@@ -95,7 +100,7 @@ Window::Window(int width, int height,const TSTRING name)
 Window::~Window()
 {
 	ImGui_ImplWin32_Shutdown();
-	S_LOG(TEXT("ImGuiWin32"),TEXT("Shutdown"));
+	S_LOG("ImGuiWin32", Verbosity::Default, "Shutdown");
 
 	DestroyWindow(hwnd);
 }
@@ -104,7 +109,7 @@ void Window::SetWindowTitle(const TSTRING& title)
 {
 	if(SetWindowText(hwnd, title.c_str()) == 0)
 	{
-		PRINT_OUTPUT(TEXT("Cannot Change Title"));
+		S_LOG("Window", Verbosity::Error, "Cannot Change Title");
 	}
 }
 
@@ -206,6 +211,48 @@ void Window::onDestroy()
 	// When window destroy
 }
 
+void Window::InitConsole(std::string title)
+{
+	if (bConsole)
+	{
+		if (AllocConsole())
+		{
+			FILE* fs;
+			SetConsoleTitle(title.c_str());
+			freopen_s(&fs, "CON", "w", stdout);
+			S_LOG("Window", Verbosity::Default, "Init Console");
+
+			SetConsoleCtrlHandler(CtrlHandler, TRUE);
+		}
+		else
+		{
+			S_LOG("Window", Verbosity::Error, "Error Console init, Error code = %d", (int)GetLastError());
+		}
+	}
+}
+
+BOOL WINAPI Window::CtrlHandler(DWORD fdwCtrlType)
+{
+	S_LOG("Window", Verbosity::Warning, "Handler Console");
+
+	switch (fdwCtrlType)
+	{
+		// Handle the CTRL-C signal. 
+	case CTRL_C_EVENT:
+		return TRUE;
+
+		// CTRL-CLOSE: confirm that the user wants to exit. 
+	case CTRL_CLOSE_EVENT:
+	{
+		S_LOG("Window", Verbosity::Warning, "Closing Console");
+	}
+	return TRUE;
+
+	default:
+		return FALSE;
+	}
+}
+
 RECT Window::GetWindowSize() const
 {
 	RECT rc;
@@ -250,6 +297,7 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		HANDLE_MSG(hWnd, WM_CLOSE, Wnd_OnClose);
 		HANDLE_MSG(hWnd, WM_KILLFOCUS, Wnd_OnKillFocus);
 		HANDLE_MSG(hWnd, WM_ACTIVATE, Wnd_OnActivate);
+		HANDLE_MSG(hWnd, WM_SIZE, Wnd_OnSize);
 
 
 		HANDLE_MSG(hWnd, WM_KEYDOWN, Wnd_OnKeyDown);
@@ -281,6 +329,7 @@ void Window::Wnd_OnClose(HWND hwnd)
 {
 	onDestroy();
 	::PostQuitMessage(0);
+	FreeConsole();
 }
 
 void Window::Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus)
@@ -297,21 +346,26 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 		out << TEXT("Mouse state = ") << state;
 
 		//S_LOG(TEXT("Window"), out.str().c_str());
-		S_LOG(TEXT("Window"), TEXT("Mouse state = %d"), state);
+		S_LOG(TEXT("Window"), Verbosity::Default, TEXT("Mouse state = %d"), state);
 
 		if(state == 1)
 		{
-			S_LOG(TEXT("Window"), TEXT("Cursor confine"));
+			S_LOG(TEXT("Window"), Verbosity::Default, TEXT("Cursor confine"));
 			ConfineCursor();
 			HideCursor();
 		}
 		else
 		{
-			S_LOG(TEXT("Window"), TEXT("Cursor free"));
+			S_LOG(TEXT("Window"), Verbosity::Default, TEXT("Cursor free"));
 			FreeCursor();
 			ShowCursor();
 		}
 	}
+}
+
+void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
+{
+	//S_LOG(TEXT("Window"), TEXT("State = %d, cx = %d, cy = %d"), state, cx, cy);
 }
 
 void Window::Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -349,7 +403,7 @@ void Window::Wnd_OnInput(HWND hwnd, UINT code, HRAWINPUT hRawInput)
 		return;
 	}
 
-	UINT size;
+	UINT size = 0;
 	if (GetRawInputData(hRawInput, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)) == -1)
 	{
 		// bail msg processing if error
@@ -423,7 +477,7 @@ void Window::Wnd_OnLeftButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UI
 	SetForegroundWindow(hwnd);
 	if(!cursorEnabled)
 	{
-		S_LOG(TEXT("Window"), TEXT("mouse left click - recapture"));
+		S_LOG(TEXT("Window"), Verbosity::Default, TEXT("mouse left click - recapture"));
 		ConfineCursor();
 		HideCursor();
 
