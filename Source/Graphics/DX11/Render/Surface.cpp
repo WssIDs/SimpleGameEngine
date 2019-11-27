@@ -191,7 +191,7 @@ void Surface::Copy(const Surface& source)
 	memcpy(pBuffer.get(), source.pBuffer.get(), width * height * sizeof(Color));
 }
 
-Surface& Surface::operator=(Surface&& donor)
+Surface& Surface::operator=(Surface&& donor) noexcept
 {
 	this->width = donor.width;
 	this->height = donor.height;

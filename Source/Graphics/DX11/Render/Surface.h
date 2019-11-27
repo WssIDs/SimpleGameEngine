@@ -85,7 +85,7 @@ public:
 	Surface(unsigned int width, unsigned int height);
 	Surface(Surface&& source);
 	Surface(Surface&) = delete;
-	Surface& operator=(Surface&& donor);
+	Surface& operator=(Surface&& donor) noexcept;
 	Surface& operator=(const Surface&) = delete;
 	~Surface();
 
