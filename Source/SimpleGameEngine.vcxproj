@@ -265,7 +265,6 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\DX11\Bindable\VertexBuffer.h" />
     <ClInclude Include="Graphics\DX11\Bindable\VertexShader.h" />
     <ClInclude Include="Graphics\DX11\Drawable\Drawable.h" />
-    <ClInclude Include="Graphics\DX11\Drawable\DrawableBase.h" />
     <ClInclude Include="Graphics\DX11\GDIPlusManager.h" />
     <ClInclude Include="Graphics\DX11\Geometry\IndexedTriangleList.h" />
     <ClInclude Include="Graphics\DX11\Geometry\Sphere.h" />

@@ -7,7 +7,7 @@
 
 namespace DynamicVtx
 {
-	enum class ElementType
+	enum class ElementType : int
 	{
 		Position2D,
 		Position3D,
@@ -130,7 +130,7 @@ namespace DynamicVtx
 		auto& Attr()
 		{
 			auto pAttribute = pData + layout.Resolve<Type>().GetOffset();
-			return *reinterpret_cast<typename ElemType<Type>::Type*>(pAttribute);
+			return *reinterpret_cast<typename VertexLayout::ElemType<Type>::Type*>(pAttribute);
 		}
 		template<typename T>
 		void SetAttributeByIndex(size_t i, T&& val)

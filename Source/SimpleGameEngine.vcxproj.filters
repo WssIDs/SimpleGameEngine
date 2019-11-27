@@ -131,9 +131,6 @@
     <ClInclude Include="Graphics\DX11\Drawable\Drawable.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\DX11\Drawable\DrawableBase.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\DX11\GDIPlusManager.h">
       <Filter>Source</Filter>
     </ClInclude>
