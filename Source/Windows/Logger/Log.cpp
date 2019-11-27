@@ -69,54 +69,72 @@ Log::~Log()
 
 void Log::print(std::string logText, ...)
 {
+	va_list Args;
+	va_start(Args, logText);
+	std::string buffer;
+	std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
+	va_end(Args);
+	std::stringstream output;
+	output << buffer.c_str() << getCurrentTimeByFormat();
+
 	if (is_opened)
 	{
-		va_list Args;
-		va_start(Args, logText);
-		std::string buffer;
-		std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
-
-		std::stringstream output;
-		output << buffer << getCurrentTimeByFormat();
-
 		logger_out << output.str() << std::endl;
+	}
+
+	std::cout << output.str() << std::endl;
 
 #ifdef _DEBUG
-		PRINT_OUTPUT(output.str().c_str());
-#endif
-	}
-	else
-	{
-#ifdef _DEBUG
-		PRINT_OUTPUT(TEXT("Cannot Print Log"));
-#endif
-	}
+	PRINT_OUTPUT(output.str().c_str());
+#endif // _DEBUG
 }
 
-void Log::print(std::string logName, std::string logText, ...)
+void Log::print(std::string logName, Verbosity logVerbosity, std::string logText, ...)
 {
+	va_list Args;
+	va_start(Args, logText);
+	std::string buffer;
+	std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
+	va_end(Args);
+	std::stringstream output;
+
+	switch (logVerbosity)
+	{
+	case Verbosity::Default:
+		output << "[Default]";
+		break;
+	case Verbosity::Warning:
+		output << "[Warning]";
+		break;
+	case Verbosity::Success:
+		output << "[Success]";
+		break;
+	case Verbosity::Error:
+		output << "[Error]";
+		break;
+	case Verbosity::Fatal:
+		output << "[Fatal]";
+		break;
+	}
+
+	output << getCurrentTime() << logName << ": " << buffer.c_str();
+
 	if (is_opened)
 	{
-		va_list Args;
-		va_start(Args, logText);
-		std::string buffer;
-		std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
-
-		std::stringstream output;
-		output << getCurrentTime() << logName << ": " << buffer.c_str();
-
 		logger_out << output.str() << std::endl;
+	}
+
+	HANDLE  hConsole;
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hConsole)
+	{
+		SetConsoleTextAttribute(hConsole, (int)logVerbosity);
+		std::cout << output.str() << std::endl;
+	}
 
 #ifdef _DEBUG
-		PRINT_OUTPUT(output.str().c_str());
-#endif
-	}
-	else
-	{
-#ifdef _DEBUG
-		PRINT_OUTPUT(TEXT("Cannot Print Log"));
-#endif
-	}
+	PRINT_OUTPUT(output.str().c_str());
+#endif // _DEBUG
 }
 
 Log* Log::get()

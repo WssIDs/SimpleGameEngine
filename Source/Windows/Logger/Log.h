@@ -22,6 +22,16 @@
 #    define PRINT_OUTPUT(x)  std::clog << (x)
 #endif
 
+enum class Verbosity : int
+{
+	Default = 7,
+	Warning = 6,
+	Success = 2,
+	Error = 12,
+	Fatal = 4
+};
+
+
 class Log
 {
 
@@ -33,7 +43,7 @@ public:
 	
 	void print(std::string logText, ...);
 
-	void print(std::string logName, std::string logText, ...);
+	void print(std::string logName, Verbosity logVerbosity, std::string logText, ...);
 
 	static Log* get();
 	

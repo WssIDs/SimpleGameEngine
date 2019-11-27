@@ -16,4 +16,4 @@
 
 
 
-#define S_LOG(LogName,Format,...) Log::get()->print(LogName,Format, ##__VA_ARGS__)
+#define S_LOG(LogName, LogVerbosity, Format,...) Log::get()->print(LogName, LogVerbosity, Format, ##__VA_ARGS__)
