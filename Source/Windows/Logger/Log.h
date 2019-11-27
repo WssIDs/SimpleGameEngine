@@ -2,7 +2,6 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
-#include "Windows\Launch\Window\STypes.h"
 
 #define NULLTERMINATOR TEXT("\n")
 
@@ -22,7 +21,7 @@
 #    define PRINT_OUTPUT(x)  std::clog << (x)
 #endif
 
-enum class Verbosity : int
+enum class LogVerbosity : int
 {
 	Default = 7,
 	Warning = 6,
@@ -43,7 +42,7 @@ public:
 	
 	void print(std::string logText, ...);
 
-	void print(std::string logName, Verbosity logVerbosity, std::string logText, ...);
+	void print(std::string logName, LogVerbosity logVerbosity, std::string logText, ...);
 
 	static Log* get();
 	
@@ -62,3 +61,28 @@ private:
 		std::vector<std::filesystem::path> GetFilesByMask(std::filesystem::path& directory,const std::string& filemask);
 };
 
+struct LogCategoryBase
+{
+	LogCategoryBase(const std::string& CategoryName)
+		:
+		CategoryName(CategoryName)
+	{
+	}
+
+	FORCEINLINE std::string GetCategoryName() const
+	{
+		return CategoryName;
+	}
+
+protected:
+	std::string CategoryName;
+};
+
+
+struct LogCategory : public LogCategoryBase
+{
+	FORCEINLINE LogCategory(const std::string& CategoryName)
+		: LogCategoryBase(CategoryName)
+	{
+	}
+};

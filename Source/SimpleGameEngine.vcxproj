@@ -248,6 +248,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Windows\Launch\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\DX11\Bindable\BindableCodex.h" />
     <ClInclude Include="Graphics\DX11\Primitive\Mesh.h" />
     <ClInclude Include="Graphics\DX11\Render\Color.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
@@ -276,6 +277,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\DX12\d3dx12.h" />
     <ClInclude Include="Graphics\DX12\GraphicsEngine.h" />
     <ClInclude Include="Graphics\DX12\PipelineState.h" />
+    <ClInclude Include="Graphics\Engine\Core.h" />
     <ClInclude Include="Graphics\Helpers\DirectXHelper.h" />
     <ClInclude Include="Graphics\GUI\ImguiManager.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
@@ -520,7 +522,6 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Windows\Launch\Window\ApplicationWindow.h" />
     <ClInclude Include="Windows\Input\KeyboardInput.h" />
     <ClInclude Include="Windows\Input\MouseInput.h" />
-    <ClInclude Include="Windows\Launch\Window\STypes.h" />
     <ClInclude Include="Windows\Logger\Log.h" />
     <ClInclude Include="Windows\Logger\LogDefinitions.h" />
     <ClInclude Include="Resources\resource.h" />

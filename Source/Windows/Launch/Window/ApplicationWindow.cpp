@@ -9,26 +9,27 @@
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
 
+
+DEFINE_LOG_CATEGORY(ApplicationWindowLog);
+
 namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 ImguiManager imgui;
 
 
-ApplicationWindow::ApplicationWindow(int width, int height,const TSTRING name)
+ApplicationWindow::ApplicationWindow(int width, int height,const std::string& name)
 	:Window(width,height,name),
 	light(Gfx())
 {
-	S_LOG(TEXT("Application Window"), Verbosity::Default, TEXT("Create"));
-
+	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
 
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
-	//Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
 }
 
 ApplicationWindow::~ApplicationWindow()
 {
-	S_LOG(TEXT("Application Window"), Verbosity::Default, TEXT("Destroy"));
+	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Destroy");
 }
 
 int ApplicationWindow::Update()

@@ -5,6 +5,9 @@
 #include "Imgui/imgui_impl_dx11.h"
 #include <ThirdParty\Imgui\imgui_impl_win32.h>
 
+
+DEFINE_LOG_CATEGORY(GraphicsLog);
+
 namespace wrl = Microsoft::WRL;
 
 namespace dx = DirectX;
@@ -17,23 +20,21 @@ Graphics::Graphics(HWND hWnd, int width, int height)
 	width(width),
 	height(height)
 {
-	S_LOG(TEXT("Graphics"), Verbosity::Default, TEXT("Create"));
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Create");
 
 	InitDX11_1(hWnd);
-
-	S_LOG(TEXT("Graphics"), Verbosity::Default, TEXT("Init"));
 	
 	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
-	S_LOG(TEXT("ImguiDX11"), Verbosity::Default, TEXT("Init"));
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui_ImplDX11 Init");
 }
 
 Graphics::~Graphics()
 {
 	ImGui_ImplDX11_Shutdown();
-	S_LOG(TEXT("ImguiDX11"), Verbosity::Default, TEXT("ShutDown"));
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui_ImplDX11 ShutDown");
 
 	// only for log
-	S_LOG(TEXT("Graphics"), Verbosity::Default, TEXT("Release"));
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics Release");
 }
 
 void Graphics::InitDX11(HWND hWnd)
@@ -133,6 +134,8 @@ void Graphics::InitDX11(HWND hWnd)
 
 	// configure viewport
 	SetViewport(width, height);
+
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics DX11 Init");
 }
 
 void Graphics::InitDX11_1(HWND hWnd)
@@ -239,6 +242,8 @@ void Graphics::InitDX11_1(HWND hWnd)
 
 	// configure viewport
 	SetViewport(width, height);
+
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics DX11_1 Init");
 }
 
 void Graphics::SetViewport(int width, int height)
@@ -253,6 +258,8 @@ void Graphics::SetViewport(int width, int height)
 	vp.TopLeftY = 0;
 
 	pContext->RSSetViewports(1u, &vp); // one viewport, not split screen
+
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "SetViewport %dx%d", width, height );
 }
 
 void Graphics::EndFrame()

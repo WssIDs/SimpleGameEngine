@@ -7,8 +7,7 @@
 #include "Graphics/DX11/Graphics.h"
 #include <memory>
 
-#include "Windows/Logger/LogDefinitions.h"
-#include "STypes.h"
+#include "Graphics/Engine/Core.h"
 
 /* void Cls_OnInput(HWND hWnd, UINT inputCode, HRAWINPUT hRawInput) */
 #define HANDLE_WM_INPUT(hWnd, wParam, lParam, fn) \
@@ -36,13 +35,13 @@ class Window
 
 public:
 
-	Window(int width, int height,const TSTRING name);
+	Window(int width, int height,const std::string& name);
 	~Window();
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 
-	void SetWindowTitle(const TSTRING& title);
+	void SetWindowTitle(const std::string& title);
 
 	void EnableCursor();
 	void DisableCursor();
@@ -125,3 +124,5 @@ private:
 	std::vector<BYTE> rawBuffer;
 };
 
+
+DECLARE_LOG_CATEGORY_EXTERN(WindowLog);

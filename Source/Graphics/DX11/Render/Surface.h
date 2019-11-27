@@ -2,7 +2,6 @@
 #include <string>
 #include <assert.h>
 #include <memory>
-#include "Windows\Launch\Window\STypes.h"
 
 class Surface
 {
@@ -96,8 +95,8 @@ public:
 	unsigned int GetHeight() const;
 	Color* GetBufferPtr() const;
 	const Color* GetBufferPtrConst() const;
-	static Surface FromFile(const TSTRING& name);
-	void Save(const TSTRING& filename) const;
+	static Surface FromFile(const std::string& name);
+	void Save(const std::string& filename) const;
 	void Copy(const Surface& source);
 
 private:

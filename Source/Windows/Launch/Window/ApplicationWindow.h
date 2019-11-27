@@ -1,8 +1,5 @@
 ﻿#pragma once
 #include "Window.h"
-//#include "Graphics/DX12/GraphicsEngine.h"
-//#include "Graphics/DX12/SwapChain.h"
-//#include "Graphics/DX12/CommandQueue.h"
 #include "Windows/Timer/Timer.h"
 #include <memory>
 #include "Graphics/GUI/ImguiManager.h"
@@ -14,7 +11,7 @@
 class ApplicationWindow: public Window
 {
 public:
-	ApplicationWindow(int width, int height,const TSTRING name);
+	ApplicationWindow(int width, int height,const std::string& name);
 
 	~ApplicationWindow();
 
@@ -34,3 +31,5 @@ private:
 	Model model{ Gfx(), R"(..\..\..\Content\Models\Girl.fbx)" };
 };
 
+
+DECLARE_LOG_CATEGORY_EXTERN(ApplicationWindowLog);

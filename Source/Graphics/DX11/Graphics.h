@@ -5,6 +5,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 
+#include "Graphics/Engine/Core.h"
 
 namespace Bind
 {
@@ -61,3 +62,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView = nullptr;
 };
 
+
+DECLARE_LOG_CATEGORY_EXTERN(GraphicsLog);

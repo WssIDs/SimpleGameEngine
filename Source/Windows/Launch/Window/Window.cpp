@@ -5,6 +5,8 @@
 #include <iostream>
 #include <sstream>
 
+DEFINE_LOG_CATEGORY(WindowLog);
+
 Window::WindowClass Window::WindowClass::wndClass;
 
 Window::WindowClass::WindowClass()
@@ -42,7 +44,7 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass(wndClassName, getInstance());
 }
 
-Window::Window(int width, int height,const TSTRING name)
+Window::Window(int width, int height,const std::string& name)
 	:width(width),
 	height(height)
 {
@@ -58,7 +60,7 @@ Window::Window(int width, int height,const TSTRING name)
 
 	if(AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false) == 0)
 	{
-		S_LOG("Window", Verbosity::Error, "Cannot AdjustWindowRect");
+		WGE_LOG(WindowLog, LogVerbosity::Error, "Cannot AdjustWindowRect");
 	}
 
 	hwnd = CreateWindow(
@@ -78,7 +80,7 @@ Window::Window(int width, int height,const TSTRING name)
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
 
 	ImGui_ImplWin32_Init(hwnd);
-	S_LOG(TEXT("ImGuiWin32"), Verbosity::Default, TEXT("Init"));
+	WGE_LOG(WindowLog, LogVerbosity::Default, "ImGuiWin32 Init");
 
 	pGfx = std::make_unique<Graphics>(hwnd, width, height);
 
@@ -90,7 +92,7 @@ Window::Window(int width, int height,const TSTRING name)
 	rid.hwndTarget = nullptr;
 	if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
 	{
-		S_LOG("Window", Verbosity::Fatal, "Register Raw input Devices failed");
+		WGE_LOG(WindowLog, LogVerbosity::Fatal, "Register Raw input Devices failed");
 		throw TEXT("Register Raw input Devices failed");
 	}
 
@@ -100,16 +102,16 @@ Window::Window(int width, int height,const TSTRING name)
 Window::~Window()
 {
 	ImGui_ImplWin32_Shutdown();
-	S_LOG("ImGuiWin32", Verbosity::Default, "Shutdown");
+	WGE_LOG(WindowLog, LogVerbosity::Default, "ImGuiWin32 Shutdown");
 
 	DestroyWindow(hwnd);
 }
 
-void Window::SetWindowTitle(const TSTRING& title)
+void Window::SetWindowTitle(const std::string& title)
 {
 	if(SetWindowText(hwnd, title.c_str()) == 0)
 	{
-		S_LOG("Window", Verbosity::Error, "Cannot Change Title");
+		WGE_LOG(WindowLog, LogVerbosity::Error, "Cannot Change Title");
 	}
 }
 
@@ -220,20 +222,20 @@ void Window::InitConsole(std::string title)
 			FILE* fs;
 			SetConsoleTitle(title.c_str());
 			freopen_s(&fs, "CON", "w", stdout);
-			S_LOG("Window", Verbosity::Default, "Init Console");
+			WGE_LOG(WindowLog, LogVerbosity::Default, "Init Console");
 
 			SetConsoleCtrlHandler(CtrlHandler, TRUE);
 		}
 		else
 		{
-			S_LOG("Window", Verbosity::Error, "Error Console init, Error code = %d", (int)GetLastError());
+			WGE_LOG(WindowLog, LogVerbosity::Error, "Error Console init, Error code = %d", (int)GetLastError());
 		}
 	}
 }
 
 BOOL WINAPI Window::CtrlHandler(DWORD fdwCtrlType)
 {
-	S_LOG("Window", Verbosity::Warning, "Handler Console");
+	WGE_LOG(WindowLog, LogVerbosity::Warning, "Handler Console");
 
 	switch (fdwCtrlType)
 	{
@@ -244,7 +246,7 @@ BOOL WINAPI Window::CtrlHandler(DWORD fdwCtrlType)
 		// CTRL-CLOSE: confirm that the user wants to exit. 
 	case CTRL_CLOSE_EVENT:
 	{
-		S_LOG("Window", Verbosity::Warning, "Closing Console");
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "Closing Console");
 	}
 	return TRUE;
 
@@ -341,22 +343,17 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 {
 	if(!cursorEnabled)
 	{
-		std::stringstream out;
-
-		out << TEXT("Mouse state = ") << state;
-
-		//S_LOG(TEXT("Window"), out.str().c_str());
-		S_LOG(TEXT("Window"), Verbosity::Default, TEXT("Mouse state = %d"), state);
+		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Mouse state = %d"), state);
 
 		if(state == 1)
 		{
-			S_LOG(TEXT("Window"), Verbosity::Default, TEXT("Cursor confine"));
+			WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor confine"));
 			ConfineCursor();
 			HideCursor();
 		}
 		else
 		{
-			S_LOG(TEXT("Window"), Verbosity::Default, TEXT("Cursor free"));
+			WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor free"));
 			FreeCursor();
 			ShowCursor();
 		}
@@ -365,7 +362,7 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 
 void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 {
-	//S_LOG(TEXT("Window"), TEXT("State = %d, cx = %d, cy = %d"), state, cx, cy);
+	//S_LOG(TEXT(WindowLog), TEXT("State = %d, cx = %d, cy = %d"), state, cx, cy);
 }
 
 void Window::Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -477,7 +474,7 @@ void Window::Wnd_OnLeftButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UI
 	SetForegroundWindow(hwnd);
 	if(!cursorEnabled)
 	{
-		S_LOG(TEXT("Window"), Verbosity::Default, TEXT("mouse left click - recapture"));
+		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("mouse left click - recapture"));
 		ConfineCursor();
 		HideCursor();
 

@@ -3,17 +3,30 @@
 
 
 /**
- * used only for open adn close logfile
- * @param LogText text
+ * @param CategoryName name of the logging category
+ * @param LogVerbosity color and level logging
+ * @param Format some logging text with args
+ *  example "SomeText %d %s", int number, std::string name.c_str()
 **/
-#define S_LOG_MAIN(Format,...) Log::get()->print(Format, ##__VA_ARGS__)
+#define WGE_LOG_MAIN(Format,...) Log::get()->print(Format, ##__VA_ARGS__)
 
 /**
- * @param LogName name of the logging category
- * @param LogText text
+ * @param CategoryName name of the logging category
+ * @param LogVerbosity color and level logging
+ * @param Format some logging text with args
+ *  example "SomeText %d %s", int number, std::string name.c_str() 
 **/
-//#define S_LOG(LogName,LogText) Log::get()->print(LogName,LogText)
+#define WGE_LOG(CategoryName, LogVerbosity, Format,...) Log::get()->print(CategoryName.GetCategoryName(), LogVerbosity, Format, ##__VA_ARGS__)
 
+/** Declare log category. Used only header files
+ * @param CategoryName name of the logging category
+ **/
+#define DECLARE_LOG_CATEGORY_EXTERN(CategoryName) \
+		extern struct LogCategory##CategoryName : public LogCategory \
+		{ \
+			LogCategory##CategoryName() : LogCategory(TEXT(#CategoryName)) {} } CategoryName;
 
-
-#define S_LOG(LogName, LogVerbosity, Format,...) Log::get()->print(LogName, LogVerbosity, Format, ##__VA_ARGS__)
+ /** Define log category. Used only source files
+  * @param CategoryName name of the logging category
+ **/
+#define DEFINE_LOG_CATEGORY(CategoryName) LogCategory##CategoryName CategoryName;

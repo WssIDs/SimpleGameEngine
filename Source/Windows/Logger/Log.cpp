@@ -89,7 +89,7 @@ void Log::print(std::string logText, ...)
 #endif // _DEBUG
 }
 
-void Log::print(std::string logName, Verbosity logVerbosity, std::string logText, ...)
+void Log::print(std::string logName, LogVerbosity logVerbosity, std::string logText, ...)
 {
 	va_list Args;
 	va_start(Args, logText);
@@ -100,19 +100,19 @@ void Log::print(std::string logName, Verbosity logVerbosity, std::string logText
 
 	switch (logVerbosity)
 	{
-	case Verbosity::Default:
+	case LogVerbosity::Default:
 		output << "[Default]";
 		break;
-	case Verbosity::Warning:
+	case LogVerbosity::Warning:
 		output << "[Warning]";
 		break;
-	case Verbosity::Success:
+	case LogVerbosity::Success:
 		output << "[Success]";
 		break;
-	case Verbosity::Error:
+	case LogVerbosity::Error:
 		output << "[Error]";
 		break;
-	case Verbosity::Fatal:
+	case LogVerbosity::Fatal:
 		output << "[Fatal]";
 		break;
 	}

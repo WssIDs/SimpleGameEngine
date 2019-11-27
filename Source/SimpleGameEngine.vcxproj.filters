@@ -203,7 +203,6 @@
     <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
-    <ClInclude Include="Windows\Launch\Window\STypes.h" />
     <ClInclude Include="ThirdParty\Assimp\Compiler\poppack1.h" />
     <ClInclude Include="ThirdParty\Assimp\Compiler\pstdint.h" />
     <ClInclude Include="ThirdParty\Assimp\Compiler\pushpack1.h" />
@@ -439,6 +438,8 @@
     <ClInclude Include="ThirdParty\DirectXTex\include\DDS.h" />
     <ClInclude Include="ThirdParty\DirectXTex\include\filters.h" />
     <ClInclude Include="ThirdParty\DirectXTex\include\scoped.h" />
+    <ClInclude Include="Graphics\DX11\Bindable\BindableCodex.h" />
+    <ClInclude Include="Graphics\Engine\Core.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">
