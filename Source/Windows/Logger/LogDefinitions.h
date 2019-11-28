@@ -24,7 +24,7 @@
 #define DECLARE_LOG_CATEGORY_EXTERN(CategoryName) \
 		extern struct LogCategory##CategoryName : public LogCategory \
 		{ \
-			LogCategory##CategoryName() : LogCategory(TEXT(#CategoryName)) {} } CategoryName;
+			FORCEINLINE LogCategory##CategoryName() : LogCategory(TEXT(#CategoryName)) {} } CategoryName;
 
  /** Define log category. Used only source files
   * @param CategoryName name of the logging category
