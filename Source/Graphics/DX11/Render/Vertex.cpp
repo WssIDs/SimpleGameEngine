@@ -36,6 +36,16 @@ namespace DynamicVtx
 		return desc;
 	}
 
+	std::string VertexLayout::GetCode() const
+	{
+		std::string code;
+		for (const auto& e : elements)
+		{
+			code += e.GetCode();
+		}
+		return code;
+	}
+
 	// VertexLayout::Element
 	VertexLayout::Element::Element(ElementType type, size_t offset)
 		:
@@ -110,6 +120,30 @@ namespace DynamicVtx
 	}
 
 
+
+	const char* VertexLayout::Element::GetCode() const
+	{
+		switch (type)
+		{
+		case ElementType::Position2D:
+			return ElemType<ElementType::Position2D>::code;
+		case ElementType::Position3D:
+			return ElemType<ElementType::Position3D>::code;
+		case ElementType::Texture2D:
+			return ElemType<ElementType::Texture2D>::code;
+		case ElementType::Normal:
+			return ElemType<ElementType::Normal>::code;
+		case ElementType::Float3Color:
+			return ElemType<ElementType::Float3Color>::code;
+		case ElementType::Float4Color:
+			return ElemType<ElementType::Float4Color>::code;
+		case ElementType::RGBAColor:
+			return ElemType<ElementType::RGBAColor>::code;
+		}
+
+		assert("Invalid element type" && false);
+		return "Invalid";
+	}
 
 	// Vertex
 	Vertex::Vertex(char* pData, const VertexLayout& layout)

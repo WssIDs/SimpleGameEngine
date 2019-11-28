@@ -1,11 +1,18 @@
 #include "VertexBuffer.h"
+#include "BindableCodex.h"
 
 
 namespace Bind
 {
 	VertexBuffer::VertexBuffer(Graphics& gfx, const DynamicVtx::VertexBuffer& vertexBuffer)
 		:
-		stride((UINT)vertexBuffer.GetLayout().Size())
+		VertexBuffer(gfx, "?", vertexBuffer)
+	{}
+
+	VertexBuffer::VertexBuffer(Graphics& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer)
+		:
+		stride((UINT)vertexBuffer.GetLayout().Size()),
+		tag(tag)
 	{
 		D3D11_BUFFER_DESC bd = {};
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -26,4 +33,22 @@ namespace Bind
 		const UINT offset = 0u;
 		GetContext(gfx)->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 	}
+
+	std::shared_ptr<VertexBuffer> VertexBuffer::Resolve(Graphics& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer)
+	{
+		assert(tag != "?");
+		return Codex::Resolve<VertexBuffer>(gfx, tag, vertexBuffer);
+	}
+
+	std::string VertexBuffer::GetUID() const
+	{
+		return GenerateUID(tag);
+	}
+
+	std::string VertexBuffer::GenerateUID_(const std::string& tag)
+	{
+		using namespace std::string_literals;
+		return typeid(VertexBuffer).name() + "#"s + tag;
+	}
+
 }

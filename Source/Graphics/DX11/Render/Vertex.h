@@ -30,6 +30,7 @@ namespace DynamicVtx
 			using Type = DirectX::XMFLOAT2;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
 			static constexpr const char* semantic = "Position";
+			static constexpr const char* code = "P2D";
 		};
 
 		template<> struct ElemType<ElementType::Position3D>
@@ -37,6 +38,7 @@ namespace DynamicVtx
 			using Type = DirectX::XMFLOAT3;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
 			static constexpr const char* semantic = "Position";
+			static constexpr const char* code = "P3D";
 		};
 
 		template<> struct ElemType<ElementType::Texture2D>
@@ -44,6 +46,7 @@ namespace DynamicVtx
 			using Type = DirectX::XMFLOAT2;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
 			static constexpr const char* semantic = "Texcoord";
+			static constexpr const char* code = "T2D";
 		};
 
 		template<> struct ElemType<ElementType::Normal>
@@ -51,6 +54,7 @@ namespace DynamicVtx
 			using Type = DirectX::XMFLOAT3;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
 			static constexpr const char* semantic = "Normal";
+			static constexpr const char* code = "N";
 		};
 
 		template<> struct ElemType<ElementType::Float3Color>
@@ -58,6 +62,7 @@ namespace DynamicVtx
 			using Type = DirectX::XMFLOAT3;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
 			static constexpr const char* semantic = "Color";
+			static constexpr const char* code = "C3";
 		};
 
 		template<> struct ElemType<ElementType::Float4Color>
@@ -65,6 +70,7 @@ namespace DynamicVtx
 			using Type = DirectX::XMFLOAT4;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
 			static constexpr const char* semantic = "Color";
+			static constexpr const char* code = "C4";
 		};
 
 		template<> struct ElemType<ElementType::RGBAColor>
@@ -72,6 +78,7 @@ namespace DynamicVtx
 			using Type = ::RGBAColor;
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 			static constexpr const char* semantic = "Color";
+			static constexpr const char* code = "RGBA";
 		};
 
 		class Element
@@ -84,10 +91,10 @@ namespace DynamicVtx
 			static constexpr size_t SizeOf(ElementType type);
 			ElementType GetType() const;
 			D3D11_INPUT_ELEMENT_DESC GetDesc() const;
-
+			const char* GetCode() const;
 		private:
 			template<ElementType type>
-			static D3D11_INPUT_ELEMENT_DESC GenerateDesc(size_t offset)
+			static D3D11_INPUT_ELEMENT_DESC GenerateDesc(size_t offset) noexcept
 			{
 				return { ElemType<type>::semantic,0,ElemType<type>::dxgiFormat,0,(UINT)offset, D3D11_INPUT_PER_VERTEX_DATA,0 };
 			}
@@ -117,6 +124,7 @@ namespace DynamicVtx
 		size_t Size() const;
 		size_t GetElementCount() const;
 		std::vector<D3D11_INPUT_ELEMENT_DESC> GetD3DLayout() const;
+		std::string GetCode() const;
 
 	private:
 		std::vector<Element> elements;

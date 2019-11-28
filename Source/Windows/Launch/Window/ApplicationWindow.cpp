@@ -8,6 +8,7 @@
 #include "Graphics/DX11/GDIPlusManager.h"
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
+#include "Graphics/DX11/Bindable/Sampler.h"
 
 
 DEFINE_LOG_CATEGORY(ApplicationWindowLog);

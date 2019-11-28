@@ -5,8 +5,6 @@
 
 namespace Bind
 {
-	using namespace std::string_literals;
-
 	VertexShader::VertexShader(Graphics& gfx, const std::string& path)
 	{
 		D3DReadFileToBlob(std::wstring(path.begin(), path.end()).c_str(), &pByteCode);
@@ -23,20 +21,14 @@ namespace Bind
 		return pByteCode.Get();
 	}
 
-	std::shared_ptr<Bind::Bindable> VertexShader::Resolve(Graphics& gfx, const std::string& path)
+	std::shared_ptr<VertexShader> VertexShader::Resolve(Graphics& gfx, const std::string& path)
 	{
-		auto bind = Codex::Resolve(GenerateUID(path));
-		if(!bind)
-		{
-			bind = std::make_shared<VertexShader>(gfx, path);
-			Codex::Store(bind);
-		}
-
-		return bind;
+		return Codex::Resolve<VertexShader>(gfx, path);
 	}
 
 	std::string VertexShader::GenerateUID(const std::string& path)
 	{
+		using namespace std::string_literals;
 		return typeid(VertexShader).name() + "#"s + path;
 	}
 

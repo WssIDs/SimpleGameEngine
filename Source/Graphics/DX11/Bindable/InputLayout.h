@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindable.h"
+#include "..\Render\Vertex.h"
 
 
 
@@ -8,10 +9,14 @@ namespace Bind
 	class InputLayout : public Bindable
 	{
 	public:
-		InputLayout(Graphics& gfx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout, ID3DBlob* pVertexShaderByteCode);
+		InputLayout(Graphics& gfx, DynamicVtx::VertexLayout layout, ID3DBlob* pVertexShaderByteCode);
 		void Bind(Graphics& gfx) override;
+		static std::shared_ptr<InputLayout> Resolve(Graphics& gfx, const DynamicVtx::VertexLayout& layout, ID3DBlob* pVertexShaderByteCode);
+		static std::string GenerateUID(const DynamicVtx::VertexLayout& layout, ID3DBlob* pVertexShaderByteCode = nullptr);
+		std::string GetUID() const override;
 
 	protected:
+		DynamicVtx::VertexLayout layout;
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
 	};
 }
