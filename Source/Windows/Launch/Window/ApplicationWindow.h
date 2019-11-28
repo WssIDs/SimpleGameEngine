@@ -1,12 +1,16 @@
 ﻿#pragma once
 #include "Window.h"
 #include "Windows/Timer/Timer.h"
-#include <memory>
+
 #include "Graphics/GUI/ImguiManager.h"
 #include "Graphics/Engine/Actors/Camera.h"
 #include <Graphics\DX11\Render\PointLight.h>
+
+#include <memory>
 #include <set>
+
 #include "Graphics/DX11/Primitive/Mesh.h"
+#include "Graphics/DX11/Primitive/TestPlane.h"
 
 class ApplicationWindow: public Window
 {
@@ -29,6 +33,7 @@ private:
 	float speedFactor = 1.0f;
 
 	Model model{ Gfx(), R"(..\..\..\Content\Models\Girl.fbx)" };
+	TestPlane plane;
 };
 
 

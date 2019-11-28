@@ -93,6 +93,7 @@
     <ClCompile Include="Graphics\DX11\Primitive\SolidSphere.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Vertex.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\Mesh.cpp" />
+    <ClCompile Include="Graphics\DX11\Primitive\TestPlane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -440,6 +441,8 @@
     <ClInclude Include="ThirdParty\DirectXTex\include\scoped.h" />
     <ClInclude Include="Graphics\DX11\Bindable\BindableCodex.h" />
     <ClInclude Include="Graphics\Engine\Core.h" />
+    <ClInclude Include="Graphics\DX11\Geometry\Plane.h" />
+    <ClInclude Include="Graphics\DX11\Primitive\TestPlane.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">
@@ -487,6 +490,7 @@
     <FxCompile Include="Graphics\Shaders\SolidVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\SolidPS.hlsl" />
     <FxCompile Include="Graphics\Shaders\PhongPSSpecularMap.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PhongPSNormalMap.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />

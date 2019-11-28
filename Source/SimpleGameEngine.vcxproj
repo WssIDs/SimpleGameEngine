@@ -233,6 +233,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\DX12\PipelineState.cpp" />
     <ClCompile Include="Graphics\GUI\ImguiManager.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\SolidSphere.cpp" />
+    <ClCompile Include="Graphics\DX11\Primitive\TestPlane.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_draw.cpp" />
@@ -249,6 +250,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\BindableCodex.h" />
+    <ClInclude Include="Graphics\DX11\Geometry\Plane.h" />
     <ClInclude Include="Graphics\DX11\Primitive\Mesh.h" />
     <ClInclude Include="Graphics\DX11\Render\Color.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
@@ -281,6 +283,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\Helpers\DirectXHelper.h" />
     <ClInclude Include="Graphics\GUI\ImguiManager.h" />
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
+    <ClInclude Include="Graphics\DX11\Primitive\TestPlane.h" />
     <ClInclude Include="ThirdParty\Assimp\aabb.h" />
     <ClInclude Include="ThirdParty\Assimp\ai_assert.h" />
     <ClInclude Include="ThirdParty\Assimp\anim.h" />
@@ -576,6 +579,12 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\PhongPSNormalMap.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Graphics\Shaders\PhongPSSpecularMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
