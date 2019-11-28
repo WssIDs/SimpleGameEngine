@@ -13,6 +13,8 @@ namespace DynamicVtx
 		Position3D,
 		Texture2D,
 		Normal,
+		Tangent,
+		Bitangent,
 		Float3Color,
 		Float4Color,
 		RGBAColor,
@@ -55,6 +57,22 @@ namespace DynamicVtx
 			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
 			static constexpr const char* semantic = "Normal";
 			static constexpr const char* code = "N";
+		};
+
+		template<> struct ElemType<ElementType::Tangent>
+		{
+			using Type = DirectX::XMFLOAT3;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Tangent";
+			static constexpr const char* code = "Nt";
+		};
+
+		template<> struct ElemType<ElementType::Bitangent>
+		{
+			using Type = DirectX::XMFLOAT3;
+			static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+			static constexpr const char* semantic = "Bitangent";
+			static constexpr const char* code = "Nb";
 		};
 
 		template<> struct ElemType<ElementType::Float3Color>
@@ -160,6 +178,12 @@ namespace DynamicVtx
 			case ElementType::Normal:
 				SetAttribute<ElementType::Normal>(pAttribute, std::forward<T>(val));
 				break;
+			case ElementType::Tangent:
+				SetAttribute<ElementType::Tangent>(pAttribute, std::forward<T>(val));
+				break;
+			case ElementType::Bitangent:
+				SetAttribute<ElementType::Bitangent>(pAttribute, std::forward<T>(val));
+				break;
 			case ElementType::Float3Color:
 				SetAttribute<ElementType::Float3Color>(pAttribute, std::forward<T>(val));
 				break;
@@ -219,10 +243,11 @@ namespace DynamicVtx
 	class VertexBuffer
 	{
 	public:
-		VertexBuffer(VertexLayout layout);
+		VertexBuffer(VertexLayout layout, size_t size = 0u);
 
 		const char* GetData() const;
 		const VertexLayout& GetLayout() const;
+		void Resize(size_t newSize);
 		size_t Size() const;
 		size_t SizeBytes() const;
 

@@ -20,10 +20,10 @@ Texture2D tex;
 
 SamplerState splr;
 
-float4 main(float3 worldPos : Position, float3 viewNormal : Normal, float2 texCoord : Texcoord) : SV_TARGET
+float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float2 texCoord : Texcoord) : SV_TARGET
 {
     // fragment to light vector data
-    const float3 vectorToLight = lightPosition - worldPos;
+    const float3 vectorToLight = lightPosition - viewPos;
     const float distanceToLight = length(vectorToLight);
     const float3 directionToLight = vectorToLight / distanceToLight;
 
@@ -35,7 +35,7 @@ float4 main(float3 worldPos : Position, float3 viewNormal : Normal, float2 texCo
     const float3 vViewer = viewNormal * dot(vectorToLight, viewNormal);
     const float3 vReflect = 2.0f * vViewer - vectorToLight;
     // specular ( angle between viewer vector and reflect vector)
-    const float3 specular = att * (diffuseColor * diffuseIntensity) * specularIntensity * pow(max(0.0f, dot(normalize( -vReflect), normalize(worldPos))), specularPower);
+    const float3 specular = att * (diffuseColor * diffuseIntensity) * specularIntensity * pow(max(0.0f, dot(normalize( -vReflect), normalize(viewPos))), specularPower);
 	// final color
     return float4(saturate((diffuse + ambient) * tex.Sample(splr, texCoord).rgb + specular), 1.0f);
 }

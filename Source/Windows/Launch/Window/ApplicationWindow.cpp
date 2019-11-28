@@ -21,11 +21,9 @@ ImguiManager imgui;
 
 ApplicationWindow::ApplicationWindow(int width, int height,const std::string& name)
 	:Window(width,height,name),
-	light(Gfx()),
-	plane(Gfx(),100.0f)
+	light(Gfx(), 5.0f)
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
-	plane.SetPos({ 1.0f,17.0f,-1.0f });
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
 }
 
@@ -62,10 +60,8 @@ void ApplicationWindow::onUpdate()
 
 
 	model.Draw(Gfx());
-
 	light.Draw(Gfx());
 
-	plane.Draw(Gfx());
 	while (const auto e = keyboardInput.ReadKey())
 	{
 		if (!e->IsPress())
@@ -134,8 +130,7 @@ void ApplicationWindow::onUpdate()
 	camera.SpawnControlWindow();
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
-	model.ShowWindow();
-	plane.SpawnControlWindow(Gfx());
+	model.ShowWindow("Wall");
 	//ShowRawInputWindow();
 
 	Gfx().EndFrame(); // EndFrame

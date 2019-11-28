@@ -80,6 +80,10 @@ namespace DynamicVtx
 			return sizeof(ElemType<ElementType::Texture2D>::Type);
 		case ElementType::Normal:
 			return sizeof(ElemType<ElementType::Normal>::Type);
+		case ElementType::Tangent:
+			return sizeof(ElemType<ElementType::Tangent>::Type);
+		case ElementType::Bitangent:
+			return sizeof(ElemType<ElementType::Bitangent>::Type);
 		case ElementType::Float3Color:
 			return sizeof(ElemType<ElementType::Float3Color>::Type);
 		case ElementType::Float4Color:
@@ -108,6 +112,10 @@ namespace DynamicVtx
 			return GenerateDesc<ElementType::Texture2D>(GetOffset());
 		case ElementType::Normal:
 			return GenerateDesc<ElementType::Normal>(GetOffset());
+		case ElementType::Tangent:
+			return GenerateDesc<ElementType::Tangent>(GetOffset());
+		case ElementType::Bitangent:
+			return GenerateDesc<ElementType::Bitangent>(GetOffset());
 		case ElementType::Float3Color:
 			return GenerateDesc<ElementType::Float3Color>(GetOffset());
 		case ElementType::Float4Color:
@@ -133,6 +141,10 @@ namespace DynamicVtx
 			return ElemType<ElementType::Texture2D>::code;
 		case ElementType::Normal:
 			return ElemType<ElementType::Normal>::code;
+		case ElementType::Tangent:
+			return ElemType<ElementType::Tangent>::code;
+		case ElementType::Bitangent:
+			return ElemType<ElementType::Bitangent>::code;
 		case ElementType::Float3Color:
 			return ElemType<ElementType::Float3Color>::code;
 		case ElementType::Float4Color:
@@ -161,10 +173,12 @@ namespace DynamicVtx
 	{}
 
 	// VertexBuffer
-	VertexBuffer::VertexBuffer(VertexLayout layout)
+	VertexBuffer::VertexBuffer(VertexLayout layout, size_t size)
 		:
 		layout(std::move(layout))
-	{}
+	{
+		Resize(size);
+	}
 
 	const char* VertexBuffer::GetData() const
 	{
@@ -174,6 +188,15 @@ namespace DynamicVtx
 	const VertexLayout& VertexBuffer::GetLayout() const
 	{
 		return layout;
+	}
+
+	void VertexBuffer::Resize(size_t newSize)
+	{
+		const auto size = Size();
+		if(size < newSize)
+		{
+			buffer.resize(buffer.size() + layout.Size() * (newSize - size));
+		}
 	}
 
 	size_t VertexBuffer::Size() const

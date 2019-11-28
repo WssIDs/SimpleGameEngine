@@ -10,7 +10,6 @@
 #include <set>
 
 #include "Graphics/DX11/Primitive/Mesh.h"
-#include "Graphics/DX11/Primitive/TestPlane.h"
 
 class ApplicationWindow: public Window
 {
@@ -32,8 +31,7 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 
-	Model model{ Gfx(), R"(..\..\..\Content\Models\Girl.fbx)" };
-	TestPlane plane;
+	Model model{ Gfx(), BASE_MODELS_DIR + "Wall.fbx" };
 };
 
 

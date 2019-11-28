@@ -6,6 +6,7 @@
 #include <assimp\Importer.hpp>
 #include <assimp\postprocess.h>
 #include <optional>
+#include "Graphics/Engine/Core.h"
 
 
 

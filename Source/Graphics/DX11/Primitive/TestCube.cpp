@@ -1,23 +1,23 @@
-#include "TestPlane.h"
-#include "..\Geometry\Plane.h"
-#include "..\Bindable\BindableCommon.h"
-#include <memory>
+#include "TestCube.h"
+#include "..\Geometry\Cube.h"
+#include "Graphics\DX11\Bindable\BindableCommon.h"
 #include "Imgui\imgui.h"
+#include "Graphics\Engine\Core.h"
 
-
-TestPlane::TestPlane(Graphics& gfx, float size)
+TestCube::TestCube(Graphics& gfx, float size)
 {
 	using namespace Bind;
 	namespace dx = DirectX;
 
-	auto model = Plane::Make();
-	model.Transform(dx::XMMatrixScaling(size, size, 1.0f));
-	const auto geometryTag = "$plane." + std::to_string(size);
+	auto model = Cube::MakeIndependentTextured();
+	model.Transform(dx::XMMatrixScaling(size, size, size));
+	model.SetNormalsIndependentFlat();
+	const auto geometryTag = "$cube." + std::to_string(size);
 	AddBind(VertexBuffer::Resolve(gfx, geometryTag, model.vertices));
 	AddBind(IndexBuffer::Resolve(gfx, geometryTag, model.indices));
 
-	AddBind(Texture::Resolve(gfx,  BASE_TEXTURES_DIR + "Primitive\\brickwall.tga"));
-	AddBind(Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Primitive\\brickwall_normal.tga",1));
+	AddBind(Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Primitive\\brickwall.tga"));
+	AddBind(Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Primitive\\brickwall_normal.tga", 1u));
 
 	auto pvs = VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVS.cso");
 	auto pvsbc = pvs->GetByteCode();
@@ -31,30 +31,30 @@ TestPlane::TestPlane(Graphics& gfx, float size)
 
 	AddBind(Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-	AddBind(std::make_shared<TransformConstantBuffer>(gfx, *this));
+	AddBind(std::make_shared<TransformConstantBufferDouble>(gfx, *this, 0u, 2u));
 }
 
-void TestPlane::SetPosition(DirectX::XMFLOAT3 pos)
+void TestCube::SetPosition(DirectX::XMFLOAT3 pos)
 {
 	this->pos = pos;
 }
 
-void TestPlane::SetRotation(float roll, float pitch, float yaw)
+void TestCube::SetRotation(float roll, float pitch, float yaw)
 {
 	this->roll = roll;
 	this->pitch = pitch;
 	this->yaw = yaw;
 }
 
-DirectX::XMMATRIX TestPlane::GetTransformXM() const
+DirectX::XMMATRIX TestCube::GetTransformXM() const
 {
 	return DirectX::XMMatrixRotationRollPitchYaw(roll, pitch, yaw) *
 		DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 }
 
-void TestPlane::SpawnControlWindow(Graphics& gfx)
+void TestCube::SpawnControlWindow(Graphics& gfx)
 {
-	if (ImGui::Begin("Plane"))
+	if (ImGui::Begin("Cube"))
 	{
 		ImGui::Text("Position");
 		ImGui::SliderFloat("X", &pos.x, -80.0f, 80.0f, "%.1f");

@@ -174,7 +174,8 @@ Model::Model(Graphics& gfx, const std::string fileName)
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded |
-		aiProcess_GenNormals
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace
 	);
 
 	for (size_t i = 0; i < pScene->mNumMeshes; i++)
@@ -194,6 +195,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		VertexLayout{}
 		.Append(DynamicVtx::ElementType::Position3D)
 		.Append(DynamicVtx::ElementType::Normal)
+		.Append(DynamicVtx::ElementType::Tangent)
+		.Append(DynamicVtx::ElementType::Bitangent)
 		.Append(DynamicVtx::ElementType::Texture2D)
 	));
 
@@ -202,6 +205,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		vertexBuffer.EmplaceBack(
 			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
 			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
+			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]),
 			*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
 		);
 	}
@@ -218,44 +223,44 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 	}
 
 	std::vector<std::shared_ptr<Bind::Bindable>> bindablePtrs;
-	using namespace std::string_literals;
-	const auto base = R"(..\..\..\Content\Models\)"s;
-
 	bool bSpecularMap = false;
 	
-	float shiniess = 35.0f;
+	float shininess = 35.0f;
 	if (mesh.mMaterialIndex >= 0)
 	{
 		auto& material = *pMaterials[mesh.mMaterialIndex];
 		aiString texFileName;
 		material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName);
-		bindablePtrs.push_back(Bind::Texture::Resolve(gfx, base + texFileName.C_Str()));
+		bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str()));
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, base + texFileName.C_Str(), 1));
+			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 1));
 			bSpecularMap = true;
 		}
 		else
 		{
-			material.Get(AI_MATKEY_SHININESS, shiniess);
+			material.Get(AI_MATKEY_SHININESS, shininess);
 		}
+
+		material.GetTexture(aiTextureType_NORMALS, 0, &texFileName);
+		bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 2));
 
 		if (material.GetTexture(aiTextureType_SHININESS, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, base + texFileName.C_Str(), 2));
+			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 3));
 		}
 
 		bindablePtrs.push_back(Bind::Sampler::Resolve(gfx));
 	}
 
-	auto meshTag = base + "%" + mesh.mName.C_Str();
+	auto meshTag = BASE_MODELS_DIR + "%" + mesh.mName.C_Str();
 
 	bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
 
 	bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
 
-	auto pvs = Bind::VertexShader::Resolve(gfx, R"(..\..\..\Shaders\PhongVS.cso)");
+	auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
 	auto pvsbc = pvs->GetByteCode();
 	bindablePtrs.push_back(std::move(pvs));
 
@@ -263,20 +268,20 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 	if(bSpecularMap)
 	{
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, R"(..\..\..\Shaders\PhongPSSpecularMap.cso)"));
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSSpecularNormalMap.cso"));
 	}
 	else
 	{
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, R"(..\..\..\Shaders\PhongPS.cso)"));
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR +  "PhongPSNormalMap.cso"));
 
 		struct PSMaterialConstant
 		{
-			float specularIntensity = 0.8f;
+			float specularIntensity = 0.18f;
 			float specularPower;
 			float padding[2];
 		} pmc;
 
-		pmc.specularPower = shiniess;
+		pmc.specularPower = shininess;
 
 		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstant>::Resolve(gfx, pmc, 1u));
 	}

@@ -95,6 +95,7 @@
     <ClCompile Include="Graphics\DX11\Primitive\Mesh.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\TestPlane.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.cpp" />
+    <ClCompile Include="Graphics\DX11\Primitive\TestCube.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -445,6 +446,8 @@
     <ClInclude Include="Graphics\DX11\Geometry\Plane.h" />
     <ClInclude Include="Graphics\DX11\Primitive\TestPlane.h" />
     <ClInclude Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.h" />
+    <ClInclude Include="Graphics\DX11\Geometry\Cube.h" />
+    <ClInclude Include="Graphics\DX11\Primitive\TestCube.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">
@@ -491,8 +494,9 @@
     <FxCompile Include="Graphics\Shaders\PhongVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\SolidVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\SolidPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongPSSpecularMap.hlsl" />
     <FxCompile Include="Graphics\Shaders\PhongPSNormalMap.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PhongVSNormalMap.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PhongPSSpecularNormalMap.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />

@@ -1,11 +1,12 @@
 #pragma once
 #include "..\Drawable\Drawable.h"
-#include "..\..\Engine\Core.h"
 
-class TestPlane : public Drawable
+
+
+class TestCube : public Drawable
 {
 public:
-	TestPlane(Graphics& gfx, float size);
+	TestCube(Graphics& gfx, float size);
 	void SetPosition(DirectX::XMFLOAT3 pos);
 	void SetRotation(float roll, float pitch, float yaw);
 	DirectX::XMMATRIX GetTransformXM() const override;
@@ -16,7 +17,7 @@ private:
 		float specularIntensity = 0.1f;
 		float specularPower = 20.0f;
 		BOOL normalMappingEnabled = TRUE;
-		float padding[1] = { 0.0f };
+		float padding[1];
 	} pmc;
 	DirectX::XMFLOAT3 pos = { 1.0f,1.0f,1.0f };
 	float roll = 0.0f;

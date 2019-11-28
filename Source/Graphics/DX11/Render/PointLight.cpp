@@ -14,12 +14,12 @@ void PointLight::SpawnControlWindow()
 	if (ImGui::Begin("Light"))
 	{
 		ImGui::Text("Position");
-		ImGui::SliderFloat("X", &pcbData.pos.x, -60.0f, 60.0f, "%.1f");
+		ImGui::SliderFloat("X", &pcbData.pos.x, -150.0f, 150.0f, "%.1f");
 		ImGui::SliderFloat("Y", &pcbData.pos.y, -200.0f, 200.0f, "%.1f");
-		ImGui::SliderFloat("Z", &pcbData.pos.z, -100.0f, 100.0f, "%.1f");
+		ImGui::SliderFloat("Z", &pcbData.pos.z, -150.0f, 150.0f, "%.1f");
 
 		ImGui::Text("Intensity/Color");
-		ImGui::SliderFloat("Intensity", &pcbData.diffuseIntensity, 0.01f, 15.0f, "%.2f", 2);
+		ImGui::SliderFloat("Intensity", &pcbData.diffuseIntensity, 0.01f, 50.0f, "%.2f", 1);
 		ImGui::ColorEdit3("Diffuse Color", &pcbData.diffuseColor.x);
 		ImGui::ColorEdit3("Ambient", &pcbData.ambient.x);
 
@@ -39,7 +39,7 @@ void PointLight::SpawnControlWindow()
 void PointLight::Reset()
 {
 	pcbData = {
-		{0.0f, 150.0f, -70.0f},
+		{-50.0f, 80.0f, -70.0f},
 		{0.05f, 0.05f, 0.05f},
 		{1.0f, 1.0f, 1.0f},
 		10.0f,
