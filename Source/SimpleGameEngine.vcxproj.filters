@@ -497,6 +497,7 @@
     <FxCompile Include="Graphics\Shaders\PhongPSNormalMap.hlsl" />
     <FxCompile Include="Graphics\Shaders\PhongVSNormalMap.hlsl" />
     <FxCompile Include="Graphics\Shaders\PhongPSSpecularNormalMap.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PhongPSNormalMapObject.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />

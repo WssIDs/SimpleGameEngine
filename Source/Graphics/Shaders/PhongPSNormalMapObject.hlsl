@@ -1,4 +1,4 @@
-cbuffer LigthConstantBuffer
+cbuffer LightConstantBuffer
 {
     float3 lightPosition;
     float3 ambient;
@@ -11,32 +11,36 @@ cbuffer LigthConstantBuffer
 
 cbuffer ObjectConstantBuffer
 {
+    float specularIntensity;
+    float specularPower;
     bool normalMapEnabled;
-    float padding[3];
+    float padding[1];
 };
 
+cbuffer TransformConstantBuffer
+{
+    matrix modelView;
+    matrix modelViewProj;
+};
+
+
 Texture2D tex;
-Texture2D spec;
-Texture2D nmap;
+Texture2D nmap : register(t2);
 
 SamplerState splr;
 
-float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 tangent : Tangent, float3 bitangent : Bitangent, float2 texCoord : Texcoord) : SV_TARGET
+
+float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float2 texCoord : Texcoord) : SV_Target
 {
-    // sample normal from map if normal mapping enabled
+	// sample normal from map if normal mapping enabled
     if (normalMapEnabled)
     {
-        // build the tranform (rotation) into tangent space
-        const float3x3 tanToView = float3x3(
-            normalize(tangent),
-            normalize(bitangent),
-            normalize(viewNormal)
-        );
         // unpack normal data
         const float3 normalSample = nmap.Sample(splr, texCoord).xyz;
-        viewNormal = normalSample * 2.0f - 1.0f;
-        // bring normal from tanspace into view space
-        viewNormal = mul(viewNormal, tanToView);
+        viewNormal.x = normalSample.x * 2.0f - 1.0f;
+        viewNormal.y = -normalSample.y * 2.0f + 1.0f;
+        viewNormal.z = -normalSample.z * 2.0f + 1.0f;
+        viewNormal = mul(viewNormal, (float3x3)modelView);
     }
     
     // fragment to light vector data
@@ -52,11 +56,11 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 tangen
     const float3 vViewer = viewNormal * dot(vectorToLight, viewNormal);
     const float3 vReflect = 2.0f * vViewer - vectorToLight;
     // specular ( angle between viewer vector and reflect vector)
-    const float4 specularSample = spec.Sample(splr, texCoord);
-    const float3 specularReflectionColor = specularSample.rgb;
-    const float specularPower = pow(2.0f, specularSample.a * 13.0f);
+    //const float4 specularSample = spec.Sample(splr, texCoord);
+    //const float3 specularReflectionColor = specularSample.rgb;
+    //const float specularPower = pow(2.0f, specularSample.a * 13.0f);
     
-    const float3 specular = att * (diffuse * diffuseIntensity) * pow(max(0.0f, dot(normalize(-vReflect), normalize(viewPos))), specularPower);
+    const float3 specular = att * (diffuseColor * diffuseIntensity) * specularIntensity * pow(max(0.0f, dot(normalize(-vReflect), normalize(viewPos))), specularPower);
 	// final color
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, texCoord).rgb + specular * specularReflectionColor), 1.0f);
+    return float4(saturate((diffuse + ambient) * tex.Sample(splr, texCoord).rgb + specular), 1.0f);
 }

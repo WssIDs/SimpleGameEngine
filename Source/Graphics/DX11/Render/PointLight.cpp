@@ -39,7 +39,7 @@ void PointLight::SpawnControlWindow()
 void PointLight::Reset()
 {
 	pcbData = {
-		{-50.0f, 80.0f, -70.0f},
+		{0.0f, 80.0f, -70.0f},
 		{0.05f, 0.05f, 0.05f},
 		{1.0f, 1.0f, 1.0f},
 		10.0f,

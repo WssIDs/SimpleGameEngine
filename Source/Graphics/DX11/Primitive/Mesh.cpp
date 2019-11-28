@@ -326,5 +326,10 @@ void Model::ShowWindow(const char* windowName /*= nullptr*/)
 	pWindow->Show(windowName, *pRoot);
 }
 
+void Model::SetRootTransform(DirectX::FXMMATRIX transform)
+{
+	pRoot->SetTransform(transform);
+}
+
 Model::~Model()
 {}

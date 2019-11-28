@@ -24,6 +24,10 @@ ApplicationWindow::ApplicationWindow(int width, int height,const std::string& na
 	light(Gfx(), 5.0f)
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
+	
+	model.SetRootTransform(dx::XMMatrixTranslation(-60.0f, 50.0f, 0.0f));
+	plane.SetPosition({ 60.f,50.0f,0.0f });
+
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
 }
 
@@ -60,6 +64,7 @@ void ApplicationWindow::onUpdate()
 
 
 	model.Draw(Gfx());
+	plane.Draw(Gfx());
 	light.Draw(Gfx());
 
 	while (const auto e = keyboardInput.ReadKey())
@@ -69,9 +74,8 @@ void ApplicationWindow::onUpdate()
 			continue;
 		}
 
-		switch (e->GetCode())
+		if (keyboardInput.KeyIsPressed(VK_SHIFT) && keyboardInput.KeyIsPressed(VK_F1))
 		{
-		case VK_ESCAPE:
 			if (IsCursorEnabled())
 			{
 				DisableCursor();
@@ -82,11 +86,14 @@ void ApplicationWindow::onUpdate()
 				EnableCursor();
 				mouseInput.DisableRaw();
 			}
-			break;
-		case VK_F1:
-			showDemoWindow = true;
+		}
+
+		if (keyboardInput.KeyIsPressed(VK_F2))
+		{	
+			showDemoWindow = !showDemoWindow;
 		}
 	}
+
 
 	if(!IsCursorEnabled())
 	{
@@ -131,6 +138,7 @@ void ApplicationWindow::onUpdate()
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
 	model.ShowWindow("Wall");
+	plane.SpawnControlWindow(Gfx());
 	//ShowRawInputWindow();
 
 	Gfx().EndFrame(); // EndFrame

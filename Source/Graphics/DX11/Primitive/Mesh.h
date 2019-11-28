@@ -51,6 +51,7 @@ public:
 	Model(Graphics& gfx, const std::string fileName);
 	void Draw(Graphics& gfx) const;
 	void ShowWindow(const char* windowName = nullptr);
+	void SetRootTransform(DirectX::FXMMATRIX transform);
 	~Model();
 private:
 	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials);

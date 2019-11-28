@@ -35,10 +35,8 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 tangen
         );
         
         const float3 normalSample = nmap.Sample(splr, texCoord).xyz;
-        viewNormal.x = normalSample.x * 2.0f - 1.0f;
-        viewNormal.y = -normalSample.y * 2.0f + 1.0f;
-        viewNormal.z = -normalSample.z;
-        viewNormal.z = normalSample.z;
+        viewNormal = normalSample * 2.0f - 1.0f;
+        viewNormal.y = -viewNormal.y;
         // bring normal from tanspace into view space
         viewNormal = mul(viewNormal, tanToView);
     }
