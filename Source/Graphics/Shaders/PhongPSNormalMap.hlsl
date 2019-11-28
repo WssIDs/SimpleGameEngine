@@ -17,6 +17,12 @@ cbuffer ObjectConstantBuffer
     float padding[1];
 };
 
+cbuffer TransformConstantBuffer
+{
+    matrix modelView;
+    matrix modelViewProj;
+};
+
 Texture2D tex;
 Texture2D nmap;
 
@@ -31,6 +37,8 @@ float4 main(float3 worldPos : Position, float3 viewNormal : Normal, float2 texCo
         viewNormal.x = normalSample.x * 2.0f - 1.0f;
         viewNormal.y = -normalSample.y * 2.0f + 1.0f;
         viewNormal.z = -normalSample.z;
+        viewNormal = mul(viewNormal, (float3x3) modelView);
+
     }
     
     

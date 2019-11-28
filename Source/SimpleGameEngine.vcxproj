@@ -240,6 +240,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="ThirdParty\Imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.cpp" />
     <ClCompile Include="Windows\Launch\Window\ApplicationWindow.cpp" />
     <ClCompile Include="Windows\Input\KeyboardInput.cpp" />
     <ClCompile Include="Windows\Input\MouseInput.cpp" />
@@ -522,6 +523,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="ThirdParty\Imgui\imstb_textedit.h" />
     <ClInclude Include="ThirdParty\Imgui\imstb_truetype.h" />
     <ClInclude Include="Graphics\DX11\Render\Vertex.h" />
+    <ClInclude Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.h" />
     <ClInclude Include="Windows\Launch\Window\ApplicationWindow.h" />
     <ClInclude Include="Windows\Input\KeyboardInput.h" />
     <ClInclude Include="Windows\Input\MouseInput.h" />

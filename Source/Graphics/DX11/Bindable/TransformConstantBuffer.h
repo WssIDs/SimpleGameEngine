@@ -7,7 +7,7 @@ namespace Bind
 {
 	class TransformConstantBuffer : public Bindable
 	{
-	private:
+	protected:
 		struct Transforms
 		{
 			DirectX::XMMATRIX modelViewProj;
@@ -15,8 +15,11 @@ namespace Bind
 		};
 	public:
 		TransformConstantBuffer(Graphics& gfx, const Drawable& parent, UINT slot = 0u);
-		virtual void Bind(Graphics& gfx) override;
+		void Bind(Graphics& gfx) override;
 
+	protected:
+		void UpdateBind(Graphics& gfx, const Transforms& transforms);
+		Transforms GetTransforms(Graphics& gfx);
 	private:
 		static std::unique_ptr<VertexConstantBuffer<Transforms>> pVertexConstantBuffer;
 		const Drawable& Parent;

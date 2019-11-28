@@ -15,18 +15,25 @@ namespace Bind
 
 	void TransformConstantBuffer::Bind(Graphics& gfx)
 	{
+		UpdateBind(gfx, GetTransforms(gfx));
+	}
+
+	void TransformConstantBuffer::UpdateBind(Graphics& gfx, const Transforms& transforms)
+	{
+		pVertexConstantBuffer->Update(gfx, transforms);
+		pVertexConstantBuffer->Bind(gfx);
+	}
+
+	Bind::TransformConstantBuffer::Transforms TransformConstantBuffer::GetTransforms(Graphics& gfx)
+	{
 		const auto modelView = Parent.GetTransformXM() * gfx.GetCamera();
-		const Transforms tf =
-		{
+		return	{
 			DirectX::XMMatrixTranspose(modelView),
 			DirectX::XMMatrixTranspose(
 				modelView *
 				gfx.GetProjection()
 			)
 		};
-
-		pVertexConstantBuffer->Update(gfx, tf);
-		pVertexConstantBuffer->Bind(gfx);
 	}
 
 	std::unique_ptr<VertexConstantBuffer<TransformConstantBuffer::Transforms>> TransformConstantBuffer::pVertexConstantBuffer;
