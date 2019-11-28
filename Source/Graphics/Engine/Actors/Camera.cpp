@@ -58,7 +58,7 @@ void Camera::Reset()
 void Camera::Rotate(float dx, float dy)
 {
 	const auto angle = yaw + dx * rotationspeed;
-	yaw = wrap_angle(angle);
+	yaw = WGMath::WrapAngle(angle);
 	pitch = std::clamp(pitch + dy * rotationspeed, 0.995f * -PI / 2.0f, 0.995f * PI / 2.0f);
 }
 
