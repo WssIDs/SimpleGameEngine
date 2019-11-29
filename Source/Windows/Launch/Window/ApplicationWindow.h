@@ -32,8 +32,9 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 
-	Model model{ Gfx(), BASE_MODELS_DIR + "Wall.fbx" };
-	TestPlane plane {Gfx(), 50.0f };
+	//Model model{ Gfx(), BASE_MODELS_DIR + "Wall.fbx" };
+	Model girl{ Gfx(), BASE_MODELS_DIR + "Girl.fbx" };
+	//TestPlane plane {Gfx(), 50.0f };
 };
 
 

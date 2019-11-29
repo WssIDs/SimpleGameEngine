@@ -25,8 +25,8 @@ ApplicationWindow::ApplicationWindow(int width, int height,const std::string& na
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
 	
-	model.SetRootTransform(dx::XMMatrixTranslation(-60.0f, 50.0f, 0.0f));
-	plane.SetPosition({ 60.f,50.0f,0.0f });
+	//model.SetRootTransform(dx::XMMatrixTranslation(-60.0f, 50.0f, 0.0f));
+	//plane.SetPosition({ 60.f,50.0f,0.0f });
 
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
 }
@@ -63,8 +63,9 @@ void ApplicationWindow::onUpdate()
 	light.Bind(Gfx(), camera.GetMatrix());
 
 
-	model.Draw(Gfx());
-	plane.Draw(Gfx());
+	//model.Draw(Gfx());
+	//plane.Draw(Gfx());
+	girl.Draw(Gfx());
 	light.Draw(Gfx());
 
 	while (const auto e = keyboardInput.ReadKey())
@@ -137,8 +138,9 @@ void ApplicationWindow::onUpdate()
 	camera.SpawnControlWindow();
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
-	model.ShowWindow("Wall");
-	plane.SpawnControlWindow(Gfx());
+	//model.ShowWindow("Wall");
+	girl.ShowWindow("Girl");
+	//plane.SpawnControlWindow(Gfx());
 	//ShowRawInputWindow();
 
 	Gfx().EndFrame(); // EndFrame

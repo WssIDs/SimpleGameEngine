@@ -181,61 +181,55 @@ Model::Model(Graphics& gfx, const std::string fileName)
 		aiProcess_CalcTangentSpace
 	);
 
-	for (size_t i = 0; i < pScene->mNumMeshes; i++)
+	if(pScene)
 	{
-		meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials));
-	}
+		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Scene from file = %s", fileName.c_str());
 
-	int nextId = 0;
-	pRoot = ParseNode(nextId, *pScene->mRootNode);
+		for (size_t i = 0; i < pScene->mNumMeshes; i++)
+		{
+			meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials));
+		}
+
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Loading Meshes", fileName.c_str());
+		int nextId = 0;
+		pRoot = ParseNode(nextId, *pScene->mRootNode);
+		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Meshes", fileName.c_str());
+		WGE_LOG(MeshLog, LogVerbosity::Default, "----------------------------------");
+	}
+	else
+	{
+		WGE_LOG(MeshLog, LogVerbosity::Error, "Failed Loading Scene from file = %s", fileName.c_str());
+	}
 }
 
 std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials)
 {
+	WGE_LOG(MeshLog, LogVerbosity::Default, "----------------------------------");
+	WGE_LOG(MeshLog, LogVerbosity::Default, "Start parse mesh = %s", mesh.mName.C_Str());
+
 	using DynamicVtx::VertexLayout;
 
-	DynamicVtx::VertexBuffer vertexBuffer(std::move(
-		VertexLayout{}
-		.Append(DynamicVtx::ElementType::Position3D)
-		.Append(DynamicVtx::ElementType::Normal)
-		.Append(DynamicVtx::ElementType::Tangent)
-		.Append(DynamicVtx::ElementType::Bitangent)
-		.Append(DynamicVtx::ElementType::Texture2D)
-	));
-
-	for (unsigned int i = 0; i < mesh.mNumVertices; i++)
-	{
-		vertexBuffer.EmplaceBack(
-			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mVertices[i]),
-			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
-			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
-			*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]),
-			*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
-		);
-	}
-
-	std::vector<unsigned short> indices;
-	int indicesReserved = mesh.mNumFaces * 3;
-	indices.reserve(indicesReserved);
-	for (unsigned int i = 0; i < mesh.mNumFaces; i++)
-	{
-		const auto& face = mesh.mFaces[i];
-		assert(face.mNumIndices == 3);
-		indices.push_back(face.mIndices[0]);
-		indices.push_back(face.mIndices[1]);
-		indices.push_back(face.mIndices[2]);
-	}
-
 	std::vector<std::shared_ptr<Bind::Bindable>> bindablePtrs;
+
+	bool bDiffuseMap = false;
 	bool bSpecularMap = false;
-	
+	bool bNormalMap = false;
 	float shininess = 35.0f;
+
 	if (mesh.mMaterialIndex >= 0)
 	{
 		auto& material = *pMaterials[mesh.mMaterialIndex];
 		aiString texFileName;
-		material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName);
-		bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str()));
+		
+		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str()));
+			bDiffuseMap = true;
+		}
+		else
+		{
+			WGE_LOG(MeshLog, LogVerbosity::Warning, "DiffuseMap not loaded");
+		}
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 		{
@@ -244,51 +238,272 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		}
 		else
 		{
+			WGE_LOG(MeshLog, LogVerbosity::Warning, "SpecularMap not loaded");
 			material.Get(AI_MATKEY_SHININESS, shininess);
 		}
 
-		material.GetTexture(aiTextureType_NORMALS, 0, &texFileName);
-		bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 2));
+		if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
+		{
+			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 2));
+			bNormalMap = true;
+		}
+		else
+		{
+			WGE_LOG(MeshLog, LogVerbosity::Warning, "NormalMap not loaded");
+		}
 
 		if (material.GetTexture(aiTextureType_SHININESS, 0, &texFileName) == aiReturn_SUCCESS)
 		{
 			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 3));
 		}
+		else
+		{
+			WGE_LOG(MeshLog, LogVerbosity::Warning, "ShininessMap not loaded");
+		}
 
-		bindablePtrs.push_back(Bind::Sampler::Resolve(gfx));
+		if (bDiffuseMap || bNormalMap || bSpecularMap)
+		{
+			bindablePtrs.push_back(Bind::Sampler::Resolve(gfx));
+		}
+	}
+	else
+	{
+		WGE_LOG(MeshLog, LogVerbosity::Warning, "Mesh - % hasn't materials", mesh.mName.C_Str());
 	}
 
 	auto meshTag = BASE_MODELS_DIR + "%" + mesh.mName.C_Str();
 
-	bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+	const float scale = 1.0f;
 
-	bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
-
-	auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
-	auto pvsbc = pvs->GetByteCode();
-	bindablePtrs.push_back(std::move(pvs));
-
-	bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
-
-	if(bSpecularMap)
+	if(bDiffuseMap && bNormalMap && bSpecularMap)
 	{
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseNormalSpecular");
+
+		DynamicVtx::VertexBuffer vertexBuffer(std::move(
+			VertexLayout{}
+			.Append(DynamicVtx::ElementType::Position3D)
+			.Append(DynamicVtx::ElementType::Normal)
+			.Append(DynamicVtx::ElementType::Tangent)
+			.Append(DynamicVtx::ElementType::Bitangent)
+			.Append(DynamicVtx::ElementType::Texture2D)
+		));
+
+		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
+		{
+			vertexBuffer.EmplaceBack(
+				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y *scale, mesh.mVertices[i].z * scale),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]),
+				*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
+			);
+		}
+
+		std::vector<unsigned short> indices;
+		int indicesReserved = mesh.mNumFaces * 3;
+		indices.reserve(indicesReserved);
+		for (unsigned int i = 0; i < mesh.mNumFaces; i++)
+		{
+			const auto& face = mesh.mFaces[i];
+			assert(face.mNumIndices == 3);
+			indices.push_back(face.mIndices[0]);
+			indices.push_back(face.mIndices[1]);
+			indices.push_back(face.mIndices[2]);
+		}
+
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+
+		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
+		auto pvsbc = pvs->GetByteCode();
+		bindablePtrs.push_back(std::move(pvs));
+
 		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSSpecularNormalMap.cso"));
-	}
-	else
-	{
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR +  "PhongPSNormalMap.cso"));
 
-		struct PSMaterialConstant
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+
+		struct PSMaterialConstantFull
+		{
+			bool normalMapEnabled = true;
+			float padding[3] = { 0.0f, 0.0f, 0.0f };
+		} pmc;
+
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantFull>::Resolve(gfx, pmc, 1u));
+	}
+	else if (bDiffuseMap && bNormalMap)
+	{
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseNormal");
+
+		DynamicVtx::VertexBuffer vertexBuffer(std::move(
+			VertexLayout{}
+			.Append(DynamicVtx::ElementType::Position3D)
+			.Append(DynamicVtx::ElementType::Normal)
+			.Append(DynamicVtx::ElementType::Tangent)
+			.Append(DynamicVtx::ElementType::Bitangent)
+			.Append(DynamicVtx::ElementType::Texture2D)
+		));
+
+		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
+		{
+			vertexBuffer.EmplaceBack(
+				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]),
+				*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
+			);
+		}
+
+		std::vector<unsigned short> indices;
+		int indicesReserved = mesh.mNumFaces * 3;
+		indices.reserve(indicesReserved);
+		for (unsigned int i = 0; i < mesh.mNumFaces; i++)
+		{
+			const auto& face = mesh.mFaces[i];
+			assert(face.mNumIndices == 3);
+			indices.push_back(face.mIndices[0]);
+			indices.push_back(face.mIndices[1]);
+			indices.push_back(face.mIndices[2]);
+		}
+
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+
+		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
+		auto pvsbc = pvs->GetByteCode();
+		bindablePtrs.push_back(std::move(pvs));
+
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSNormalMap.cso"));
+
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+
+		struct PSMaterialConstantDiffuseNormal
 		{
 			float specularIntensity = 0.18f;
 			float specularPower = 0.0f;
-			float padding[2] = {0.0f, 0.0f};
+			bool  normalMapEnabled = true;
+			float padding[1] = { 0.0f };
 		} pmc;
 
 		pmc.specularPower = shininess;
-
-		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstant>::Resolve(gfx, pmc, 1u));
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuseNormal>::Resolve(gfx, pmc, 1u));
 	}
+	else if (bDiffuseMap)
+	{
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = Diffuse");
+
+		DynamicVtx::VertexBuffer vertexBuffer(std::move(
+			VertexLayout{}
+			.Append(DynamicVtx::ElementType::Position3D)
+			.Append(DynamicVtx::ElementType::Normal)
+			.Append(DynamicVtx::ElementType::Texture2D)
+		));
+
+		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
+		{
+			vertexBuffer.EmplaceBack(
+				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+				*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
+			);
+		}
+
+		std::vector<unsigned short> indices;
+		int indicesReserved = mesh.mNumFaces * 3;
+		indices.reserve(indicesReserved);
+		for (unsigned int i = 0; i < mesh.mNumFaces; i++)
+		{
+			const auto& face = mesh.mFaces[i];
+			assert(face.mNumIndices == 3);
+			indices.push_back(face.mIndices[0]);
+			indices.push_back(face.mIndices[1]);
+			indices.push_back(face.mIndices[2]);
+		}
+
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+
+		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVS.cso");
+		auto pvsbc = pvs->GetByteCode();
+		bindablePtrs.push_back(std::move(pvs));
+
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPS.cso"));
+
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+
+		struct PSMaterialConstantDiffuse
+		{
+			float specularIntensity = 0.18f;
+			float specularPower = 0.0f;
+			float padding[2] = { 0.0f, 0.0f };
+		} pmc;
+
+		pmc.specularPower = shininess;
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuse>::Resolve(gfx, pmc, 1u));
+	}
+	else if (!bDiffuseMap && !bNormalMap && !bSpecularMap)
+	{
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = NoTextures");
+
+		DynamicVtx::VertexBuffer vertexBuffer(std::move(
+			VertexLayout{}
+			.Append(DynamicVtx::ElementType::Position3D)
+			.Append(DynamicVtx::ElementType::Normal)
+		));
+
+		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
+		{
+			vertexBuffer.EmplaceBack(
+				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i])
+			);
+		}
+
+		std::vector<unsigned short> indices;
+		int indicesReserved = mesh.mNumFaces * 3;
+		indices.reserve(indicesReserved);
+		for (unsigned int i = 0; i < mesh.mNumFaces; i++)
+		{
+			const auto& face = mesh.mFaces[i];
+			assert(face.mNumIndices == 3);
+			indices.push_back(face.mIndices[0]);
+			indices.push_back(face.mIndices[1]);
+			indices.push_back(face.mIndices[2]);
+		}
+
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+
+		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNotex.cso");
+		auto pvsbc = pvs->GetByteCode();
+		bindablePtrs.push_back(std::move(pvs));
+
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSNotex.cso"));
+
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+
+		struct PSMaterialConstantNotex
+		{
+			dx::XMFLOAT4 materialColor = { 0.65f,0.65f,0.85f,1.0f };
+			float specularIntensity = 0.18f;
+			float specularPower = 0.0f;
+			float padding[2] = { 0.0f, 0.0f };
+		} pmc;
+
+		pmc.specularPower = shininess;
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantNotex>::Resolve(gfx, pmc, 1u));
+	}
+	else
+	{
+		WGE_LOG(MeshLog, LogVerbosity::Fatal, "Terrible combination of textures in material smh");
+		throw std::runtime_error("Terrible combination of textures in material smh");
+	}
+
+	WGE_LOG(MeshLog, LogVerbosity::Default, "End parse mesh = %s", mesh.mName.C_Str());
 
 	return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
 }
