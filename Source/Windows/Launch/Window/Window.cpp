@@ -292,7 +292,9 @@ void Window::ResizeConsole(Size size)
 			WGE_LOG(WindowLog, LogVerbosity::Error, "SetConsoleWindowInfo, code = %d", (int)GetLastError());
 		}
 
-		COORD screenBuffer = { widthClamped, heightClamped };
+		auto heightBuffer = (SHORT)(heightClamped * 500);
+
+		COORD screenBuffer = { widthClamped, heightBuffer };
 
 		if (SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), screenBuffer))
 		{
@@ -311,8 +313,6 @@ void Window::ResizeConsole(Size size)
 		WGE_LOG(WindowLog, LogVerbosity::Warning, "dwSize.Y = %i", screencsbi.dwSize.Y);
 		WGE_LOG(WindowLog, LogVerbosity::Warning, "srWindow.Bottom = %i", screencsbi.srWindow.Bottom);
 		WGE_LOG(WindowLog, LogVerbosity::Warning, "srWindow.Right = %i", screencsbi.srWindow.Right);
-		WGE_LOG(WindowLog, LogVerbosity::Warning, "SetConsoleWindowInfo, SetConsoleScreenBufferSize");
-		WGE_LOG(WindowLog, LogVerbosity::Warning, "Cannot recognise console windows or buffer size!");
 	}
 	else
 	{
