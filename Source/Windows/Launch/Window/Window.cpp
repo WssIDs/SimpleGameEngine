@@ -225,9 +225,9 @@ void Window::InitConsole(std::string& title)
 		{
 			FILE* fs;
 			SetConsoleTitle(title.c_str());
-			freopen_s(&fs, "CON", "w", stdout);
-			freopen_s(&fs, "CIN", "r", stdin);
-			freopen_s(&fs, "CIN", "w", stderr);
+			freopen_s(&fs, "CONOUT$", "w", stdout);
+			freopen_s(&fs, "CONIN$", "r", stdin);
+			freopen_s(&fs, "CONOUT$", "w", stderr);
 			WGE_LOG(WindowLog, LogVerbosity::Default, "Init Console");
 
 			SetConsoleCtrlHandler(CtrlHandler, TRUE);
