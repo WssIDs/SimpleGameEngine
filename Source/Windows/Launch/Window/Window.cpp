@@ -53,7 +53,7 @@ Window::Window(int width, int height,const std::string& name)
 
 	std::string logConsoleName = "WGEngine Log";
 
-	InitConsole(logConsoleName, Position(0,0), Size(1024,768));
+	InitConsole(logConsoleName, Position(0,0), Size(1100,350));
 
 	RECT wr;
 

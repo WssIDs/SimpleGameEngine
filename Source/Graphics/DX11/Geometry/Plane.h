@@ -48,7 +48,8 @@ public:
 		}
 
 		std::vector<unsigned short> indices;
-		indices.reserve(WGMath::Multiply(divisions_x * divisions_y) * 6);
+		int indicesReserved = WGMath::Multiply(divisions_x * divisions_y) * 6;
+		indices.reserve(indicesReserved);
 		{
 			const auto vxy2i = [nVertices_x](size_t x, size_t y)
 			{

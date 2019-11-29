@@ -61,3 +61,6 @@ private:
 	std::vector<std::unique_ptr<Mesh>> meshPtrs;
 	std::unique_ptr<class ModelWindow> pWindow;
 };
+
+
+DECLARE_LOG_CATEGORY_EXTERN(MeshLog)

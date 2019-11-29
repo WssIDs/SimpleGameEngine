@@ -7,6 +7,9 @@
 #include "..\Render\Surface.h"
 #include "Windows\Logger\LogDefinitions.h"
 
+
+DEFINE_LOG_CATEGORY(MeshLog)
+
 namespace dx = DirectX;
 
 // Mesh
@@ -149,7 +152,7 @@ public:
 	}
 
 private:
-	Node* pSelectedNode;
+	Node* pSelectedNode = nullptr;
 	struct TransformParameters
 	{
 		float roll = 0.0f;
@@ -212,7 +215,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 	}
 
 	std::vector<unsigned short> indices;
-	indices.reserve(mesh.mNumFaces * 3);
+	int indicesReserved = mesh.mNumFaces * 3;
+	indices.reserve(indicesReserved);
 	for (unsigned int i = 0; i < mesh.mNumFaces; i++)
 	{
 		const auto& face = mesh.mFaces[i];
@@ -277,8 +281,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		struct PSMaterialConstant
 		{
 			float specularIntensity = 0.18f;
-			float specularPower;
-			float padding[2];
+			float specularPower = 0.0f;
+			float padding[2] = {0.0f, 0.0f};
 		} pmc;
 
 		pmc.specularPower = shininess;

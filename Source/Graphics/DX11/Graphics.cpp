@@ -62,7 +62,7 @@ void Graphics::InitDX11(HWND hWnd)
 
 
 
-	D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+	auto  FeatureLevelsRequested = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 	UINT               numLevelsRequested = 1;
 	D3D_FEATURE_LEVEL  FeatureLevelsSupported;
 
@@ -143,6 +143,10 @@ void Graphics::InitDX11(HWND hWnd)
 
 void Graphics::InitDX11_1(HWND hWnd)
 {
+	auto  FeatureLevelsRequested = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+	UINT               numLevelsRequested = 1;
+	D3D_FEATURE_LEVEL  FeatureLevelsSupported;
+
 	// Define temporary pointers to a device and a device context
 	wrl::ComPtr<ID3D11Device> dev11;
 	wrl::ComPtr<ID3D11DeviceContext> devcon11;
@@ -152,12 +156,12 @@ void Graphics::InitDX11_1(HWND hWnd)
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		0,
-		nullptr,
-		0,
+		D3D11_CREATE_DEVICE_DEBUG,
+		&FeatureLevelsRequested,
+		numLevelsRequested,
 		D3D11_SDK_VERSION,
 		&dev11,
-		nullptr,
+		&FeatureLevelsSupported,
 		&devcon11);
 
 	// Convert the pointers from the DirectX 11 versions to the DirectX 11.1 versions
@@ -338,8 +342,9 @@ void Graphics::PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL:
 	}
 
 	WGE_LOG(LogD3D11_1RHI, LogVerbosity::Default, "%s Adapters", versionName.c_str());
-
+	
 	wrl::ComPtr<IDXGIAdapter> dxgiAdapter;
+	//dxgiAdapter->CheckInterfaceSupport()
 	int chosenAdapter = 0;
 	for (UINT i = 0; dxgiFactory->EnumAdapters(i, &dxgiAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
 	{
@@ -363,8 +368,8 @@ void Graphics::PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL:
 		auto delicatedSystemMemory = dad.DedicatedSystemMemory / MiB;
 		auto sharedSystemMemory = dad.SharedSystemMemory / MiB;
 
-		WGE_LOG(LogD3D11_1RHI, LogVerbosity::Default, "    %lu/%lu/%lu MB DedicatedVideo/DedicatedSystem/SharedSystem, Outputs:%d, VendorId:%s",
-			delicatedVideoMemory, delicatedSystemMemory, sharedSystemMemory, output, std::to_string(dad.VendorId).c_str());
+		WGE_LOG(LogD3D11_1RHI, LogVerbosity::Default, "    %lu/%lu/%lu MB DedicatedVideo/DedicatedSystem/SharedSystem, Outputs:%d, VendorId:%04x(%d)",
+			delicatedVideoMemory, delicatedSystemMemory, sharedSystemMemory, output, dad.VendorId, dad.VendorId);
 	}
 
 	WGE_LOG(LogD3D11_1RHI, LogVerbosity::Success, "Chosen %s Adapter: %d", versionName.c_str(), chosenAdapter);
