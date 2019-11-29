@@ -288,6 +288,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
     <ClInclude Include="Graphics\DX11\Primitive\TestPlane.h" />
     <ClInclude Include="Graphics\DX11\Primitive\TestCube.h" />
+    <ClInclude Include="Graphics\Helpers\StringHelper.h" />
     <ClInclude Include="ThirdParty\Assimp\aabb.h" />
     <ClInclude Include="ThirdParty\Assimp\ai_assert.h" />
     <ClInclude Include="ThirdParty\Assimp\anim.h" />

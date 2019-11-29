@@ -448,6 +448,7 @@
     <ClInclude Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.h" />
     <ClInclude Include="Graphics\DX11\Geometry\Cube.h" />
     <ClInclude Include="Graphics\DX11\Primitive\TestCube.h" />
+    <ClInclude Include="Graphics\Helpers\StringHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

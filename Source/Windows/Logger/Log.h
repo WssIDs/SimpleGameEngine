@@ -40,13 +40,18 @@ public:
 
 	~Log();
 	
-	void print(std::string logText, ...);
+	void InternalMsg(std::string format, ...);
 
-	void print(std::string logName, LogVerbosity logVerbosity, std::string logText, ...);
+	void InternalMsg(std::string logCategory, LogVerbosity logVerbosity,const std::string format, ...);
 
 	static Log* get();
 	
 private:
+
+	void Test()
+	{
+
+	}
 
 	bool is_opened;
 	

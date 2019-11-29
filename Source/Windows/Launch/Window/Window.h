@@ -75,8 +75,40 @@ private:
 	void onCreate();
 	void onDestroy();
 
-	//Console Init
-	void InitConsole(std::string title);
+	// position window
+	struct Position
+	{
+		int Left;
+		int Top;
+
+		Position(int left, int top)
+		{
+			Left = left;
+			Top = top;
+		}
+	};
+	// size window
+	struct Size
+	{
+		int Width;
+		int Height;
+
+		Size(int width, int height)
+		{
+			Width = width;
+			Height = height;
+		}
+	};
+
+	// Create console window
+	void InitConsole(std::string& title);
+	void InitConsole(std::string& title, Position position);
+	void InitConsole(std::string& title, Size size);
+	void InitConsole(std::string& title, Position position, Size size);
+
+	void MoveConsole(Position position);
+	void ResizeConsole(Size size);
+
 	static BOOL WINAPI CtrlHandler(DWORD fdwCtrlType);
 
 	static LRESULT CALLBACK handleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

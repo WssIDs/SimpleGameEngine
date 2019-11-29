@@ -15,6 +15,13 @@ struct WGMath
 		return x * x;
 	}
 
+	// Возвести в степень
+	template<typename T>
+	static FORCEINLINE auto Pow(const T& x, int exp)
+	{
+		return pow(x,exp);
+	}
+
 	// Получить угол охвата
 	template<typename T>
 	static FORCEINLINE T WrapAngle(T theta)
@@ -30,6 +37,12 @@ struct WGMath
 	static FORCEINLINE T Interpolate(const T& src, const T& dst, float alpha)
 	{
 		return src + (dst - src) * alpha;
+	}
+
+	template<typename T>
+	static FORCEINLINE T MapRangeClamped(const T& value, const T& inMin, const T& inMax, const T& outMin, const T& outMax)
+	{
+		return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 	}
 
 	// Перевести в радианы

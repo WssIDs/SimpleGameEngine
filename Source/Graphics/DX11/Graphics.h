@@ -12,6 +12,13 @@ namespace Bind
 	class Bindable;
 }
 
+enum class DirectVersionName
+{
+	DirectX11,
+	DirectX11_1,
+	DirectX12
+};
+
 
 class Graphics
 {
@@ -47,6 +54,8 @@ public:
 
 private:
 
+	void PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId);
+
 	int width;
 	int height;
 
@@ -64,3 +73,4 @@ private:
 
 
 DECLARE_LOG_CATEGORY_EXTERN(GraphicsLog);
+DECLARE_LOG_CATEGORY_EXTERN(LogD3D11_1RHI);

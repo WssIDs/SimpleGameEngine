@@ -8,7 +8,7 @@
  * @param Format some logging text with args
  *  example "SomeText %d %s", int number, std::string name.c_str()
 **/
-#define WGE_LOG_MAIN(Format,...) Log::get()->print(Format, ##__VA_ARGS__)
+#define WGE_LOG_MAIN(Format,...) Log::get()->InternalMsg(Format, ##__VA_ARGS__)
 
 /**
  * @param CategoryName name of the logging category
@@ -16,7 +16,7 @@
  * @param Format some logging text with args
  *  example "SomeText %d %s", int number, std::string name.c_str() 
 **/
-#define WGE_LOG(CategoryName, LogVerbosity, Format,...) Log::get()->print(CategoryName.GetCategoryName(), LogVerbosity, Format, ##__VA_ARGS__)
+#define WGE_LOG(CategoryName, LogVerbosity, Format,...) Log::get()->InternalMsg(CategoryName.GetCategoryName(), LogVerbosity, Format, ## __VA_ARGS__)
 
 /** Declare log category. Used only header files
  * @param CategoryName name of the logging category

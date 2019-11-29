@@ -4,9 +4,12 @@
 #include "Windows/Logger/LogDefinitions.h"
 #include "Imgui/imgui_impl_dx11.h"
 #include <ThirdParty\Imgui\imgui_impl_win32.h>
+#include "../Helpers/StringHelper.h"
+#include "Math/WGMath.h"
 
 
 DEFINE_LOG_CATEGORY(GraphicsLog);
+DEFINE_LOG_CATEGORY(LogD3D11_1RHI);
 
 namespace wrl = Microsoft::WRL;
 
@@ -172,7 +175,11 @@ void Graphics::InitDX11_1(HWND hWnd)
 	// Third, use the IDXGIAdapter interface to get access to the factory
 	wrl::ComPtr<IDXGIFactory2> dxgiFactory;
 	dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), &dxgiFactory);
+	DXGI_ADAPTER_DESC dad = { 0 };
+	dxgiAdapter->GetDesc(&dad);
 
+
+	PrintListAdapters(DirectVersionName::DirectX11_1, dxgiFactory, dad.DeviceId);
 
 	// set up the swap chain description
 	DXGI_SWAP_CHAIN_DESC1 scd = { 0 };
@@ -309,6 +316,58 @@ void Graphics::DisableImgui()
 bool Graphics::IsImguiEnabled() const
 {
 	return imguiEnabled;
+}
+
+void Graphics::PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId)
+{
+	std::string versionName;
+
+	switch (dVersionName)
+	{
+	case DirectVersionName::DirectX11:
+		versionName = "D3D11";
+		break;
+	case DirectVersionName::DirectX11_1:
+		versionName = "D3D11_1";
+		break;
+	case DirectVersionName::DirectX12:
+		versionName = "D3D12";
+		break;
+	default:
+		break;
+	}
+
+	WGE_LOG(LogD3D11_1RHI, LogVerbosity::Default, "%s Adapters", versionName.c_str());
+
+	wrl::ComPtr<IDXGIAdapter> dxgiAdapter;
+	int chosenAdapter = 0;
+	for (UINT i = 0; dxgiFactory->EnumAdapters(i, &dxgiAdapter) != DXGI_ERROR_NOT_FOUND; ++i)
+	{
+		DXGI_ADAPTER_DESC dad = { 0 };
+		dxgiAdapter->GetDesc(&dad);
+		std::wstring wAdapterDesc = dad.Description;
+		std::string adapterDesc = String::ConvertToMultiByte(wAdapterDesc);
+
+		WGE_LOG(LogD3D11_1RHI, LogVerbosity::Default, "%d. '%s' (%s)", i, adapterDesc.c_str(), "Feature Level 11_0");
+
+		int output = 0;
+		if (dad.DeviceId == deviceId)
+		{
+			output = 1;
+			chosenAdapter = i;
+		}
+
+		auto MiB = (long)WGMath::Pow(2, 20);
+
+		auto delicatedVideoMemory = dad.DedicatedVideoMemory / MiB;
+		auto delicatedSystemMemory = dad.DedicatedSystemMemory / MiB;
+		auto sharedSystemMemory = dad.SharedSystemMemory / MiB;
+
+		WGE_LOG(LogD3D11_1RHI, LogVerbosity::Default, "    %lu/%lu/%lu MB DedicatedVideo/DedicatedSystem/SharedSystem, Outputs:%d, VendorId:%s",
+			delicatedVideoMemory, delicatedSystemMemory, sharedSystemMemory, output, std::to_string(dad.VendorId).c_str());
+	}
+
+	WGE_LOG(LogD3D11_1RHI, LogVerbosity::Success, "Chosen %s Adapter: %d", versionName.c_str(), chosenAdapter);
 }
 
 void Graphics::SetProjection(DirectX::XMMATRIX projection)

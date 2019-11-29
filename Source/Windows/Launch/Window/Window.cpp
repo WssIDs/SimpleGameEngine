@@ -4,6 +4,7 @@
 #include "Imgui/imgui_impl_dx11.h"
 #include <iostream>
 #include <sstream>
+#include "Graphics/DX11/Math/WGMath.h"
 
 DEFINE_LOG_CATEGORY(WindowLog);
 
@@ -49,7 +50,10 @@ Window::Window(int width, int height,const std::string& name)
 	height(height)
 {
 	bConsole = true;
-	InitConsole("WGEngine Log");
+
+	std::string logConsoleName = "WGEngine Log";
+
+	InitConsole(logConsoleName, Position(0,0), Size(1024,768));
 
 	RECT wr;
 
@@ -213,7 +217,7 @@ void Window::onDestroy()
 	// When window destroy
 }
 
-void Window::InitConsole(std::string title)
+void Window::InitConsole(std::string& title)
 {
 	if (bConsole)
 	{
@@ -222,6 +226,8 @@ void Window::InitConsole(std::string title)
 			FILE* fs;
 			SetConsoleTitle(title.c_str());
 			freopen_s(&fs, "CON", "w", stdout);
+			freopen_s(&fs, "CIN", "r", stdin);
+			freopen_s(&fs, "CIN", "w", stderr);
 			WGE_LOG(WindowLog, LogVerbosity::Default, "Init Console");
 
 			SetConsoleCtrlHandler(CtrlHandler, TRUE);
@@ -231,6 +237,88 @@ void Window::InitConsole(std::string title)
 			WGE_LOG(WindowLog, LogVerbosity::Error, "Error Console init, Error code = %d", (int)GetLastError());
 		}
 	}
+}
+
+void Window::InitConsole(std::string& title, Size size)
+{
+	InitConsole(title);
+	ResizeConsole(size);
+}
+
+void Window::InitConsole(std::string& title, Position position)
+{
+	InitConsole(title);
+	MoveConsole(position);
+}
+
+void Window::InitConsole(std::string& title, Position position, Size size)
+{
+	InitConsole(title);
+	MoveConsole(position);
+	ResizeConsole(size);
+}
+
+void Window::MoveConsole(Position position)
+{
+	HWND consoleWindow = GetConsoleWindow();
+
+	if (consoleWindow)
+	{
+		SetWindowPos(consoleWindow, nullptr, position.Left, position.Top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
+	else
+	{
+		WGE_LOG(WindowLog, LogVerbosity::Error, "Console not exist, code = %d", (int)GetLastError());
+	}
+}
+
+void Window::ResizeConsole(Size size)
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	if (hConsole)
+	{
+		auto widthClamped = (SHORT)WGMath::MapRangeClamped(size.Width, 1, 1920, 1, 240);
+		auto heightClamped = (SHORT)WGMath::MapRangeClamped(size.Height, 1, 1080, 1, 63);
+
+		SMALL_RECT windowSize = { 0, 0, widthClamped - 1, heightClamped - 1 };
+
+		if (SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &windowSize))
+		{
+			WGE_LOG(WindowLog, LogVerbosity::Success, "SetConsoleWindowInfo");
+		}
+		else
+		{
+			WGE_LOG(WindowLog, LogVerbosity::Error, "SetConsoleWindowInfo, code = %d", (int)GetLastError());
+		}
+
+		COORD screenBuffer = { widthClamped, heightClamped };
+
+		if (SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), screenBuffer))
+		{
+			WGE_LOG(WindowLog, LogVerbosity::Success, "SetConsoleScreenBufferSize");
+		}
+		else
+		{
+			WGE_LOG(WindowLog, LogVerbosity::Error, "SetConsoleScreenBufferSize, code = %d", (int)GetLastError());
+		}
+
+		CONSOLE_SCREEN_BUFFER_INFO screencsbi;
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &screencsbi);
+
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "SetConsoleWindowInfo");
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "dwSize.X = %i", screencsbi.dwSize.X);
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "dwSize.Y = %i", screencsbi.dwSize.Y);
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "srWindow.Bottom = %i", screencsbi.srWindow.Bottom);
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "srWindow.Right = %i", screencsbi.srWindow.Right);
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "SetConsoleWindowInfo, SetConsoleScreenBufferSize");
+		WGE_LOG(WindowLog, LogVerbosity::Warning, "Cannot recognise console windows or buffer size!");
+	}
+	else
+	{
+		WGE_LOG(WindowLog, LogVerbosity::Error, "Console not exist, code = %d", (int)GetLastError());
+	}
+
 }
 
 BOOL WINAPI Window::CtrlHandler(DWORD fdwCtrlType)

@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <stdarg.h>
 #include <sstream>
+#include <memory>
 
 namespace fs = std::filesystem;
 
@@ -54,28 +55,38 @@ Log::Log()
 
 	is_opened = logger_out.is_open();
 
-	print("Log file open, ");
+	InternalMsg("Log file open, ");
 }
 
 Log::~Log()
 {
 	if (is_opened)
 	{
-		print("Log file closed, ");
+		InternalMsg("Log file closed, ");
 		logger_out.close();
 		is_opened = false;
 	}	
 }
 
-void Log::print(std::string logText, ...)
+void Log::InternalMsg(std::string format, ...)
 {
-	va_list Args;
-	va_start(Args, logText);
-	std::string buffer;
-	std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
-	va_end(Args);
+	int final_n, n = ((int)format.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
+	std::unique_ptr<char[]> formatted;
+	va_list ap;
+	while (true) {
+		formatted = std::make_unique<char[]>(n); /* Wrap the plain char array into the unique_ptr */
+		strcpy_s(&formatted[0], n, format.c_str());
+		va_start(ap, format);
+		final_n = vsnprintf(&formatted[0], n, format.c_str(), ap);
+		va_end(ap);
+		if (final_n < 0 || final_n >= n)
+			n += abs(final_n - n + 1);
+		else
+			break;
+	}
+
 	std::stringstream output;
-	output << buffer.c_str() << getCurrentTimeByFormat();
+	output << formatted.get() << getCurrentTimeByFormat();
 
 	if (is_opened)
 	{
@@ -89,35 +100,45 @@ void Log::print(std::string logText, ...)
 #endif // _DEBUG
 }
 
-void Log::print(std::string logName, LogVerbosity logVerbosity, std::string logText, ...)
+void Log::InternalMsg(std::string logCategory, LogVerbosity logVerbosity,const std::string format, ...)
 {
-	va_list Args;
-	va_start(Args, logText);
-	std::string buffer;
-	std::vsnprintf(&buffer[0], 1024, logText.c_str(), Args);
-	va_end(Args);
+	int final_n, n = ((int)format.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
+	std::unique_ptr<char[]> formatted;
+	va_list ap;
+	while (true) {
+		formatted = std::make_unique<char[]>(n); /* Wrap the plain char array into the unique_ptr */
+		strcpy_s(&formatted[0], n, format.c_str());
+		va_start(ap, format);
+		final_n = vsnprintf(&formatted[0], n, format.c_str(), ap);
+		va_end(ap);
+		if (final_n < 0 || final_n >= n)
+			n += abs(final_n - n + 1);
+		else
+			break;
+	}
+
 	std::stringstream output;
+	output << getCurrentTime() << " " << logCategory << ": ";
 
 	switch (logVerbosity)
 	{
 	case LogVerbosity::Default:
-		output << "[Default]";
 		break;
 	case LogVerbosity::Warning:
-		output << "[Warning]";
+		output << "Warning: ";
 		break;
 	case LogVerbosity::Success:
-		output << "[Success]";
+		output << "Success: ";
 		break;
 	case LogVerbosity::Error:
-		output << "[Error]";
+		output << "Error: ";
 		break;
 	case LogVerbosity::Fatal:
-		output << "[Fatal]";
+		output << "Fatal: ";
 		break;
 	}
 
-	output << getCurrentTime() << logName << ": " << buffer.c_str();
+	output << formatted.get();
 
 	if (is_opened)
 	{
