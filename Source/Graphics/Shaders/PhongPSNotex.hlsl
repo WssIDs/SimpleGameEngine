@@ -11,10 +11,9 @@ cbuffer LigthConstantBuffer
 
 cbuffer ObjectConstantBuffer
 {
-    float3 materialColor;
-    float specularIntensity;
+    float4 materialColor;
+    float4 specularColor;
     float specularPower;
-    float padding[2];
 };
 
 float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_TARGET
@@ -32,7 +31,7 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_TARGET
     const float3 vViewer = viewNormal * dot(vectorToLight, viewNormal);
     const float3 vReflect = 2.0f * vViewer - vectorToLight;
     // specular ( angle between viewer vector and reflect vector)
-    const float3 specular = att * (diffuseColor * diffuseIntensity) * specularIntensity * pow(max(0.0f, dot(normalize(-vReflect), normalize(viewPos))), specularPower);
+    const float4 specular = att * (float4(diffuseColor, 1.0f) * diffuseIntensity) * specularColor * pow(max(0.0f, dot(normalize(-vReflect), normalize(viewPos))), specularPower);
 	// final color
-    return float4(saturate((diffuse + ambient) * materialColor + specular), 1.0f);
+    return saturate(float4(diffuse + ambient, 1.0f) * materialColor + specular);
 }
