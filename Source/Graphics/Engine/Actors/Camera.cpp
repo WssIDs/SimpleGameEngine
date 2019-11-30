@@ -18,13 +18,16 @@ DirectX::XMMATRIX Camera::GetMatrix() const
 	const dx::XMVECTOR forwardBaseVector = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	// apply camera ti a base vector
 	const auto lookVector = dx::XMVector3Transform(forwardBaseVector,
-		dx::XMMatrixRotationRollPitchYaw(pitch, yaw, 0.0f)
+		dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll)
 	);
 
 	const auto camPosition = dx::XMLoadFloat3(&pos);
 	const auto camTarget = dx::XMVectorAdd(camPosition, lookVector);
+
+	const dx::XMVECTOR upVector = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
 	//
-	return dx::XMMatrixLookAtLH(camPosition, camTarget, dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	return dx::XMMatrixLookAtLH(camPosition, camTarget, upVector);
 }
 
 void Camera::SpawnControlWindow()
@@ -49,9 +52,9 @@ void Camera::SpawnControlWindow()
 
 void Camera::Reset()
 {
-	pos = { 0.0f, 85.0f, -200.0f };
-	pitch = 0.0f;
-	yaw = 0.0f;
+	pos = { 19.4f, 160.0f, -36.5f };
+	pitch = 0.1f;
+	yaw = -0.8f;
 	roll = 0.0f;
 }
 

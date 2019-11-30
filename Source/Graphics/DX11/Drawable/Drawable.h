@@ -19,7 +19,7 @@ public:
 	void Draw(Graphics& gfx) const;
 	virtual void Update(float deltaSeconds) {}
 	virtual ~Drawable() = default;
-protected:
+
 	template<class T>
 	T* QueryBindable()
 	{
@@ -32,6 +32,7 @@ protected:
 		}
 		return nullptr;
 	}
+protected:
 	void AddBind(std::shared_ptr<Bind::Bindable> bind);
 private:
 	const Bind::IndexBuffer* pIndexBuffer = nullptr;

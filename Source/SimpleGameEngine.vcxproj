@@ -235,6 +235,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\DX11\Primitive\SolidSphere.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\TestPlane.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\TestCube.cpp" />
+    <ClCompile Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_draw.cpp" />
@@ -513,7 +514,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="ThirdParty\DirectXTex\include\BCDirectCompute.h" />
     <ClInclude Include="ThirdParty\DirectXTex\include\d3dx12.h" />
     <ClInclude Include="ThirdParty\DirectXTex\include\DDS.h" />
-    <ClInclude Include="ThirdParty\DirectXTex\include\DDSTextureLoader.h" />
+    <ClInclude Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.h" />
     <ClInclude Include="ThirdParty\DirectXTex\include\DirectXTex.h" />
     <ClInclude Include="ThirdParty\DirectXTex\include\DirectXTexP.h" />
     <ClInclude Include="ThirdParty\DirectXTex\include\filters.h" />

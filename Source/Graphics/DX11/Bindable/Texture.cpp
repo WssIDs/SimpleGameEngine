@@ -1,9 +1,12 @@
 #include "Texture.h"
 #include "Graphics/DX11/Render/Surface.h"
 
-#include "DDSTextureLoader.h"
-#include "DirectXTex.h"
+#include <DirectXTex/Loader/DDSTextureLoader.h>
+//#include "DirectXTex.h"
 #include "BindableCodex.h"
+#include "DirectXTex.h"
+
+#pragma comment(lib, "dxguid.lib")
 
 namespace Bind
 {
@@ -11,7 +14,7 @@ namespace Bind
 
 	Texture::Texture(Graphics& gfx, const std::string& fileName, UINT slot)
 		:
-		path(path),
+		path(fileName),
 		slot(slot)
 	{
 		//if (bSurfaceLoading)
@@ -50,9 +53,13 @@ namespace Bind
 		//}
 		//else
 		//{
-			//DirectX::TexMetadata info;
+			DirectX::TexMetadata info;
 			auto image = std::make_unique<DirectX::ScratchImage>();
-			DirectX::LoadFromTGAFile(std::wstring(fileName.begin(), fileName.end()).c_str(), nullptr, *image);
+			//DirectX::LoadFromTGAFile(std::wstring(path.begin(), path.end()).c_str(), nullptr, *image);
+			DirectX::LoadFromDDSFile(std::wstring(path.begin(), path.end()).c_str(), DirectX::DDS_FLAGS_NONE, &info, *image);
+	
+			bAlpha = DirectX::HasAlpha(info.format);
+
 			DirectX::CreateShaderResourceView(GetDevice(gfx), image->GetImages(), image->GetImageCount(), image->GetMetadata(), &pTextureView);
 		//}
 	}
@@ -76,6 +83,11 @@ namespace Bind
 	std::string Texture::GetUID() const
 	{
 		return GenerateUID(path, slot);
+	}
+
+	bool Texture::HasAlpha() const
+	{
+		return bAlpha;
 	}
 
 }

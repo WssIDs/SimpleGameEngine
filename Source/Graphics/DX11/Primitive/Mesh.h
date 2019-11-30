@@ -25,6 +25,19 @@ private:
 class Node
 {
 	friend class Model;
+public:
+
+	struct PSMaterialConstantFull
+	{
+		BOOL normalMapEnabled = TRUE;
+		BOOL specularMapEnabled = TRUE;
+		BOOL specularMapAlpha = FALSE;
+		BOOL glossinesMapEnabled = TRUE;
+		float specularPower = 3.1f;
+		DirectX::XMFLOAT3 specularColor = { 0.75f,0.75f,0.75f };
+		float specularWeight = 0.67f;
+		float padding[3];
+	};
 
 public:
 	Node(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& inTransform);
@@ -32,6 +45,7 @@ public:
 	void SetTransform(DirectX::FXMMATRIX inTransform);
 	int GetId() const;
 	void ShowTree(Node*& pSelectedNode) const;
+	void ControlMaterial(Graphics& gfx, PSMaterialConstantFull& c);
 private:
 	void AddChild(std::unique_ptr<Node> pChild);
 
@@ -50,7 +64,7 @@ class Model
 public:
 	Model(Graphics& gfx, const std::string fileName);
 	void Draw(Graphics& gfx) const;
-	void ShowWindow(const char* windowName = nullptr);
+	void ShowWindow(Graphics& gfx, const char* windowName = nullptr);
 	void SetRootTransform(DirectX::FXMMATRIX transform);
 	~Model();
 private:

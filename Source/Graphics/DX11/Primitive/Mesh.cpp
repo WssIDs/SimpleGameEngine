@@ -6,7 +6,7 @@
 #include "..\Bindable\Sampler.h"
 #include "..\Render\Surface.h"
 #include "Windows\Logger\LogDefinitions.h"
-
+#include "..\Bindable\ConstantBuffers.h"
 
 DEFINE_LOG_CATEGORY(MeshLog)
 
@@ -99,6 +99,45 @@ void Node::ShowTree(Node*& pSelectedNode) const
 	}
 }
 
+void Node::ControlMaterial(Graphics& gfx, PSMaterialConstantFull& c)
+{
+	if (meshPtrs.empty())
+	{
+		return;
+	}
+
+	auto mesh = meshPtrs.front();
+
+	if (auto pcb = mesh->QueryBindable<Bind::PixelConstantBuffer<Node::PSMaterialConstantFull>>())
+	{
+		ImGui::Text("Material");
+
+		bool normalMapEnabled = (bool)c.normalMapEnabled;
+		ImGui::Checkbox("Normal Map", &normalMapEnabled);
+		c.normalMapEnabled = normalMapEnabled ? TRUE : FALSE;
+
+		bool specularMapEnabled = (bool)c.specularMapEnabled;
+		ImGui::Checkbox("Specular Map", &specularMapEnabled);
+		c.specularMapEnabled = specularMapEnabled ? TRUE : FALSE;
+
+		//bool specularMapAlpha = (bool)c.specularMapAlpha;
+		//ImGui::Checkbox("Specular Map Alpha", &specularMapAlpha);
+		//c.specularMapAlpha = specularMapAlpha ? true : false;
+
+		bool glossinesMapEnabled = (bool)c.glossinesMapEnabled;
+		ImGui::Checkbox("Glossiness Map", &glossinesMapEnabled);
+		c.glossinesMapEnabled = glossinesMapEnabled ? TRUE : FALSE;
+
+		ImGui::SliderFloat("Specular Weight", &c.specularWeight, 0.0f, 2.0f);
+
+		ImGui::SliderFloat("Specular Power", &c.specularPower, 0.0f, 1000.0f, "%f", 5.0f);
+
+		ImGui::ColorPicker3("Specular Color", reinterpret_cast<float*>(&c.specularColor));
+
+		pcb->Update(gfx, c);
+	}
+}
+
 void Node::AddChild(std::unique_ptr<Node> pChild)
 {
 	assert(pChild);
@@ -110,7 +149,7 @@ void Node::AddChild(std::unique_ptr<Node> pChild)
 class ModelWindow // pImpl idiom, only defined in this .cpp
 {
 public:
-	void Show(const char* windowName, const Node& root) noexcept
+	void Show(Graphics& gfx, const char* windowName, const Node& root) noexcept
 	{
 		// window name defaults to "Model"
 		windowName = windowName ? windowName : "Model";
@@ -135,6 +174,8 @@ public:
 				ImGui::SliderFloat("X", &transform.x, -20.0f, 20.0f);
 				ImGui::SliderFloat("Y", &transform.y, -20.0f, 20.0f);
 				ImGui::SliderFloat("Z", &transform.z, -20.0f, 20.0f);
+
+				pSelectedNode->ControlMaterial(gfx, mc);
 			}
 		}
 		ImGui::End();
@@ -163,6 +204,7 @@ private:
 		float z = 0.0f;
 	};
 
+	Node::PSMaterialConstantFull mc;
 	std::unordered_map<int, TransformParameters> transforms;
 };
 
@@ -185,12 +227,13 @@ Model::Model(Graphics& gfx, const std::string fileName)
 	{
 		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Scene from file = %s", fileName.c_str());
 
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Loading Meshes", fileName.c_str());
+
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
 			meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials));
 		}
 
-		WGE_LOG(MeshLog, LogVerbosity::Default, "Loading Meshes", fileName.c_str());
 		int nextId = 0;
 		pRoot = ParseNode(nextId, *pScene->mRootNode);
 		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Meshes", fileName.c_str());
@@ -212,8 +255,17 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 	std::vector<std::shared_ptr<Bind::Bindable>> bindablePtrs;
 
 	bool bDiffuseMap = false;
+	bool bDiffuseMapAlpha = false;
+
 	bool bSpecularMap = false;
+	bool bSpecularMapAlpha = false;
+	
 	bool bNormalMap = false;
+	bool bNormalMapAlpha = false;
+
+	bool bGlossinesMap = false;
+	bool bGlossinesMapAlpha = false;
+	
 	float shininess = 35.0f;
 
 	if (mesh.mMaterialIndex >= 0)
@@ -223,7 +275,17 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		
 		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str()));
+			auto DiffuseTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str());
+			if(DiffuseTexture->HasAlpha())
+			{
+				bDiffuseMapAlpha = true;
+			}
+			else
+			{
+				WGE_LOG(MeshLog, LogVerbosity::Warning, "DiffuseMapAlpha not loaded");
+			}
+
+			bindablePtrs.push_back(std::move(DiffuseTexture));
 			bDiffuseMap = true;
 		}
 		else
@@ -233,32 +295,66 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 1));
+			auto SpecularTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 1);
+			if (SpecularTexture->HasAlpha())
+			{
+				bSpecularMapAlpha = true;
+			}
+			else
+			{
+				WGE_LOG(MeshLog, LogVerbosity::Warning, "SpecularMapAlpha not loaded");
+			}
+
+			bindablePtrs.push_back(std::move(SpecularTexture));
 			bSpecularMap = true;
 		}
 		else
 		{
 			WGE_LOG(MeshLog, LogVerbosity::Warning, "SpecularMap not loaded");
+		}
+
+		if (material.GetTexture(aiTextureType_SHININESS, 0, &texFileName) == aiReturn_SUCCESS)
+		{
+			auto GlossinessTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 2);
+			if (GlossinessTexture->HasAlpha())
+			{
+				bGlossinesMapAlpha = true;
+			}
+			else
+			{
+				WGE_LOG(MeshLog, LogVerbosity::Warning, "GlossinessMapAlpha not loaded, using shininess variable");
+
+				material.Get(AI_MATKEY_SHININESS, shininess);
+			}
+
 			material.Get(AI_MATKEY_SHININESS, shininess);
+
+			bindablePtrs.push_back(std::move(GlossinessTexture));
+			bGlossinesMap = true;
+		}
+		else
+		{
+			WGE_LOG(MeshLog, LogVerbosity::Warning, "GlossinessMap not loaded");
 		}
 
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 2));
+			auto NormalTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 3);
+			if (NormalTexture->HasAlpha())
+			{
+				bNormalMapAlpha = true;
+			}
+			else
+			{
+				WGE_LOG(MeshLog, LogVerbosity::Warning, "NormalMapAlpha not loaded");
+			}
+
+			bindablePtrs.push_back(std::move(NormalTexture));
 			bNormalMap = true;
 		}
 		else
 		{
 			WGE_LOG(MeshLog, LogVerbosity::Warning, "NormalMap not loaded");
-		}
-
-		if (material.GetTexture(aiTextureType_SHININESS, 0, &texFileName) == aiReturn_SUCCESS)
-		{
-			bindablePtrs.push_back(Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 3));
-		}
-		else
-		{
-			WGE_LOG(MeshLog, LogVerbosity::Warning, "ShininessMap not loaded");
 		}
 
 		if (bDiffuseMap || bNormalMap || bSpecularMap)
@@ -323,13 +419,13 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
 
-		struct PSMaterialConstantFull
-		{
-			bool normalMapEnabled = true;
-			float padding[3] = { 0.0f, 0.0f, 0.0f };
-		} pmc;
+		Node::PSMaterialConstantFull pmc;
 
-		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantFull>::Resolve(gfx, pmc, 1u));
+		pmc.specularPower = shininess;
+		//pmc.specularMapAlpha = bSpecularMapAlpha ? TRUE : FALSE;
+		pmc.glossinesMapEnabled = bGlossinesMap ? TRUE : FALSE;
+
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<Node::PSMaterialConstantFull>::Resolve(gfx, pmc, 1u));
 	}
 	else if (bDiffuseMap && bNormalMap)
 	{
@@ -488,7 +584,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		struct PSMaterialConstantNotex
 		{
-			dx::XMFLOAT4 materialColor = { 0.65f,0.65f,0.85f,1.0f };
+			dx::XMFLOAT4 materialColor = { 0.45f,0.45f,0.85f,1.0f };
 			float specularIntensity = 0.18f;
 			float specularPower = 0.0f;
 			float padding[2] = { 0.0f, 0.0f };
@@ -540,9 +636,9 @@ void Model::Draw(Graphics& gfx) const
 	pRoot->Draw(gfx, dx::XMMatrixIdentity());
 }
 
-void Model::ShowWindow(const char* windowName /*= nullptr*/)
+void Model::ShowWindow(Graphics& gfx, const char* windowName /*= nullptr*/)
 {
-	pWindow->Show(windowName, *pRoot);
+	pWindow->Show(gfx, windowName, *pRoot);
 }
 
 void Model::SetRootTransform(DirectX::FXMMATRIX transform)

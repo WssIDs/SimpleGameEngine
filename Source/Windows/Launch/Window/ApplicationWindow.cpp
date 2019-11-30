@@ -139,7 +139,7 @@ void ApplicationWindow::onUpdate()
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
 	//model.ShowWindow("Wall");
-	girl.ShowWindow("Girl");
+	girl.ShowWindow(Gfx(),"Girl");
 	//plane.SpawnControlWindow(Gfx());
 	//ShowRawInputWindow();
 

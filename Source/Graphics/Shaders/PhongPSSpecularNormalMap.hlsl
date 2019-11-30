@@ -12,12 +12,20 @@ cbuffer LigthConstantBuffer
 cbuffer ObjectConstantBuffer
 {
     bool normalMapEnabled;
+    bool specularMapEnabled;
+    bool specularMapAlpha;
+    bool glossinesMapEnabled;
+    float specularPowerConst;
+    float3 specularColor;
+    float specularMapWeight;
     float padding[3];
 };
 
 Texture2D tex;
 Texture2D spec;
+Texture2D gloss;
 Texture2D nmap;
+
 
 SamplerState splr;
 
@@ -52,11 +60,33 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 tangen
     const float3 vViewer = viewNormal * dot(vectorToLight, viewNormal);
     const float3 vReflect = 2.0f * vViewer - vectorToLight;
     // specular ( angle between viewer vector and reflect vector)
-    const float4 specularSample = spec.Sample(splr, texCoord);
-    const float3 specularReflectionColor = specularSample.rgb;
-    const float specularPower = pow(2.0f, specularSample.a * 13.0f);
+    float3 specularReflectionColor;  
+    float specularPower = specularPowerConst;
+
+    if (specularMapEnabled)
+    {
+        const float4 specularSample = spec.Sample(splr, texCoord);
+        specularReflectionColor = specularSample.rgb * specularMapWeight;
+        
+        if (specularMapAlpha)
+        {
+            specularPower = pow(2.0f, specularSample.a * 13.0f);
+        }
+    }
+    else
+    {
+        specularReflectionColor = specularColor;
+    }
     
-    const float3 specular = att * (diffuse * diffuseIntensity) * pow(max(0.0f, dot(normalize(-vReflect), normalize(viewPos))), specularPower);
+    
+    
+    float3 specular = att * (diffuseColor * diffuseIntensity ) * pow(max(0.0f, dot(normalize(-vReflect), normalize(viewPos))), specularPower);
+    
+    const float4 glossinessSample = gloss.Sample(splr, texCoord);
+    if (glossinesMapEnabled)
+    {
+        specular = specular * glossinessSample.rgb;
+    }
 	// final color
     return float4(saturate((diffuse + ambient) * tex.Sample(splr, texCoord).rgb + specular * specularReflectionColor), 1.0f);
 }
