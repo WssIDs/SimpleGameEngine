@@ -38,7 +38,7 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 tangen
         viewNormal = normalSample * 2.0f - 1.0f;
         viewNormal.y = -viewNormal.y;
         // bring normal from tanspace into view space
-        viewNormal = mul(viewNormal, tanToView);
+        viewNormal = normalize(mul(viewNormal, tanToView));
     }
     
     

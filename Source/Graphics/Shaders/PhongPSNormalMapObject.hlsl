@@ -35,12 +35,13 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float2 texCoo
 	// sample normal from map if normal mapping enabled
     if (normalMapEnabled)
     {
-        // unpack normal data
+        // sample and unpack normal data
         const float3 normalSample = nmap.Sample(splr, texCoord).xyz;
-        viewNormal.x = normalSample.x * 2.0f - 1.0f;
-        viewNormal.y = -normalSample.y * 2.0f + 1.0f;
-        viewNormal.z = -normalSample.z * 2.0f + 1.0f;
-        viewNormal = mul(viewNormal, (float3x3)modelView);
+        float3 tanNormal;
+        tanNormal.x = normalSample.x * 2.0f - 1.0f;
+        tanNormal.y = -normalSample.y * 2.0f + 1.0f;
+        tanNormal.z = -normalSample.z * 2.0f + 1.0f;
+        viewNormal = normalize(mul(tanNormal, (float3x3) modelView));
     }
     
     // fragment to light vector data

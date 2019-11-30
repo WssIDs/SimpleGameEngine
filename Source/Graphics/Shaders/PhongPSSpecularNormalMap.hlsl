@@ -40,11 +40,12 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float3 tangen
             normalize(bitangent),
             normalize(viewNormal)
         );
-        // unpack normal data
+        // sample and unpack normal data
         const float3 normalSample = nmap.Sample(splr, texCoord).xyz;
-        viewNormal = normalSample * 2.0f - 1.0f;
+        float3 tanNormal;
+        tanNormal = normalSample * 2.0f - 1.0f;
         // bring normal from tanspace into view space
-        viewNormal = mul(viewNormal, tanToView);
+        viewNormal = normalize(mul(tanNormal, tanToView));
     }
     
     // fragment to light vector data

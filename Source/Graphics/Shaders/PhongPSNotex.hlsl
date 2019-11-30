@@ -18,6 +18,7 @@ cbuffer ObjectConstantBuffer
 
 float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_TARGET
 {
+    viewNormal = normalize(viewNormal);
     // fragment to light vector data
     const float3 vectorToLight = lightPosition - viewPos;
     const float distanceToLight = length(vectorToLight);
