@@ -492,16 +492,16 @@
     <ResourceCompile Include="Resources\SimpleGameEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\PhongPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongVS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\SolidVS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\SolidPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongPSNormalMap.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongVSNormalMap.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongPSSpecularNormalMap.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongPSNormalMapObject.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongVSNotex.hlsl" />
-    <FxCompile Include="Graphics\Shaders\PhongPSNotex.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSNormalMap.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSNormalMapObject.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSNotex.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSSpecularNormalMap.hlsl" />
+    <FxCompile Include="Graphics\Shaders\VertexShaders\SolidVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVSNormalMap.hlsl" />
+    <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVSNotex.hlsl" />
+    <FxCompile Include="Graphics\Shaders\VertexShaders\SolidPS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />
