@@ -177,12 +177,12 @@ private:
 
 
 // Model
-Model::Model(Graphics& gfx, const std::string fileName)
+Model::Model(Graphics& gfx, const std::string path, dx::XMFLOAT3 scale3D)
 	:
 	pWindow(std::make_unique<ModelWindow>())
 {
 	Assimp::Importer imp;
-	const auto pScene = imp.ReadFile(fileName.c_str(),
+	const auto pScene = imp.ReadFile(path.c_str(),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded |
@@ -192,27 +192,27 @@ Model::Model(Graphics& gfx, const std::string fileName)
 
 	if(pScene)
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Scene from file = %s", fileName.c_str());
+		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Scene from file = %s", path.c_str());
 
-		WGE_LOG(MeshLog, LogVerbosity::Default, "Loading Meshes", fileName.c_str());
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Loading Meshes", path.c_str());
 
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
-			meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials));
+			meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials, scale3D));
 		}
 
 		int nextId = 0;
 		pRoot = ParseNode(nextId, *pScene->mRootNode);
-		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Meshes", fileName.c_str());
+		WGE_LOG(MeshLog, LogVerbosity::Success, "Loaded Meshes", path.c_str());
 		WGE_LOG(MeshLog, LogVerbosity::Default, "----------------------------------");
 	}
 	else
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Error, "Failed Loading Scene from file = %s", fileName.c_str());
+		WGE_LOG(MeshLog, LogVerbosity::Error, "Failed Loading Scene from file = %s", path.c_str());
 	}
 }
 
-std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials)
+std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, dx::XMFLOAT3 scale3D)
 {
 	WGE_LOG(MeshLog, LogVerbosity::Default, "----------------------------------");
 	WGE_LOG(MeshLog, LogVerbosity::Default, "Start parse mesh = %s", mesh.mName.C_Str());
@@ -369,8 +369,6 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 	auto meshTag = BASE_MODELS_DIR + "%" + mesh.mName.C_Str();
 
-	const float scale = 1.0f;
-
 	if(bDiffuseMap && bNormalMap && bSpecularMap)
 	{
 		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseNormalSpecular");
@@ -387,7 +385,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
 		{
 			vertexBuffer.EmplaceBack(
-				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y *scale, mesh.mVertices[i].z * scale),
+				dx::XMFLOAT3(mesh.mVertices[i].x * scale3D.x, mesh.mVertices[i].y * scale3D.y, mesh.mVertices[i].z * scale3D.z),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]),
@@ -443,7 +441,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
 		{
 			vertexBuffer.EmplaceBack(
-				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
+				dx::XMFLOAT3(mesh.mVertices[i].x* scale3D.x, mesh.mVertices[i].y* scale3D.y, mesh.mVertices[i].z* scale3D.z),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mTangents[i]),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mBitangents[i]),
@@ -501,7 +499,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
 		{
 			vertexBuffer.EmplaceBack(
-				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
+				dx::XMFLOAT3(mesh.mVertices[i].x* scale3D.x, mesh.mVertices[i].y* scale3D.y, mesh.mVertices[i].z* scale3D.z),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
 				*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
 			);
@@ -555,7 +553,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
 		{
 			vertexBuffer.EmplaceBack(
-				dx::XMFLOAT3(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
+				dx::XMFLOAT3(mesh.mVertices[i].x* scale3D.x, mesh.mVertices[i].y* scale3D.y, mesh.mVertices[i].z* scale3D.z),
 				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i])
 			);
 		}

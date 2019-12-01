@@ -129,13 +129,13 @@ private:
 class Model
 {
 public:
-	Model(Graphics& gfx, const std::string fileName);
+	Model(Graphics& gfx, const std::string path, DirectX::XMFLOAT3 scale3D = {1.0f,1.0f,1.0f});
 	void Draw(Graphics& gfx) const;
 	void ShowWindow(Graphics& gfx, const char* windowName = nullptr);
 	void SetRootTransform(DirectX::FXMMATRIX transform);
 	~Model();
 private:
-	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials);
+	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, DirectX::XMFLOAT3 scale3D);
 	std::unique_ptr<Node> ParseNode(int& nextId, const aiNode& node);
 private:
 	std::unique_ptr<Node> pRoot;
