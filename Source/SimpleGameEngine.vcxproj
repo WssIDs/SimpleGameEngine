@@ -542,8 +542,10 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <Image Include="Resources\wgengine.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\Shaders\Functions\ShaderFunctions.hlsl" />
-    <None Include="Graphics\Shaders\Lights\PointLight.hlsl" />
+    <None Include="Graphics\Shaders\Buffers\Transform.hlsli" />
+    <None Include="Graphics\Shaders\Functions\LightVectorData.hlsli" />
+    <None Include="Graphics\Shaders\Functions\ShaderFunctions.hlsli" />
+    <None Include="Graphics\Shaders\Lights\PointLight.hlsli" />
     <None Include="Resources\SimpleGameEngine.aps" />
     <None Include="ThirdParty\Assimp\assimp\color4.inl" />
     <None Include="ThirdParty\Assimp\assimp\material.inl" />

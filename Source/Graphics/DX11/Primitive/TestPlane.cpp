@@ -17,7 +17,7 @@ TestPlane::TestPlane(Graphics& gfx, float size)
 	AddBind(IndexBuffer::Resolve(gfx, geometryTag, model.indices));
 
 	AddBind(Texture::Resolve(gfx,  BASE_TEXTURES_DIR + "Primitive\\brickwall.tga"));
-	AddBind(Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Primitive\\brickwall_normal.tga",1));
+	AddBind(Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Primitive\\brickwall_normal.tga",2));
 
 	auto pvs = VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVS.cso");
 	auto pvsbc = pvs->GetByteCode();

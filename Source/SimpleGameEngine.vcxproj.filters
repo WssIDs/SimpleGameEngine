@@ -487,8 +487,10 @@
     <None Include="ThirdParty\Assimp\libs\assimp-vc142-mt.dll" />
     <None Include="ThirdParty\Assimp\libs\zlib.dll" />
     <None Include="ThirdParty\DirectXTex\include\DirectXTex.inl" />
-    <None Include="Graphics\Shaders\Functions\ShaderFunctions.hlsl" />
-    <None Include="Graphics\Shaders\Lights\PointLight.hlsl" />
+    <None Include="Graphics\Shaders\Buffers\Transform.hlsli" />
+    <None Include="Graphics\Shaders\Functions\LightVectorData.hlsli" />
+    <None Include="Graphics\Shaders\Functions\ShaderFunctions.hlsli" />
+    <None Include="Graphics\Shaders\Lights\PointLight.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\SimpleGameEngine.rc" />

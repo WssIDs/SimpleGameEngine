@@ -1,13 +1,6 @@
-cbuffer LightConstantBuffer
-{
-    float3 lightPosition;
-    float3 ambient;
-    float3 diffuseColor;
-    float diffuseIntensity;
-    float attConst;
-    float attLin;
-    float attQuad;
-};
+#include "..\Lights\PointLight.hlsli"
+#include "..\Functions\LightVectorData.hlsli"
+#include "..\Functions\ShaderFunctions.hlsli"
 
 cbuffer ObjectConstantBuffer
 {
@@ -17,51 +10,36 @@ cbuffer ObjectConstantBuffer
     float padding[1];
 };
 
-cbuffer TransformConstantBuffer
-{
-    matrix modelView;
-    matrix modelViewProj;
-};
+#include "..\Buffers\Transform.hlsli"
 
 
-Texture2D tex;
-Texture2D nmap : register(t2);
+Texture2D diffuseMap;
+Texture2D normalMap : register(t2);
 
 SamplerState splr;
 
 
-float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float2 texCoord : Texcoord) : SV_Target
+float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, float2 texCoord : Texcoord) : SV_Target
 {
 	// sample normal from map if normal mapping enabled
     if (normalMapEnabled)
     {
         // sample and unpack normal data
-        const float3 normalSample = nmap.Sample(splr, texCoord).xyz;
-        float3 tanNormal;
-        tanNormal.x = normalSample.x * 2.0f - 1.0f;
-        tanNormal.y = -normalSample.y * 2.0f + 1.0f;
-        tanNormal.z = -normalSample.z * 2.0f + 1.0f;
-        viewNormal = normalize(mul(tanNormal, (float3x3) modelView));
+        const float3 normalSample = normalMap.Sample(splr, texCoord).xyz;
+        const float3 objectNormal = normalSample * 2.0f - 1.0f;
+
+        viewNormal = normalize(mul(objectNormal, (float3x3) modelView));
     }
     
     // fragment to light vector data
-    const float3 vectorToLight = lightPosition - viewPos;
-    const float distanceToLight = length(vectorToLight);
-    const float3 directionToLight = vectorToLight / distanceToLight;
+    const LightVectorData lv = CalculateLightVectorData(viewLightPosition, viewFragmentPosition);
 
     // attenuation
-    const float att = 1.0f / (attConst + attLin * distanceToLight + attQuad * (distanceToLight * distanceToLight));
+    const float att = Attenuate(attConst, attLin, attQuad, lv.distanceFragmentToLight);
     // diffuse intensity
-    const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(directionToLight, viewNormal));
-    // reflected light vector
-    const float3 vViewer = viewNormal * dot(vectorToLight, viewNormal);
-    const float3 vReflect = 2.0f * vViewer - vectorToLight;
-    // specular ( angle between viewer vector and reflect vector)
-    //const float4 specularSample = spec.Sample(splr, texCoord);
-    //const float3 specularReflectionColor = specularSample.rgb;
-    //const float specularPower = pow(2.0f, specularSample.a * 13.0f);
+    const float3 diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.viewDirectionFragmentToLight, viewNormal);
     
-    const float3 specular = att * (diffuseColor * diffuseIntensity) * specularIntensity * pow(max(0.0f, dot(normalize(-vReflect), normalize(viewPos))), specularPower);
+    const float3 specular = Speculate(specularIntensity.rrr, 1.0f, viewNormal, lv.viewFragmentToLight, viewFragmentPosition, att, specularPower);
 	// final color
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, texCoord).rgb + specular), 1.0f);
+    return float4(saturate((diffuse + ambient) * diffuseMap.Sample(splr, texCoord).rgb + specular), 1.0f);
 }

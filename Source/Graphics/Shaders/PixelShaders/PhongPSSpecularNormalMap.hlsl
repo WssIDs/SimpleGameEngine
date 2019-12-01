@@ -1,5 +1,6 @@
-#include "..\Lights\PointLight.hlsl"
-#include "..\Functions\ShaderFunctions.hlsl"
+#include "..\Lights\PointLight.hlsli"
+#include "..\Functions\LightVectorData.hlsli"
+#include "..\Functions\ShaderFunctions.hlsli"
 
 cbuffer ObjectConstantBuffer
 {
@@ -21,7 +22,7 @@ Texture2D normalMap;
 
 SamplerState splr;
 
-float4 main(float3 viewPosition : Position, float3 viewNormal : Normal, float3 viewTangent : Tangent, float3 viewBitangent : Bitangent, float2 texCoord : Texcoord) : SV_TARGET
+float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, float3 viewTangent : Tangent, float3 viewBitangent : Bitangent, float2 texCoord : Texcoord) : SV_TARGET
 {
     viewNormal = normalize(viewNormal);
     // sample normal from map if normal mapping enabled
@@ -31,14 +32,12 @@ float4 main(float3 viewPosition : Position, float3 viewNormal : Normal, float3 v
     }
     
     // fragment to light vector data
-    const float3 viewFragmentToLight = viewLightPosition - viewPosition;
-    const float distanceFragmentToLight = length(viewFragmentToLight);
-    const float3 viewDirectionFragmentToLight = viewFragmentToLight / distanceFragmentToLight;
+    const LightVectorData lv = CalculateLightVectorData(viewLightPosition, viewFragmentPosition);
 
     // attenuation
-    const float att = Attenuate(attConst, attLin, attQuad, distanceFragmentToLight);
+    const float att = Attenuate(attConst, attLin, attQuad, lv.distanceFragmentToLight);
     // diffuse intensity
-    const float3 diffuse = Diffuse(diffuseColor, diffuseIntensity, att, viewDirectionFragmentToLight, viewNormal);
+    const float3 diffuse = Diffuse(diffuseColor, diffuseIntensity, att, lv.viewDirectionFragmentToLight, viewNormal);
     // specular ( angle between viewer vector and reflect vector)
     float3 specularReflectionColor;  
     float specularPower = specularPowerConst;
@@ -58,7 +57,7 @@ float4 main(float3 viewPosition : Position, float3 viewNormal : Normal, float3 v
         specularReflectionColor = specularColor;
     }
     
-    float3 specularReflected = Speculate(specularReflectionColor, 1.0f, viewNormal, viewFragmentToLight, viewPosition, att, specularPower);
+    float3 specularReflected = Speculate(specularReflectionColor, 1.0f, viewNormal, lv.viewFragmentToLight, viewFragmentPosition, att, specularPower);
     
     const float4 glossinessSample = glossinessMap.Sample(splr, texCoord);
     if (glossinesMapEnabled)
