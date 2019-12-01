@@ -43,6 +43,7 @@ public:
 	void InternalMsg(std::string format, ...);
 
 	void InternalMsg(std::string logCategory, LogVerbosity logVerbosity,const std::string format, ...);
+	void InternalMsgNoConsole(std::string logCategory, LogVerbosity logVerbosity, const std::string format, ...);
 
 	static Log* get();
 	

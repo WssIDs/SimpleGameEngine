@@ -158,6 +158,56 @@ void Log::InternalMsg(std::string logCategory, LogVerbosity logVerbosity,const s
 #endif // _DEBUG
 }
 
+void Log::InternalMsgNoConsole(std::string logCategory, LogVerbosity logVerbosity, const std::string format, ...)
+{
+	int final_n, n = ((int)format.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
+	std::unique_ptr<char[]> formatted;
+	va_list ap;
+	while (true) {
+		formatted = std::make_unique<char[]>(n); /* Wrap the plain char array into the unique_ptr */
+		strcpy_s(&formatted[0], n, format.c_str());
+		va_start(ap, format);
+		final_n = vsnprintf(&formatted[0], n, format.c_str(), ap);
+		va_end(ap);
+		if (final_n < 0 || final_n >= n)
+			n += abs(final_n - n + 1);
+		else
+			break;
+	}
+
+	std::stringstream output;
+	output << getCurrentTime() << " " << logCategory << ": ";
+
+	switch (logVerbosity)
+	{
+	case LogVerbosity::Default:
+		break;
+	case LogVerbosity::Warning:
+		output << "Warning: ";
+		break;
+	case LogVerbosity::Success:
+		output << "Success: ";
+		break;
+	case LogVerbosity::Error:
+		output << "Error: ";
+		break;
+	case LogVerbosity::Fatal:
+		output << "Fatal: ";
+		break;
+	}
+
+	output << formatted.get();
+
+	if (is_opened)
+	{
+		logger_out << output.str() << std::endl;
+	}
+
+//#ifdef _DEBUG
+//	PRINT_OUTPUT(output.str().c_str());
+//#endif // _DEBUG
+}
+
 Log* Log::get()
 {
 	static Log log;

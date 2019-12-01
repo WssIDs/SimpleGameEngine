@@ -18,6 +18,14 @@
 **/
 #define WGE_LOG(CategoryName, LogVerbosity, Format,...) Log::get()->InternalMsg(CategoryName.GetCategoryName(), LogVerbosity, Format, ## __VA_ARGS__)
 
+/**
+ * @param CategoryName name of the logging category
+ * @param LogVerbosity color and level logging
+ * @param Format some logging text with args
+ *  example "SomeText %d %s", int number, std::string name.c_str()
+**/
+#define WGE_LOG_WITHOUT_CONSOLE(CategoryName, LogVerbosity, Format,...) Log::get()->InternalMsgNoConsole(CategoryName.GetCategoryName(), LogVerbosity, Format, ## __VA_ARGS__)
+
 /** Declare log category. Used only header files
  * @param CategoryName name of the logging category
  **/
