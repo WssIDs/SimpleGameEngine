@@ -450,6 +450,7 @@
     <ClInclude Include="Graphics\DX11\Primitive\TestCube.h" />
     <ClInclude Include="Graphics\Helpers\StringHelper.h" />
     <ClInclude Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.h" />
+    <ClInclude Include="Graphics\DX11\Math\XM.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

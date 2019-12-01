@@ -255,6 +255,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\DX11\Bindable\BindableCodex.h" />
     <ClInclude Include="Graphics\DX11\Geometry\Cube.h" />
     <ClInclude Include="Graphics\DX11\Geometry\Plane.h" />
+    <ClInclude Include="Graphics\DX11\Math\XM.h" />
     <ClInclude Include="Graphics\DX11\Primitive\Mesh.h" />
     <ClInclude Include="Graphics\DX11\Render\Color.h" />
     <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
