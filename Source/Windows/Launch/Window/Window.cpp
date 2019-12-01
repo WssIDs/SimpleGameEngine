@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include "Graphics/DX11/Math/WGMath.h"
+#include "Graphics/Helpers/StringHelper.h"
 
 DEFINE_LOG_CATEGORY(WindowLog);
 
@@ -45,22 +46,125 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass(wndClassName, getInstance());
 }
 
-Window::Window(int width, int height,const std::string& name)
-	:width(width),
-	height(height)
+Window::Window(int width, int height, const std::string& name, const std::string& commandLine)
+	:
+	width(width),
+	height(height),
+	commandLine(commandLine)
 {
-	bConsole = true;
+	if (!this->commandLine.empty())
+	{
+		WGE_LOG(WindowLog, LogVerbosity::Default, "Run with commandline");
+
+		int nArgs;
+		const auto pLineW = GetCommandLineW();
+		const auto pArgs = CommandLineToArgvW(pLineW, &nArgs);
+
+		if (pArgs == nullptr)
+		{
+			WGE_LOG(WindowLog, LogVerbosity::Error, "Doesn't parse cammandLine");
+		}
+		else
+		{
+			for (int i = 1; i < nArgs; ++i)
+			{
+				std::string arg = String::ConvertToMultiByte(pArgs[i]);
+
+				if(arg.find("-log") != std::string::npos)
+				{
+					WGE_LOG(WindowLog, LogVerbosity::Default, "Console mode true");
+					bConsole = true;
+				}
+				else if(arg.find("-res") != std::string::npos)
+				{
+					std::stringstream resStringStream(arg);
+					char delimiter = '=';
+					std::string item;
+					std::vector<std::string> resSplittedString;
+
+					WGE_LOG(WindowLog, LogVerbosity::Default, "arg = %s", arg.c_str());
+
+					while (std::getline(resStringStream, item, delimiter))
+					{
+						if (item != "-res")
+						{
+							resSplittedString.push_back(item);
+							WGE_LOG(WindowLog, LogVerbosity::Default, "token = %s", item.c_str());
+						}
+					}
+
+					if(!resSplittedString.empty())
+					{
+						std::stringstream resStream(*resSplittedString.begin());
+						resSplittedString.clear();
+						delimiter = 'x';
+
+						while (std::getline(resStream, item, delimiter))
+						{
+							if (!item.empty())
+							{
+								resSplittedString.push_back(item);
+							}
+						}
+
+						if(resSplittedString.size() >= 2)
+						{
+							width = std::stoi(resSplittedString[0]);
+							WGE_LOG(WindowLog, LogVerbosity::Default, "width = %d", width);
+							height = std::stoi(resSplittedString[1]);
+							WGE_LOG(WindowLog, LogVerbosity::Default, "height = %d", height);
+							
+							if(2 < resSplittedString.size())
+							{
+								int bitСolor = std::stoi(resSplittedString[2]);
+								WGE_LOG(WindowLog, LogVerbosity::Default, "bitColor = %d", bitСolor);
+							}
+							if (3 < resSplittedString.size())
+							{
+								std::string fullscreen = resSplittedString[3];
+
+								if (fullscreen == "f")
+								{
+									WGE_LOG(WindowLog, LogVerbosity::Default, "bFullScreen = %s", "true");
+								}
+							}
+
+							WGE_LOG(WindowLog, LogVerbosity::Error, "Resolution will be used in commandline");
+						}
+						else
+						{
+							WGE_LOG(WindowLog, LogVerbosity::Error, "resolution not contains");
+						}
+					}
+				}
+
+			}
+		}
+
+		//if (nArgs >= 4 && std::wstring(pArgs[1]) == L"-log")
+		//{
+		//	//const std::wstring pathInWide = pArgs[2];
+		//	//const std::wstring pathOutWide = pArgs[3];
+		//	//NormalMapTwerker::RotateXAxis180(
+		//	//	std::string(pathInWide.begin(), pathInWide.end()),
+		//	//	std::string(pathOutWide.begin(), pathOutWide.end())
+		//	//);
+		//	throw std::runtime_error("Normal map processed successfully. Just kidding about that whole runtime error thing.");
+		//}
+	}
+	else
+	{
+		WGE_LOG(WindowLog, LogVerbosity::Default, "CommanLine empty");
+	}
 
 	std::string logConsoleName = "WGEngine Log";
 
-	InitConsole(logConsoleName, Position(0,0), Size(1100,350));
+	if (bConsole)
+	{
+		InitConsole(logConsoleName, Position(0, 0), Size(1100, 350));
+	}
 
-	RECT wr;
-
-	wr.left = 100;
-	wr.right = this->width + wr.left;
-	wr.top = 100;
-	wr.bottom = this->height + wr.top;
+	RECT wr = { 0,0,width, height };
 
 	if(AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false) == 0)
 	{
@@ -81,12 +185,16 @@ Window::Window(int width, int height,const std::string& name)
 		this
 	);
 
+	RECT rc = GetWindowSize();
+	this->width = rc.right;
+	this->height = rc.bottom;
+
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
 
 	ImGui_ImplWin32_Init(hwnd);
 	WGE_LOG(WindowLog, LogVerbosity::Default, "ImGuiWin32 Init");
 
-	pGfx = std::make_unique<Graphics>(hwnd, width, height);
+	pGfx = std::make_unique<Graphics>(hwnd, this->width, this->height);
 
 	// register mouse raw input device
 	RAWINPUTDEVICE rid;
@@ -201,6 +309,11 @@ void Window::DisableImguiMouse()
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 }
 
+std::string Window::GetCommandLineArgs() const
+{
+	return commandLine;
+}
+
 void Window::onCreate()
 {
 	/// When Windows created and show
@@ -219,23 +332,43 @@ void Window::onDestroy()
 
 void Window::InitConsole(std::string& title)
 {
-	if (bConsole)
-	{
-		if (AllocConsole())
-		{
-			FILE* fs;
-			SetConsoleTitle(title.c_str());
-			freopen_s(&fs, "CONOUT$", "w", stdout);
-			freopen_s(&fs, "CONIN$", "r", stdin);
-			freopen_s(&fs, "CONOUT$", "w", stderr);
-			WGE_LOG(WindowLog, LogVerbosity::Default, "Init Console");
+	FreeConsole();
 
-			SetConsoleCtrlHandler(CtrlHandler, TRUE);
-		}
-		else
-		{
-			WGE_LOG(WindowLog, LogVerbosity::Error, "Error Console init, Error code = %d", (int)GetLastError());
-		}
+	if (AllocConsole())
+	{
+		FILE *fsIn, *fsOut;
+		SetConsoleTitle(title.c_str());
+		freopen_s(&fsOut, "CONOUT$", "w", stdout);
+		freopen_s(&fsIn, "CONIN$", "r", stdin);
+		freopen_s(&fsOut, "CONOUT$", "w", stderr);
+
+		// Note that there is no CONERR$ file
+		HANDLE hStdout = CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+			nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+		HANDLE hStdin = CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+			nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+		SetStdHandle(STD_OUTPUT_HANDLE, hStdout);
+		SetStdHandle(STD_ERROR_HANDLE, hStdout);
+		SetStdHandle(STD_INPUT_HANDLE, hStdin);
+
+		//Clear the error state for each of the C++ standard stream objects. 
+		std::wclog.clear();
+		std::clog.clear();
+		std::wcout.clear();
+		std::cout.clear();
+		std::wcerr.clear();
+		std::cerr.clear();
+		std::wcin.clear();
+		std::cin.clear();
+
+		WGE_LOG(WindowLog, LogVerbosity::Default, "Init Console");
+
+		SetConsoleCtrlHandler(CtrlHandler, TRUE);
+	}
+	else
+	{
+		WGE_LOG(WindowLog, LogVerbosity::Error, "Console cannot init, Error code = %d", (int)GetLastError());
 	}
 }
 

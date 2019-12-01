@@ -15,12 +15,12 @@
 class ApplicationWindow: public Window
 {
 public:
-	ApplicationWindow(int width, int height,const std::string& name);
+	ApplicationWindow(int width, int height,const std::string& name, const std::string& commandLine = "");
 
 	~ApplicationWindow();
 
 	int Update();
-	virtual void onUpdate() override;
+	void onUpdate() override;
 
 	void ShowImguiDemoWindow();
 	void ShowRawInputWindow();

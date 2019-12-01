@@ -19,8 +19,9 @@ GDIPlusManager gdipm;
 ImguiManager imgui;
 
 
-ApplicationWindow::ApplicationWindow(int width, int height,const std::string& name)
-	:Window(width,height,name),
+ApplicationWindow::ApplicationWindow(int width, int height, const std::string& name, const std::string& commandLine)
+	:
+	Window(width, height, name, commandLine),
 	light(Gfx(), 5.0f)
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");

@@ -35,7 +35,7 @@ class Window
 
 public:
 
-	Window(int width, int height,const std::string& name);
+	Window(int width, int height,const std::string& name,const std::string& commandLine);
 	~Window();
 
 	Window(const Window&) = delete;
@@ -154,6 +154,7 @@ private:
 
 	std::unique_ptr<Graphics> pGfx;
 	std::vector<BYTE> rawBuffer;
+	std::string commandLine;
 };
 
 
