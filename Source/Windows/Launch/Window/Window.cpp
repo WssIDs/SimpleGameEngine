@@ -309,11 +309,6 @@ void Window::DisableImguiMouse()
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 }
 
-std::string Window::GetCommandLineArgs() const
-{
-	return commandLine;
-}
-
 void Window::onCreate()
 {
 	/// When Windows created and show
