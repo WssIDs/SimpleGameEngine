@@ -504,8 +504,9 @@
     <FxCompile Include="Graphics\Shaders\VertexShaders\SolidVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVSNormalMap.hlsl" />
     <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVSNotex.hlsl" />
-    <FxCompile Include="Graphics\Shaders\VertexShaders\SolidPS.hlsl" />
     <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVS.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSSpecular.hlsl" />
+    <FxCompile Include="Graphics\Shaders\PixelShaders\SolidPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />

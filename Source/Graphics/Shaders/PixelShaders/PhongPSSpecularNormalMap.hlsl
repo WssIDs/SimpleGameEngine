@@ -1,6 +1,7 @@
-#include "..\Lights\PointLight.hlsli"
 #include "..\Functions\LightVectorData.hlsli"
 #include "..\Functions\ShaderFunctions.hlsli"
+
+#include "..\Lights\PointLight.hlsli"
 
 cbuffer ObjectConstantBuffer
 {

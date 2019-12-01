@@ -485,6 +485,64 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
 		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuseNormal>::Resolve(gfx, pmc, 1u));
 	}
+	else if (bDiffuseMap && bSpecularMap && !bNormalMap)
+	{
+		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseSpecular");
+
+		DynamicVtx::VertexBuffer vertexBuffer(std::move(
+			VertexLayout{}
+			.Append(DynamicVtx::ElementType::Position3D)
+			.Append(DynamicVtx::ElementType::Normal)
+			.Append(DynamicVtx::ElementType::Texture2D)
+		));
+
+		for (unsigned int i = 0; i < mesh.mNumVertices; i++)
+		{
+			vertexBuffer.EmplaceBack(
+				dx::XMFLOAT3(mesh.mVertices[i].x * scale3D.x, mesh.mVertices[i].y * scale3D.y, mesh.mVertices[i].z * scale3D.z),
+				*reinterpret_cast<dx::XMFLOAT3*>(&mesh.mNormals[i]),
+				*reinterpret_cast<dx::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
+			);
+		}
+
+		std::vector<unsigned short> indices;
+		int indicesReserved = mesh.mNumFaces * 3;
+		indices.reserve(indicesReserved);
+		for (unsigned int i = 0; i < mesh.mNumFaces; i++)
+		{
+			const auto& face = mesh.mFaces[i];
+			assert(face.mNumIndices == 3);
+			indices.push_back(face.mIndices[0]);
+			indices.push_back(face.mIndices[1]);
+			indices.push_back(face.mIndices[2]);
+		}
+
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+
+		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVS.cso");
+		auto pvsbc = pvs->GetByteCode();
+		bindablePtrs.push_back(std::move(pvs));
+
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSSpecular.cso"));
+
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+
+		struct PSMaterialConstantDiffuseSpecular
+		{
+			float specularPowerConst;
+			float specularMapWeight;
+			BOOL  specularMapAlpha;
+			float padding;
+		} pmc;
+
+		pmc.specularPowerConst = shininess;
+		pmc.specularMapWeight = 1.0f;
+		pmc.specularMapAlpha = bSpecularMapAlpha ? TRUE : FALSE;
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuseSpecular>::Resolve(gfx, pmc, 1u));
+
+	}
 	else if (bDiffuseMap)
 	{
 		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = Diffuse");

@@ -1,8 +1,4 @@
-cbuffer ConstantBuffer
-{
-    matrix modelView;
-    matrix modelViewProj;
-};
+#include "..\Buffers\Transform.hlsli"
 
 struct VSOut
 {
