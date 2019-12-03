@@ -6,6 +6,9 @@
 #include <DirectXMath.h>
 
 #include "Graphics/Engine/Core.h"
+#include <d2d1.h>
+#include <d2d1_3.h>
+#include "Render/Color.h"
 
 namespace Bind
 {
@@ -34,9 +37,18 @@ public:
 	// init DX11_1
 	void InitDX11_1(HWND hWnd);
 
+	// test function
+	void InitDX2D(HWND hWnd);
+	void Begin2DFrame();
+	void End2DFrame();
+	void ClearScreen(LinearColor color);
+	void DrawCircle();
+
+	void DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY, const std::wstring& fontName = L"Verdana");
+
 	void SetViewport(int width, int height);
 
-	// Clearbuffers and set a new TragetView 
+	// Clear buffers and set a new TragetView 
 	void BeginFrame(float red, float green, float blue);
 	// Show scene
 	void EndFrame();
@@ -69,8 +81,14 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> pContext = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTargetView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView = nullptr;
+
+
+	Microsoft::WRL::ComPtr<ID2D1Factory> pFactory2D = nullptr;
+	Microsoft::WRL::ComPtr<IDWriteFactory> pDwriteFactory = nullptr;
+	Microsoft::WRL::ComPtr<ID2D1RenderTarget> pRenderTarget2D = nullptr;
 };
 
 
 DECLARE_LOG_CATEGORY_EXTERN(GraphicsLog);
 DECLARE_LOG_CATEGORY_EXTERN(LogD3D11_1RHI);
+DECLARE_LOG_CATEGORY_EXTERN(LogD2D_RHI);
