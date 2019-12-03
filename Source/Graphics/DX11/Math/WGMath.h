@@ -26,10 +26,17 @@ struct WGMath
 	template<typename T>
 	static FORCEINLINE T WrapAngle(T theta)
 	{
-		const T modded = fmodf(theta, (T)2.0f * (T)PI);
-		return (modded > (T)PI) ?
-			(modded - (T)2.0f * (T)PI) :
-			modded;
+		constexpr T twoPi = (T)2 * (T)PI_D;
+		const T mod = fmod(theta, twoPi);
+		if (mod > (T)PI_D)
+		{
+			return mod - twoPi;
+		}
+		else if (mod < (T)PI_D)
+		{
+			return mod + twoPi;
+		}
+		return mod;
 	}
 
 	// »нтерпол€ци€

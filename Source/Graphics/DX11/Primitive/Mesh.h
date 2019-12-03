@@ -52,6 +52,7 @@ public:
 	Node(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& inTransform);
 	void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const;
 	void SetTransform(DirectX::FXMMATRIX inTransform);
+	const DirectX::XMFLOAT4X4 GetAppliedTransform() const;
 	int GetId() const;
 	void ShowTree(Node*& pSelectedNode) const;
 

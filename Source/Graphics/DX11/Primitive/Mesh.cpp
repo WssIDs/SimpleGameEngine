@@ -9,6 +9,8 @@
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
 #include <assimp\material.h>
+#include "..\Math\XM.h"
+#include "assimp\config.h"
 
 DEFINE_LOG_CATEGORY(MeshLog)
 
@@ -72,6 +74,11 @@ void Node::SetTransform(DirectX::FXMMATRIX inTransform)
 	dx::XMStoreFloat4x4(&transform, inTransform);
 }
 
+const DirectX::XMFLOAT4X4 Node::GetAppliedTransform() const
+{
+	return appliedTransform;
+}
+
 int Node::GetId() const
 {
 	return id;
@@ -127,7 +134,25 @@ public:
 
 			if (pSelectedNode != nullptr)
 			{
-				auto& transform = transforms[pSelectedNode->GetId()];
+				const auto id = pSelectedNode->GetId();
+				auto i = transforms.find(id);
+				if (i == transforms.end())
+				{
+					const auto& applied = pSelectedNode->GetAppliedTransform();
+					const auto angles = XMatrix::GetEulerAngles(applied);
+					const auto translation = XMatrix::GetTranslation(applied);
+					TransformParameters tp;
+					tp.roll = angles.z;
+					tp.pitch = angles.x;
+					tp.yaw = angles.y;
+					tp.x = translation.x;
+					tp.y = translation.y;
+					tp.z = translation.z;
+
+					std::tie(i, std::ignore) = transforms.insert({ id,tp });
+				}
+
+				auto& transform = i->second;
 
 				ImGui::Text("Orientation");
 				ImGui::SliderAngle("Roll", &transform.roll, -180.0f, 180.0f);
@@ -182,11 +207,13 @@ Model::Model(Graphics& gfx, const std::string path, dx::XMFLOAT3 scale3D)
 	pWindow(std::make_unique<ModelWindow>())
 {
 	Assimp::Importer imp;
+	imp.SetPropertyInteger(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
+
 	const auto pScene = imp.ReadFile(path.c_str(),
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_ConvertToLeftHanded |
-		aiProcess_GenNormals |
+		aiProcess_GenSmoothNormals |
 		aiProcess_CalcTangentSpace
 	);
 
