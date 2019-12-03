@@ -58,7 +58,7 @@ namespace Bind
 			//DirectX::LoadFromTGAFile(std::wstring(path.begin(), path.end()).c_str(), nullptr, *image);
 			DirectX::LoadFromDDSFile(std::wstring(path.begin(), path.end()).c_str(), DirectX::DDS_FLAGS_NONE, &info, *image);
 	
-			bAlpha = DirectX::HasAlpha(info.format);
+			bAlpha = !image->IsAlphaAllOpaque();
 
 			DirectX::CreateShaderResourceView(GetDevice(gfx), image->GetImages(), image->GetImageCount(), image->GetMetadata(), &pTextureView);
 		//}
