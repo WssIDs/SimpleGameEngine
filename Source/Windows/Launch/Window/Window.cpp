@@ -48,6 +48,7 @@ Window::WindowClass::~WindowClass()
 
 Window::Window(int width, int height, const std::string& name, const std::string& commandLine)
 	:
+	windowName(name),
 	width(width),
 	height(height),
 	commandLine(commandLine)
@@ -157,7 +158,7 @@ Window::Window(int width, int height, const std::string& name, const std::string
 		WGE_LOG(WindowLog, LogVerbosity::Default, "CommanLine empty");
 	}
 
-	std::string logConsoleName = "WGEngine Log";
+	std::string logConsoleName = windowName + " Log";
 
 	if (bConsole)
 	{
@@ -166,14 +167,15 @@ Window::Window(int width, int height, const std::string& name, const std::string
 
 	RECT wr = { 0,0,width, height };
 
-	if(AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, false) == 0)
+	if(AdjustWindowRectEx(&wr, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW) == 0)
 	{
 		WGE_LOG(WindowLog, LogVerbosity::Error, "Cannot AdjustWindowRect");
 	}
 
-	hwnd = CreateWindow(
+	hwnd = CreateWindowEx(
+		WS_EX_OVERLAPPEDWINDOW,
 		WindowClass::getName(),
-		name.c_str(),
+		windowName.c_str(),
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -227,6 +229,11 @@ void Window::SetWindowTitle(const std::string& title)
 	}
 }
 
+std::string Window::GetWindowName() const
+{
+	return windowName;
+}
+
 void Window::EnableCursor()
 {
 	cursorEnabled = true;
@@ -254,13 +261,13 @@ std::optional<int> Window::ProcessMessages()
 
 	while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+
 		if(msg.message == WM_QUIT)
 		{
 			return static_cast<int>(msg.wParam);
 		}
-
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
 	}
 	
 	return {};
@@ -269,6 +276,16 @@ std::optional<int> Window::ProcessMessages()
 Graphics& Window::Gfx()
 {
 	return *pGfx;
+}
+
+bool Window::IsPaused() const
+{
+	return bPaused;
+}
+
+void Window::SetPause(bool newPause)
+{
+	bPaused = newPause;
 }
 
 bool Window::isRun() const
@@ -314,9 +331,9 @@ void Window::onCreate()
 	/// When Windows created and show
 }
 
-void Window::onUpdate()
+void Window::onResize()
 {
-	// update every frame
+
 }
 
 void Window::onDestroy()
@@ -516,6 +533,9 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		HANDLE_MSG(hWnd, WM_KILLFOCUS, Wnd_OnKillFocus);
 		HANDLE_MSG(hWnd, WM_ACTIVATE, Wnd_OnActivate);
 		HANDLE_MSG(hWnd, WM_SIZE, Wnd_OnSize);
+		HANDLE_MSG(hWnd, WM_ENTERSIZEMOVE, Wnd_OnEnterSizeMove);
+		HANDLE_MSG(hWnd, WM_EXITSIZEMOVE, Wnd_OnExitSizeMove);
+		HANDLE_MSG(hWnd, WM_GETMINMAXINFO, Wnd_OnGetMinMaxInfo);
 
 
 		HANDLE_MSG(hWnd, WM_KEYDOWN, Wnd_OnKeyDown);
@@ -545,9 +565,21 @@ BOOL Window::Wnd_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
 void Window::Wnd_OnClose(HWND hwnd)
 {
-	onDestroy();
-	::PostQuitMessage(0);
-	FreeConsole();
+	// display message close
+	bPaused = true;
+	timer.stop();
+
+	if (MessageBox(hwnd, "Are you sure you want to quit?", "WG Engine", MB_YESNO | MB_ICONQUESTION) == IDYES)
+	{
+		onDestroy();
+		FreeConsole();
+		::PostQuitMessage(0);
+	}
+	else
+	{
+		bPaused = false;
+		timer.start();
+	}
 }
 
 void Window::Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus)
@@ -557,28 +589,111 @@ void Window::Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus)
 
 void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized)
 {
-	if(!cursorEnabled)
-	{
-		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Mouse state = %d"), state);
+	bActive = (int)state;
 
-		if(state == 1)
+	if(bActive == 0)
+	{
+		if (!cursorEnabled)
 		{
 			WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor confine"));
-			ConfineCursor();
-			HideCursor();
-		}
-		else
-		{
-			WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor free"));
 			FreeCursor();
 			ShowCursor();
 		}
+		SetPause(true);
+		timer.stop();
+		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Game Paused"));
 	}
+	else
+	{
+		if (!cursorEnabled)
+		{
+			WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor free"));
+			ConfineCursor();
+			HideCursor();
+		}
+		SetPause(false);
+		timer.start();
+		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Game Resumed"));
+	}
+
+	//if(!cursorEnabled)
+	//{
+	//	WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Mouse state = %d"), bActive);
+
+	//	if(bActive == 1)
+	//	{
+	//		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor confine"));
+	//		ConfineCursor();
+	//		HideCursor();
+	//	}
+	//	else
+	//	{
+	//		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor free"));
+	//		FreeCursor();
+	//		ShowCursor();
+	//	}
+	//}
 }
 
 void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 {
+	if(state == 1)
+	{
+		bMinimized = true;
+		bMinimized = false;
+		bPaused = true;
+	}
+	else if (state == 2)
+	{
+		bMinimized = false;
+		bMaximized = true;
+		bPaused = false;
+	}
+	else if (state == 0)
+	{
+		if (bMinimized)
+		{
+			bMinimized = false;
+			onResize();
+			bPaused = false;
+		}
+		else if (bMaximized)
+		{
+			bMaximized = false;
+			onResize();
+			bPaused = false;
+		}
+		else if (bResizing)
+		{
+
+		}
+		else
+			onResize();
+	}
+
 	//S_LOG(TEXT(WindowLog), TEXT("State = %d, cx = %d, cy = %d"), state, cx, cy);
+}
+
+void Window::Wnd_OnEnterSizeMove()
+{
+	WGE_LOG(WindowLog, LogVerbosity::Default, "EnterSizeMove");
+	bResizing = true;
+	bPaused = true;
+	timer.stop();
+}
+
+void Window::Wnd_OnExitSizeMove()
+{
+	WGE_LOG(WindowLog, LogVerbosity::Default, "ExitSizeMove");
+	bResizing = false;
+	bPaused = false;
+	timer.start();
+}
+
+void Window::Wnd_OnGetMinMaxInfo(HWND hwnd, LPMINMAXINFO lpMinMaxInfo)
+{
+	lpMinMaxInfo->ptMinTrackSize.x = 200;
+	lpMinMaxInfo->ptMinTrackSize.y = 200;
 }
 
 void Window::Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)
@@ -679,7 +794,7 @@ void Window::Wnd_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 
 void Window::Wnd_OnMouseWheel(HWND hwnd, int xPos, int yPos, int zDelta, UINT fwKeys)
 {
-	if (!ImGui::GetIO().WantCaptureKeyboard)
+	if (!ImGui::IsAnyItemActive())
 	{
 		mouseInput.OnWheelDelta(xPos, yPos, zDelta);
 	}

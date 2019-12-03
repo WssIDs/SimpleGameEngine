@@ -1,17 +1,13 @@
 ﻿#pragma once
-#include <windows.h>
 #include <windowsx.h>
+#include "WindowHandle.h"
 #include "Windows/Input/KeyboardInput.h"
 #include "Windows/Input/MouseInput.h"
 #include <optional> 
 #include "Graphics/DX11/Graphics.h"
 #include <memory>
-
 #include "Graphics/Engine/Core.h"
-
-/* void Cls_OnInput(HWND hWnd, UINT inputCode, HRAWINPUT hRawInput) */
-#define HANDLE_WM_INPUT(hWnd, wParam, lParam, fn) \
-  ((fn)((hWnd), GET_RAWINPUT_CODE_WPARAM(wParam), (HRAWINPUT)(lParam)), 0L)
+#include "../../Timer/Timer.h"
 
 
 class Window
@@ -43,6 +39,8 @@ public:
 
 	void SetWindowTitle(const std::string& title);
 
+	std::string GetWindowName() const;
+
 	void EnableCursor();
 	void DisableCursor();
 
@@ -50,15 +48,17 @@ public:
 
 	// window is run
 	bool isRun() const;
-	
-	// update window every cycle step
-	virtual void onUpdate();
+
+	virtual void onResize();
 
 	// loop messages
 	std::optional<int> ProcessMessages();
 
 	/// Graphics
 	Graphics& Gfx();
+
+	bool IsPaused() const;
+	void SetPause(bool newPause);
 
 protected:
 
@@ -122,6 +122,9 @@ private:
 	void Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus);
 	void Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMinimized);
 	void Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy);
+	void Wnd_OnEnterSizeMove();
+	void Wnd_OnExitSizeMove();
+	void Wnd_OnGetMinMaxInfo(HWND hwnd, LPMINMAXINFO lpMinMaxInfo);
 
 	/// keyboard event
 	void Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags);
@@ -142,7 +145,17 @@ private:
 public:
 	KeyboardInput keyboardInput;
 	MouseInput mouseInput;
+protected:
+	Timer timer;
 private:
+
+	bool bActive;
+	bool bMinimized;
+	bool bMaximized;
+	bool bResizing;
+
+	// DX logic
+	bool bPaused;
 
 	HWND hwnd;
 	bool is_run;
@@ -152,6 +165,7 @@ private:
 	int width = 0;
 	int height = 0;
 
+	std::string windowName;
 	std::unique_ptr<Graphics> pGfx;
 	std::vector<BYTE> rawBuffer;
 	std::string commandLine;

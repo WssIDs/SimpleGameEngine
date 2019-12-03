@@ -1,7 +1,5 @@
 ﻿#pragma once
 #include "Window.h"
-#include "Windows/Timer/Timer.h"
-
 #include "Graphics/GUI/ImguiManager.h"
 #include "Graphics/Engine/Actors/Camera.h"
 #include <Graphics\DX11\Render\PointLight.h>
@@ -19,21 +17,31 @@ public:
 
 	~ApplicationWindow();
 
-	int Update();
-	void onUpdate() override;
+	void CalculateFrameStats();
+
+	int Run();
+	
+	void Update(double deltaTime);
+	// generating output
+	virtual void Render(double farseer);	// renders the game world
 
 	void ShowImguiDemoWindow();
 	void ShowRawInputWindow();
+
 private:
+	int fps;							// frames per second
+	double mspf;					    // milliseconds per frame
+	double deltaTime;
+	int maxSkipFrames;
+
 	int x = 0, y = 0;
 	bool showDemoWindow = false;
-	Timer timer;
 	Camera camera;
 	PointLight light;
 	float speedFactor = 1.0f;
 
 	//Model model{ Gfx(), BASE_MODELS_DIR + "Wall.fbx" };
-	Model girl{ Gfx(), BASE_MODELS_DIR + "Girl.fbx" };
+	Model girl{ Gfx(), BASE_MODELS_DIR + "girl.fbx" };
 	//TestPlane plane {Gfx(), 50.0f };
 };
 

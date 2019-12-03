@@ -10,7 +10,7 @@ int WINAPI WinMain(
 )
 {
 	ApplicationWindow application_window(1280, 720, TEXT("WG Engine"),lpCmdLine);
-	application_window.Update(); // Update window every frame
+	application_window.Run(); // Update window every frame
 	
 	return 0;
 }

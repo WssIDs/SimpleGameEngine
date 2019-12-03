@@ -9,6 +9,7 @@
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
 #include "Graphics/DX11/Bindable/Sampler.h"
+#include <thread>
 
 
 DEFINE_LOG_CATEGORY(ApplicationWindowLog);
@@ -22,6 +23,10 @@ ImguiManager imgui;
 ApplicationWindow::ApplicationWindow(int width, int height, const std::string& name, const std::string& commandLine)
 	:
 	Window(width, height, name, commandLine),
+	fps(0),
+	mspf(0.0),
+	deltaTime(1.0 /(double)240),
+	maxSkipFrames(10),
 	light(Gfx(), 5.0f)
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
@@ -37,8 +42,33 @@ ApplicationWindow::~ApplicationWindow()
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Destroy");
 }
 
-int ApplicationWindow::Update()
+void ApplicationWindow::CalculateFrameStats()
 {
+	static int nFrames;				    // number of frames seen
+	static double elapsedTime;		    // time since last call
+	nFrames++;
+
+	// compute average statistics over one second
+	if ((timer.getTotalTime() - elapsedTime) >= 1.0)
+	{
+		// set fps and mspf
+		fps = nFrames;
+		mspf = 1000.0 / (double)fps;
+
+		// reset
+		nFrames = 0;
+		elapsedTime += 1.0;
+	}
+}
+
+int ApplicationWindow::Run()
+{
+	// reset (start) the timer
+	timer.reset();
+
+	double accumulatedTime = 0.0;		// stores the time accumulated by the rendered
+	int nLoops = 0;						// the number of completed loops while updating the game
+
 	while (true)
 	{
 		if (const auto ecode = ProcessMessages())
@@ -46,28 +76,37 @@ int ApplicationWindow::Update()
 			return *ecode;
 		}
 
-		onUpdate();
+		// let the timer tick
+		timer.tick();
+
+		if (!IsPaused())
+		{
+			// calculate fps
+			CalculateFrameStats();
+			
+			// accumulate the elapsed time since the last frame
+			accumulatedTime += timer.getDeltaTime();
+
+			// now update the game logic with fixed deltaTime as often as possible
+			nLoops = 0;
+			while (accumulatedTime >= deltaTime && nLoops < maxSkipFrames)
+			{
+				Update(deltaTime);
+				//Update(deltaTime);
+				accumulatedTime -= deltaTime;
+				nLoops++;
+
+				WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "delta = %lf, accumulatedTime = %lf, nLoops = %d", deltaTime, accumulatedTime, nLoops);
+			}
+
+			Render(accumulatedTime / deltaTime);
+		}
 	}
 }
 
-void ApplicationWindow::onUpdate()
+void ApplicationWindow::Update(double deltaTime)
 {
-	Window::onUpdate();
-
-	auto deltaSeconds = timer.Mark() * speedFactor;
-
-	Gfx().BeginFrame(0.07,0.0f,0.12f); // StartFrame
-
-	// DRAW/LOGICS
-
-	Gfx().SetCamera(camera.GetMatrix());
-	light.Bind(Gfx(), camera.GetMatrix());
-
-
-	//model.Draw(Gfx());
-	//plane.Draw(Gfx());
-	girl.Draw(Gfx());
-	light.Draw(Gfx());
+	WGE_LOG(ApplicationWindowLog, LogVerbosity::Warning, "delta = %lf", deltaTime);
 
 	while (const auto e = keyboardInput.ReadKey())
 	{
@@ -91,56 +130,102 @@ void ApplicationWindow::onUpdate()
 		}
 
 		if (keyboardInput.KeyIsPressed(VK_F2))
-		{	
+		{
 			showDemoWindow = !showDemoWindow;
 		}
 	}
 
 
-	if(!IsCursorEnabled())
-	{
-		float step = 3.0f;
 
-		if(keyboardInput.KeyIsPressed('W'))
-		{
-			camera.Translate({ 0.0f, 0.0f, deltaSeconds * step });
-		}
-		if (keyboardInput.KeyIsPressed('A'))
-		{
-			camera.Translate({ -deltaSeconds * step, 0.0f, 0.0f });
-		}
-		if (keyboardInput.KeyIsPressed('S'))
-		{
-			camera.Translate({ 0.0f, 0.0f, -deltaSeconds * step });
-		}
-		if (keyboardInput.KeyIsPressed('D'))
-		{
-			camera.Translate({ deltaSeconds * step, 0.0f, 0.0f });
-		}
-		if (keyboardInput.KeyIsPressed('R'))
-		{
-			camera.Translate({ 0.0f, deltaSeconds * step, 0.0f });
-		}
-		if (keyboardInput.KeyIsPressed('F'))
-		{
-			camera.Translate({ 0.0f, -deltaSeconds * step, 0.0f });
-		}
-	}
 
 	while (const auto delta = mouseInput.ReadRawDelta())
 	{
-		if(!IsCursorEnabled())
+		if (!IsCursorEnabled())
 		{
 			camera.Rotate((float)delta->x, (float)delta->y);
 		}
 	}
 
+
+
+	if (IsCursorEnabled())
+	{
+		while (!mouseInput.IsEmpty())
+		{
+			const auto mEvent = mouseInput.Read();
+			float step = 3.0f;
+
+			if (mEvent->GetType() == MouseInput::Event::Type::WheelUp)
+			{
+				camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
+			}
+			if (mEvent->GetType() == MouseInput::Event::Type::WheelDown)
+			{
+				camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
+			}
+		}
+	}
+
+
+	if (!IsCursorEnabled())
+	{
+		double step = 3.0f;
+
+		if (keyboardInput.KeyIsPressed('W'))
+		{
+			camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
+		}
+		if (keyboardInput.KeyIsPressed('A'))
+		{
+			camera.Translate({ (float)(-deltaTime * step), 0.0f, 0.0f });
+		}
+		if (keyboardInput.KeyIsPressed('S'))
+		{
+			camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
+		}
+		if (keyboardInput.KeyIsPressed('D'))
+		{
+			camera.Translate({ (float)(deltaTime * step), 0.0f, 0.0f });
+		}
+		if (keyboardInput.KeyIsPressed('R'))
+		{
+			camera.Translate({ 0.0f, (float)(deltaTime * step), 0.0f });
+		}
+		if (keyboardInput.KeyIsPressed('F'))
+		{
+			camera.Translate({ 0.0f, (float)(-deltaTime * step), 0.0f });
+		}
+	}
+}
+
+void ApplicationWindow::Render(double farseer)
+{
+	WGE_LOG(ApplicationWindowLog, LogVerbosity::Warning, "farseer = %lf", farseer);
+
+	Gfx().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
+
+	// DRAW/LOGICS
+
+	Gfx().DrawText(L"Добро пожаловать в Direct 2D", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
+	Gfx().DrawText(L"FPS: " + std::to_wstring(fps), 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 25.0f);
+	Gfx().DrawText(L"FrameTime: " + std::to_wstring(mspf) + L" ms", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 40.0f);
+
+	Gfx().SetCamera(camera.GetMatrix());
+	light.Bind(Gfx(), camera.GetMatrix());
+
+
+	//model.Draw(Gfx());
+	//plane.Draw(Gfx());
+	girl.Draw(Gfx());
+	light.Draw(Gfx());
+
+	
 	// render imgui windows
 	camera.SpawnControlWindow();
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
 	//model.ShowWindow("Wall");
-	girl.ShowWindow(Gfx(),"Girl");
+	girl.ShowWindow(Gfx(), "Girl");
 	//plane.SpawnControlWindow(Gfx());
 	//ShowRawInputWindow();
 
