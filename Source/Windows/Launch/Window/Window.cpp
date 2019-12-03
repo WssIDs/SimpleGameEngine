@@ -110,10 +110,10 @@ Window::Window(int width, int height, const std::string& name, const std::string
 
 						if(resSplittedString.size() >= 2)
 						{
-							width = std::stoi(resSplittedString[0]);
-							WGE_LOG(WindowLog, LogVerbosity::Default, "width = %d", width);
-							height = std::stoi(resSplittedString[1]);
-							WGE_LOG(WindowLog, LogVerbosity::Default, "height = %d", height);
+							this->width = std::stoi(resSplittedString[0]);
+							WGE_LOG(WindowLog, LogVerbosity::Default, "width = %d", this->width);
+							this->height = std::stoi(resSplittedString[1]);
+							WGE_LOG(WindowLog, LogVerbosity::Default, "height = %d", this->height);
 							
 							if(2 < resSplittedString.size())
 							{
@@ -165,7 +165,7 @@ Window::Window(int width, int height, const std::string& name, const std::string
 		InitConsole(logConsoleName, Position(0, 0), Size(1100, 350));
 	}
 
-	RECT wr = { 0,0,width, height };
+	RECT wr = { 0,0, this->width, this->height };
 
 	if(AdjustWindowRectEx(&wr, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW) == 0)
 	{
@@ -187,9 +187,9 @@ Window::Window(int width, int height, const std::string& name, const std::string
 		this
 	);
 
-	RECT rc = GetWindowSize();
-	this->width = rc.right;
-	this->height = rc.bottom;
+	//RECT rc = GetWindowSize();
+	//this->width = rc.right;
+	//this->height = rc.bottom;
 
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
 
@@ -288,6 +288,14 @@ void Window::SetPause(bool newPause)
 	bPaused = newPause;
 }
 
+void Window::CloseWindow()
+{
+	if(SendMessage(hwnd,WM_CLOSE,0L,0L) != 0)
+	{
+		WGE_LOG(WindowLog, LogVerbosity::Error, "Cannot send message to close window, code = %d", (int)GetLastError());
+	}
+}
+
 bool Window::isRun() const
 {
 	return is_run;
@@ -331,9 +339,14 @@ void Window::onCreate()
 	/// When Windows created and show
 }
 
-void Window::onResize()
+void Window::OnResize()
 {
+	/// When Windows resize
+}
 
+void Window::OnPosChange()
+{
+	/// When Windows position changed
 }
 
 void Window::onDestroy()
@@ -536,6 +549,7 @@ LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		HANDLE_MSG(hWnd, WM_ENTERSIZEMOVE, Wnd_OnEnterSizeMove);
 		HANDLE_MSG(hWnd, WM_EXITSIZEMOVE, Wnd_OnExitSizeMove);
 		HANDLE_MSG(hWnd, WM_GETMINMAXINFO, Wnd_OnGetMinMaxInfo);
+		HANDLE_MSG(hWnd, WM_WINDOWPOSCHANGED, Wnd_OnWindowPosChanged);
 
 
 		HANDLE_MSG(hWnd, WM_KEYDOWN, Wnd_OnKeyDown);
@@ -569,17 +583,9 @@ void Window::Wnd_OnClose(HWND hwnd)
 	bPaused = true;
 	timer.stop();
 
-	if (MessageBox(hwnd, "Are you sure you want to quit?", "WG Engine", MB_YESNO | MB_ICONQUESTION) == IDYES)
-	{
-		onDestroy();
-		FreeConsole();
-		::PostQuitMessage(0);
-	}
-	else
-	{
-		bPaused = false;
-		timer.start();
-	}
+	onDestroy();
+	FreeConsole();
+	::PostQuitMessage(0);
 }
 
 void Window::Wnd_OnKillFocus(HWND hwnd, HWND hwndNewFocus)
@@ -595,25 +601,25 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 	{
 		if (!cursorEnabled)
 		{
-			WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor confine"));
+			WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Cursor confine"));
 			FreeCursor();
 			ShowCursor();
 		}
 		SetPause(true);
 		timer.stop();
-		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Game Paused"));
+		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Paused"));
 	}
 	else
 	{
 		if (!cursorEnabled)
 		{
-			WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor free"));
+			WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Cursor free"));
 			ConfineCursor();
 			HideCursor();
 		}
 		SetPause(false);
 		timer.start();
-		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Game Resumed"));
+		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Resumed"));
 	}
 
 	//if(!cursorEnabled)
@@ -647,6 +653,7 @@ void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 	{
 		bMinimized = false;
 		bMaximized = true;
+		OnResize();
 		bPaused = false;
 	}
 	else if (state == 0)
@@ -654,13 +661,13 @@ void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 		if (bMinimized)
 		{
 			bMinimized = false;
-			onResize();
+			OnResize();
 			bPaused = false;
 		}
 		else if (bMaximized)
 		{
 			bMaximized = false;
-			onResize();
+			OnResize();
 			bPaused = false;
 		}
 		else if (bResizing)
@@ -668,7 +675,7 @@ void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 
 		}
 		else
-			onResize();
+			OnResize();
 	}
 
 	//S_LOG(TEXT(WindowLog), TEXT("State = %d, cx = %d, cy = %d"), state, cx, cy);
@@ -686,6 +693,7 @@ void Window::Wnd_OnExitSizeMove()
 {
 	WGE_LOG(WindowLog, LogVerbosity::Default, "ExitSizeMove");
 	bResizing = false;
+	OnResize();
 	bPaused = false;
 	timer.start();
 }
@@ -694,6 +702,16 @@ void Window::Wnd_OnGetMinMaxInfo(HWND hwnd, LPMINMAXINFO lpMinMaxInfo)
 {
 	lpMinMaxInfo->ptMinTrackSize.x = 200;
 	lpMinMaxInfo->ptMinTrackSize.y = 200;
+}
+
+void Window::Wnd_OnWindowPosChanged(HWND hwnd, const LPWINDOWPOS lpwpos)
+{
+	OnPosChange();
+}
+
+BOOL Window::Wnd_Sizing(HWND hwnd, LPRECT lprect)
+{
+	return false;
 }
 
 void Window::Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags)

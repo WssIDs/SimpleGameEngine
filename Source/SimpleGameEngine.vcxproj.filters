@@ -98,6 +98,7 @@
     <ClCompile Include="Graphics\DX11\Primitive\TestCube.cpp" />
     <ClCompile Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="Graphics\2D\Canvas.cpp" />
+    <ClCompile Include="Graphics\Test\Serialization\TestObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -454,6 +455,7 @@
     <ClInclude Include="Graphics\DX11\Math\XM.h" />
     <ClInclude Include="Graphics\2D\Canvas.h" />
     <ClInclude Include="Windows\Launch\Window\WindowHandle.h" />
+    <ClInclude Include="Graphics\Test\Serialization\TestObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

@@ -12,3 +12,7 @@
 /* void Cls_ExitSizeMove() */
 #define HANDLE_WM_EXITSIZEMOVE(hWnd, wParam, lParam, fn) \
   ((fn)(), 0L)
+
+/* BOOL Cls_Sizing(LPRECT lprect) */
+#define HANDLE_WM_SIZING(hWnd, wParam, lParam, fn) \
+    (LRESULT)(DWORD)(BOOL)(fn)((hWnd),0L,(LPRECT)(lParam)))

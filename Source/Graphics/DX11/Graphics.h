@@ -8,7 +8,15 @@
 #include "Graphics/Engine/Core.h"
 #include <d2d1.h>
 #include <d2d1_3.h>
+#include <dwrite_3.h>
 #include "Render/Color.h"
+
+
+#pragma comment(lib,"d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+
+#pragma comment(lib,"d2d1.lib")
+#pragma comment(lib,"dwrite.lib")
 
 namespace Bind
 {
@@ -37,6 +45,14 @@ public:
 	// init DX11_1
 	void InitDX11_1(HWND hWnd);
 
+	// functions to change screen resolutions
+
+	// changes the screen resolution, if increase is true, a higher resolution is chosen, else the resolution is lowered
+	// returns true if the screen resolution should be changed
+	void changeResolution(bool increase);					
+	bool OnResize();						// resize the resources
+	bool GetFullScreenState() const;			// get full screen state
+	bool IsCurrentInFullScreen() const;
 	// test function
 	void InitDX2D(HWND hWnd);
 	void Begin2DFrame();
@@ -66,26 +82,40 @@ public:
 
 private:
 
+	HWND hWnd;
+
 	void PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId);
 
 	int width;
 	int height;
+
+	// colour format
+	DXGI_FORMAT desiredColourFormat;						// the desired colour format
+	unsigned int numberOfSupportedModes;					// the number of supported screen modes for the desired colour format
+	DXGI_MODE_DESC* supportedModes;							// list of all supported screen modes for the desired colour format
+	DXGI_MODE_DESC  currentModeDescription;					// description of the currently active screen mode
+	unsigned int currentModeIndex;							// the index of the current mode in the list of all supported screen modes
+	bool startInFullscreen;									// true if the game should start in fullscreen mode
+	bool currentlyInFullscreen;								// true if the game is currently in fullscreen mode
+	bool changeMode;										// true if the screen resolution should be changed this frame
 
 	DirectX::XMMATRIX projection;
 	DirectX::XMMATRIX camera;
 
 	bool imguiEnabled = true;
 
-	Microsoft::WRL::ComPtr<ID3D11Device1> pDevice = nullptr;
 	Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwap = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> pContext = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTargetView = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D11Device1> pDevice3D = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> pDeviceContext3D = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTargetView3D = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView3D = nullptr;
 
 
-	Microsoft::WRL::ComPtr<ID2D1Factory> pFactory2D = nullptr;
-	Microsoft::WRL::ComPtr<IDWriteFactory> pDwriteFactory = nullptr;
-	Microsoft::WRL::ComPtr<ID2D1RenderTarget> pRenderTarget2D = nullptr;
+	Microsoft::WRL::ComPtr<IDWriteFactory2> pDwriteFactory2D;	// pointer to the DirectWrite factory
+	Microsoft::WRL::ComPtr<ID2D1Factory2> pFactory2D;			// pointer to the Direct2D factory
+	Microsoft::WRL::ComPtr<ID2D1Device1> pDevice2D;				// pointer to the Direct2D device
+	Microsoft::WRL::ComPtr<ID2D1DeviceContext1> pDeviceContext2D;		// pointer to the device context
 };
 
 

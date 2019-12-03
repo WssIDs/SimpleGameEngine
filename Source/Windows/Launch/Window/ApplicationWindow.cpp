@@ -10,7 +10,10 @@
 #include "Imgui/imgui.h"
 #include "Graphics/DX11/Bindable/Sampler.h"
 #include <thread>
-
+#include <iosfwd>
+// include headers that implement a archive in simple text format
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 DEFINE_LOG_CATEGORY(ApplicationWindowLog);
 
@@ -35,6 +38,34 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	//plane.SetPosition({ 60.f,50.0f,0.0f });
 
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
+
+	test.PrintAll();
+
+	test.Change();
+
+	test.PrintAll();
+	// create and open a character archive for output
+	std::ofstream ofs("filename");
+
+	//save
+	{
+		boost::archive::text_oarchive oa(ofs);
+		oa << test;
+	}
+
+	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "---------------------------------");
+
+	TestObject newTest;
+
+	//load
+	{
+		std::ifstream ifs("filename");
+		boost::archive::text_iarchive ia(ifs);
+		ia >> newTest;
+	}
+
+	newTest.PrintAll();
+
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -96,7 +127,7 @@ int ApplicationWindow::Run()
 				accumulatedTime -= deltaTime;
 				nLoops++;
 
-				WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "delta = %lf, accumulatedTime = %lf, nLoops = %d", deltaTime, accumulatedTime, nLoops);
+				//WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "delta = %lf, accumulatedTime = %lf, nLoops = %d", deltaTime, accumulatedTime, nLoops);
 			}
 
 			Render(accumulatedTime / deltaTime);
@@ -106,8 +137,6 @@ int ApplicationWindow::Run()
 
 void ApplicationWindow::Update(double deltaTime)
 {
-	WGE_LOG(ApplicationWindowLog, LogVerbosity::Warning, "delta = %lf", deltaTime);
-
 	while (const auto e = keyboardInput.ReadKey())
 	{
 		if (!e->IsPress())
@@ -129,9 +158,24 @@ void ApplicationWindow::Update(double deltaTime)
 			}
 		}
 
+		if (keyboardInput.KeyIsPressed(VK_PRIOR))
+		{
+			Gfx().changeResolution(true);
+		}
+
+		if (keyboardInput.KeyIsPressed(VK_NEXT))
+		{
+			Gfx().changeResolution(false);
+		}
+
 		if (keyboardInput.KeyIsPressed(VK_F2))
 		{
 			showDemoWindow = !showDemoWindow;
+		}
+
+		if (keyboardInput.KeyIsPressed(VK_ESCAPE))
+		{
+			CloseWindow();
 		}
 	}
 
@@ -200,8 +244,6 @@ void ApplicationWindow::Update(double deltaTime)
 
 void ApplicationWindow::Render(double farseer)
 {
-	WGE_LOG(ApplicationWindowLog, LogVerbosity::Warning, "farseer = %lf", farseer);
-
 	Gfx().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
 
 	// DRAW/LOGICS
@@ -216,7 +258,7 @@ void ApplicationWindow::Render(double farseer)
 
 	//model.Draw(Gfx());
 	//plane.Draw(Gfx());
-	girl.Draw(Gfx());
+	//girl.Draw(Gfx());
 	light.Draw(Gfx());
 
 	
@@ -225,7 +267,7 @@ void ApplicationWindow::Render(double farseer)
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
 	//model.ShowWindow("Wall");
-	girl.ShowWindow(Gfx(), "Girl");
+	//girl.ShowWindow(Gfx(), "Girl");
 	//plane.SpawnControlWindow(Gfx());
 	//ShowRawInputWindow();
 
@@ -253,4 +295,23 @@ void ApplicationWindow::ShowRawInputWindow()
 		ImGui::Text("Cursor: %s", IsCursorEnabled() ? "enabled" : "disabled");
 	}
 	ImGui::End();
+}
+
+void ApplicationWindow::OnResize()
+{
+	Gfx().OnResize();
+}
+
+void ApplicationWindow::OnPosChange()
+{
+	bool fullscreen = Gfx().GetFullScreenState();
+
+	if (fullscreen != (bool)Gfx().IsCurrentInFullScreen())
+	{
+		SetPause(true);
+		timer.stop();
+		Gfx().OnResize();
+		timer.start();
+		SetPause(false);
+	}
 }

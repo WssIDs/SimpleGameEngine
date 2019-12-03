@@ -8,9 +8,9 @@
 #include "Math/WGMath.h"
 #include <d2d1helper.h>
 #include <d2d1.h>
-#include <dwrite.h>
 #include "../Loader/DDSTextureLoader.h"
 #include <string>
+#include <stdexcept>
 
 DEFINE_LOG_CATEGORY(GraphicsLog);
 DEFINE_LOG_CATEGORY(LogD3D11_1RHI);
@@ -20,22 +20,18 @@ namespace wrl = Microsoft::WRL;
 
 namespace dx = DirectX;
 
-#pragma comment(lib,"d3d11.lib")
-#pragma comment(lib,"d3dcompiler.lib")
-
-#pragma comment(lib,"d2d1.lib")
-#pragma comment(lib,"dwrite.lib")
-
 Graphics::Graphics(HWND hWnd, int width, int height)
 	:
 	width(width),
-	height(height)
+	height(height),
+	desiredColourFormat(DXGI_FORMAT_B8G8R8A8_UNORM),
+	hWnd(hWnd)
 {
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Create");
 
-	InitDX11_1(hWnd);
-	InitDX2D(hWnd);
-	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+	InitDX11_1(this->hWnd);
+	InitDX2D(this->hWnd);
+	ImGui_ImplDX11_Init(pDevice3D.Get(), pDeviceContext3D.Get());
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui DX11 Init");
 }
 
@@ -94,14 +90,14 @@ void Graphics::InitDX11(HWND hWnd)
 		&devcon11
 	);
 
-	dev11.As(&pDevice);
-	devcon11.As(&pContext);
+	dev11.As(&pDevice3D);
+	devcon11.As(&pDeviceContext3D);
 	devswap11.As(&pSwap);
 
 	wrl::ComPtr<ID3D11Resource> pBackBuffer;
 
 	pSwap->GetBuffer(0, __uuidof(ID3D11Resource),	&pBackBuffer);
-	pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTargetView);
+	pDevice3D->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pRenderTargetView3D);
 
 
 	// create depth stencil state
@@ -110,10 +106,10 @@ void Graphics::InitDX11(HWND hWnd)
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
-	pDevice->CreateDepthStencilState(&dsDesc, &pDSState);
+	pDevice3D->CreateDepthStencilState(&dsDesc, &pDSState);
 
 	// bind depth state
-	pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+	pDeviceContext3D->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 	// create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
@@ -128,7 +124,7 @@ void Graphics::InitDX11(HWND hWnd)
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-	pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+	pDevice3D->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
 
 	// create view of depth stencil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDepthV = {};
@@ -136,11 +132,11 @@ void Graphics::InitDX11(HWND hWnd)
 	descDepthV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDepthV.Texture2D.MipSlice = 0u;
 
-	pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &pDepthStencilView);
+	pDevice3D->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &pDepthStencilView3D);
 
 
 	// bind depth stencil view to OM
-	pContext->OMSetRenderTargets(1u, pTargetView.GetAddressOf(), pDepthStencilView.Get());
+	pDeviceContext3D->OMSetRenderTargets(1u, pRenderTargetView3D.GetAddressOf(), pDepthStencilView3D.Get());
 
 
 	// configure viewport
@@ -173,12 +169,12 @@ void Graphics::InitDX11_1(HWND hWnd)
 		&devcon11);
 
 	// Convert the pointers from the DirectX 11 versions to the DirectX 11.1 versions
-	dev11.As(&pDevice);
-	devcon11.As(&pContext);
+	dev11.As(&pDevice3D);
+	devcon11.As(&pDeviceContext3D);
 
 	// First, convert our ID3D11Device1 into an IDXGIDevice1
 	wrl::ComPtr<IDXGIDevice1> dxgiDevice;
-	pDevice.As(&dxgiDevice);
+	pDevice3D.As(&dxgiDevice);
 
 	// Second, use the IDXGIDevice1 interface to get access to the adapter
 	wrl::ComPtr<IDXGIAdapter> dxgiAdapter;
@@ -199,10 +195,13 @@ void Graphics::InitDX11_1(HWND hWnd)
 	scd.Width = width;
 	scd.Height = height;
 	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;    // how the swap chain should be used
-	scd.BufferCount = 2;                                  // a front buffer and a back buffer
+	scd.BufferCount = 3;                                  // a front buffer and a back buffer
+	scd.Format = desiredColourFormat;					  // the color palette to use								
+	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;	  // allow mode switching
 	scd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;              // the most common swap chain format
-	scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;    // the recommended flip mode
+	scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;		  // the recommended flip mode
 	scd.SampleDesc.Count = 1;                             // disable anti-aliasing
+	scd.SampleDesc.Quality = 0;
 
 	DXGI_SWAP_CHAIN_FULLSCREEN_DESC scfd = {};
 	scfd.RefreshRate.Denominator = 1;
@@ -211,84 +210,399 @@ void Graphics::InitDX11_1(HWND hWnd)
 	scfd.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	scfd.Windowed = TRUE;
 
-	dxgiFactory->CreateSwapChainForHwnd(pDevice.Get(), hWnd, &scd, &scfd,nullptr, &pSwap);
+	dxgiFactory->CreateSwapChainForHwnd(pDevice3D.Get(), hWnd, &scd, &scfd,nullptr, &pSwap);
 
+	// enumerate all available display modes
+	// get representation of the output adapter
+	wrl::ComPtr<IDXGIOutput> output;
+	pSwap->GetContainingOutput(&output);
 
+	// get the amount of supported display modes for the desired format
+	output->GetDisplayModeList(desiredColourFormat, 0, &numberOfSupportedModes, nullptr);
+
+	// set up array for the supported modes
+	supportedModes = new DXGI_MODE_DESC[numberOfSupportedModes];
+	ZeroMemory(supportedModes, sizeof(DXGI_MODE_DESC) * numberOfSupportedModes);
+
+	// fill the array with the available display modes
+	output->GetDisplayModeList(desiredColourFormat, 0, &numberOfSupportedModes, supportedModes);
+
+	// if the current resolution is not supported, switch to the lowest supported resolution
+	bool supportedMode = false;
+	for (unsigned int i = 0; i < numberOfSupportedModes; i++)
+	{
+		UINT sWidth = supportedModes[i].Width;
+		UINT sHeight = supportedModes[i].Height;
+
+		WGE_LOG(GraphicsLog, LogVerbosity::Warning, "SupportedModes: width = %d, height = %d", sWidth, sHeight);
+
+		if ((unsigned int)width == sWidth && (unsigned int)height == sHeight)
+		{
+			supportedMode = true;
+			currentModeDescription = supportedModes[i];
+			currentModeIndex = i;
+			break;
+		}
+	}
+
+	if (!supportedMode)
+	{
+		// print a warning 
+		WGE_LOG(LogD3D11_1RHI,LogVerbosity::Warning, "The desired screen resolution is not supported! Resizing...");
+
+		// set the mode to the lowest supported resolution
+		currentModeDescription = supportedModes[0];
+		currentModeIndex = 0;
+		if (FAILED(pSwap->ResizeTarget(&currentModeDescription)))
+			throw std::runtime_error("Unable to resize target to a supported display mode!");
+
+		// write the current mode to the configuration file
+		//if (!writeCurrentModeDescriptionToConfigurationFile().wasSuccessful())
+		//	return std::runtime_error("Unable to write to the configuration file!");
+	}
+
+	// set full screen mode?
+	if (startInFullscreen)
+	{
+		// switch to full screen mode
+		if (FAILED(pSwap->SetFullscreenState(true, nullptr)))
+			throw std::runtime_error("Unable to switch to full screen mode!");
+		currentlyInFullscreen = true;
+	}
+	else
+		currentlyInFullscreen = false;
+
+	// the remaining steps need to be done each time the window is resized
+	if (!OnResize())
+		throw std::runtime_error("Direct3D was unable to resize its resources!");
 
 	/// Back buffer
-	wrl::ComPtr<ID3D11Texture2D> pBackBuffer;
+	//wrl::ComPtr<ID3D11Texture2D> pBackBuffer;
 
-	pSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer);
-	pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTargetView);
+	//pSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer);
+	//pDevice3D->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pRenderTargetView3D);
 
 
-	// create depth stencil state
-	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
-	dsDesc.DepthEnable = true;
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	wrl::ComPtr<ID3D11DepthStencilState> pDSState;
-	pDevice->CreateDepthStencilState(&dsDesc, &pDSState);
+	//// create depth stencil state
+	//D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+	//dsDesc.DepthEnable = true;
+	//dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	//dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	//wrl::ComPtr<ID3D11DepthStencilState> pDSState;
+	//pDevice3D->CreateDepthStencilState(&dsDesc, &pDSState);
 
-	// bind depth state
-	pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+	//// bind depth state
+	//pDeviceContext3D->OMSetDepthStencilState(pDSState.Get(), 1u);
 
-	// create depth stencil texture
-	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
-	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = width;
-	descDepth.Height = height;
-	descDepth.MipLevels = 1u;
-	descDepth.ArraySize = 1u;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-	descDepth.SampleDesc.Count = 1u;
-	descDepth.SampleDesc.Quality = 0u;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	//// create depth stencil texture
+	//wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
+	//D3D11_TEXTURE2D_DESC descDepth = {};
+	//descDepth.Width = width;
+	//descDepth.Height = height;
+	//descDepth.MipLevels = 1u;
+	//descDepth.ArraySize = 1u;
+	//descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	//descDepth.SampleDesc.Count = 1u;
+	//descDepth.SampleDesc.Quality = 0u;
+	//descDepth.Usage = D3D11_USAGE_DEFAULT;
+	//descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-	pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
+	//pDevice3D->CreateTexture2D(&descDepth, nullptr, &pDepthStencil);
 
-	// create view of depth stencil texture
-	D3D11_DEPTH_STENCIL_VIEW_DESC descDepthV = {};
-	descDepthV.Format = DXGI_FORMAT_D32_FLOAT;
-	descDepthV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	descDepthV.Texture2D.MipSlice = 0u;
+	//// create view of depth stencil texture
+	//D3D11_DEPTH_STENCIL_VIEW_DESC descDepthV = {};
+	//descDepthV.Format = DXGI_FORMAT_D32_FLOAT;
+	//descDepthV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	//descDepthV.Texture2D.MipSlice = 0u;
 
-	pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &pDepthStencilView);
+	//pDevice3D->CreateDepthStencilView(pDepthStencil.Get(), &descDepthV, &pDepthStencilView3D);
 
-	// bind depth stencil view to OM
-	pContext->OMSetRenderTargets(1u, pTargetView.GetAddressOf(), pDepthStencilView.Get());
+	//// bind depth stencil view to OM
+	//pDeviceContext3D->OMSetRenderTargets(1u, pRenderTargetView3D.GetAddressOf(), pDepthStencilView3D.Get());
 
-	// configure viewport
-	SetViewport(width, height);
+	//// configure viewport
+	//SetViewport(width, height);
 
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics DX11_1 Init");
 }
 
+void Graphics::changeResolution(bool increase)
+{
+	if (increase)
+	{
+		// if increase is true, choose a higher resolution, if possible
+		if (currentModeIndex < numberOfSupportedModes - 1)
+		{
+			currentModeIndex++;
+			changeMode = true;
+		}
+		else
+			changeMode = false;
+	}
+	else
+	{
+		// else choose a smaller resolution, but only if possible
+		if (currentModeIndex > 0)
+		{
+			currentModeIndex--;
+			changeMode = true;
+		}
+		else
+			changeMode = false;
+	}
+
+	if (changeMode)
+	{
+		// change mode
+		currentModeDescription = supportedModes[currentModeIndex];
+
+		// resize everything
+		OnResize();
+	}
+}
+
+bool Graphics::OnResize()
+{
+	// Microsoft recommends zeroing out the refresh rate of the description before resizing the targets
+	DXGI_MODE_DESC zeroRefreshRate = currentModeDescription;
+	zeroRefreshRate.RefreshRate.Numerator = 0;
+	zeroRefreshRate.RefreshRate.Denominator = 0;
+
+	// check for full screen switch
+	BOOL inFullscreen = false;
+	pSwap->GetFullscreenState(&inFullscreen, nullptr);
+
+	if (currentlyInFullscreen != (bool)inFullscreen)
+	{
+		// full screen switch
+		if (inFullscreen)
+		{
+			// switched to full screen -> Microsoft recommends resizing the target before going into fullscreen
+			if (FAILED(pSwap->ResizeTarget(&zeroRefreshRate)))
+			{
+				WGE_LOG(GraphicsLog, LogVerbosity::Error, "Unable to resize target!");
+				return false;
+			}
+			// set full screen state
+			if (FAILED(pSwap->SetFullscreenState(true, nullptr)))
+			{
+				WGE_LOG(GraphicsLog, LogVerbosity::Error, "Unable to switch to full screen mode!");
+				return false;
+			}
+		}
+		else
+		{
+			// switched to windowed -> simply set fullscreen mode to false
+			if (FAILED(pSwap->SetFullscreenState(false, nullptr)))
+			{
+				WGE_LOG(GraphicsLog, LogVerbosity::Error, "Unable to switch to windowed mode mode!");
+				return false;
+			}
+
+			 //recompute client area and set new window size
+			RECT rect = { 0, 0, (long)currentModeDescription.Width,  (long)currentModeDescription.Height };
+			if (FAILED(AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW)))
+			{
+				WGE_LOG(GraphicsLog, LogVerbosity::Error, "Failed to adjust window rectangle!");
+				return false;
+			}
+
+			SetWindowPos(hWnd, HWND_TOP, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE);
+		}
+
+		// change full screen mode
+		currentlyInFullscreen = !currentlyInFullscreen;
+	}
+
+	// resize target to the desired resolution
+	if (FAILED(pSwap->ResizeTarget(&zeroRefreshRate)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Unable to resize target!");
+		return false;
+	}
+
+	// release and reset all resources
+	if (pDeviceContext2D != nullptr)
+	{
+		pDeviceContext2D->SetTarget(nullptr);
+	}
+
+	pDeviceContext3D->ClearState();
+	pRenderTargetView3D = nullptr;
+	pDepthStencilView3D = nullptr;
+
+	DXGI_SWAP_CHAIN_DESC1 scd = { 0 };
+	pSwap->GetDesc1(&scd);
+	// resize the swap chain
+	if (FAILED(pSwap->ResizeBuffers(scd.BufferCount, 0, 0, scd.Format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to resize the swap chain!");
+		return false;
+	}
+
+	// (re)-create the render target view
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+	if (FAILED(pSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()))))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to acquire the back buffer!");
+		return false;
+	}
+
+	if (FAILED(pDevice3D->CreateRenderTargetView(backBuffer.Get(), nullptr, &pRenderTargetView3D)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to create the render target view!");
+		return false;
+	}
+
+
+	// create the depth and stencil buffer
+	D3D11_TEXTURE2D_DESC dsd;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> dsBuffer;
+	backBuffer->GetDesc(&dsd);
+	dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsd.Usage = D3D11_USAGE_DEFAULT;
+	dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	if (FAILED(pDevice3D->CreateTexture2D(&dsd, nullptr, dsBuffer.GetAddressOf())))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to create a 2D-texture!");
+		return false;
+	}
+
+	if (FAILED(pDevice3D->CreateDepthStencilView(dsBuffer.Get(), nullptr, pDepthStencilView3D.GetAddressOf())))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to create the depth and stencil buffer!");
+		return false;
+	}
+
+	// activate the depth and stencil buffer
+	pDeviceContext3D->OMSetRenderTargets(1, pRenderTargetView3D.GetAddressOf(), pDepthStencilView3D.Get());
+
+	SetViewport(dsd.Width, dsd.Height);
+
+	// specify the desired bitmap properties
+	D2D1_BITMAP_PROPERTIES1 bp;
+	bp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	bp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
+	bp.dpiX = 96.0f;
+	bp.dpiY = 96.0f;
+	bp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
+	bp.colorContext = nullptr;
+
+	// Direct2D needs the DXGI version of the back buffer
+	wrl::ComPtr<IDXGISurface> dxgiBuffer;
+	if (FAILED(pSwap->GetBuffer(0, __uuidof(IDXGISurface), &dxgiBuffer)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to retrieve the back buffer!");
+		throw "Critical error: Unable to retrieve the back buffer!";
+	}
+
+	// create the bitmap
+	if (pDeviceContext2D != nullptr)
+	{
+		Microsoft::WRL::ComPtr<ID2D1Bitmap1> targetBitmap;
+		if (FAILED(pDeviceContext2D->CreateBitmapFromDxgiSurface(dxgiBuffer.Get(), &bp, &targetBitmap)))
+		{
+			WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to create the Direct2D bitmap from the DXGI surface!");
+			throw "Critical error: Unable to create the Direct2D bitmap from the DXGI surface!";
+		}
+
+		pDeviceContext2D->SetTarget(targetBitmap.Get());
+	}
+
+	return true;
+}
+
+bool Graphics::GetFullScreenState() const
+{
+	BOOL fullscreen;
+
+	pSwap->GetFullscreenState(&fullscreen, nullptr);
+
+	return (bool)fullscreen;
+}
+
+bool Graphics::IsCurrentInFullScreen() const
+{
+	return currentlyInFullscreen;
+}
+
 void Graphics::InitDX2D(HWND hWnd)
 {
-
-	wrl::ComPtr<IDXGISurface2> pBackBuffer;
-
-	pSwap->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	if(FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), &pDwriteFactory2D)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to create the DirectWrite factory!");
+		throw "Critical error: Unable to create the DirectWrite factory!";
+	}
 
 	D2D1_FACTORY_OPTIONS options;
+#ifndef NDEBUG
 	options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
-	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory),&options, &pFactory2D);
+#else
+	options.debugLevel = D2D1_DEBUG_LEVEL_NONE;
+#endif
 
-	D2D1_RENDER_TARGET_PROPERTIES props =
-	D2D1::RenderTargetProperties(
-	D2D1_RENDER_TARGET_TYPE_DEFAULT,
-	D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED));
+	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, __uuidof(ID2D1Factory3), &options, &pFactory2D)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to create Direct2D Factory!");
+		throw "Critical error: Unable to create Direct2D Factory!";
+	}
 
-	pFactory2D->CreateDxgiSurfaceRenderTarget(pBackBuffer.Get(),props,&pRenderTarget2D);
+	// get the dxgi device
+	wrl::ComPtr<IDXGIDevice> dxgiDevice;
+	if (FAILED(pDevice3D.Get()->QueryInterface(__uuidof(IDXGIDevice), &dxgiDevice)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to get the DXGI device!");
+		throw "Critical error: Unable to get the DXGI device!";
+	}
+
+	// create the Direct2D device
+	if (FAILED(pFactory2D->CreateDevice(dxgiDevice.Get(), &pDevice2D)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to create the Direct2D device!");
+		throw "Critical error: Unable to create the Direct2D device!";
+	}
+
+	// create its context
+	if (FAILED(pDevice2D->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_ENABLE_MULTITHREADED_OPTIMIZATIONS, &pDeviceContext2D)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to create the Direct2D device context!");
+		throw "Critical error: Unable to create the Direct2D device context!";
+	}
+
+	// specify the desired bitmap properties
+	D2D1_BITMAP_PROPERTIES1 bp;
+	bp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	bp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
+	bp.dpiX = 96.0f;
+	bp.dpiY = 96.0f;
+	bp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
+	bp.colorContext = nullptr;
+
+	// Direct2D needs the DXGI version of the back buffer
+	wrl::ComPtr<IDXGISurface> dxgiBuffer;
+	if (FAILED(pSwap->GetBuffer(0, __uuidof(IDXGISurface), &dxgiBuffer)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to retrieve the back buffer!");
+		throw "Critical error: Unable to retrieve the back buffer!";
+	}
+
+	// create the bitmap
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> targetBitmap;
+	if (FAILED(pDeviceContext2D->CreateBitmapFromDxgiSurface(dxgiBuffer.Get(), &bp, &targetBitmap)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to create the Direct2D bitmap from the DXGI surface!");
+		throw "Critical error: Unable to create the Direct2D bitmap from the DXGI surface!";
+	}
+
+	pDeviceContext2D->SetTarget(targetBitmap.Get());
 
 	WGE_LOG(LogD2D_RHI, LogVerbosity::Default, "Graphics 2D Init");
 }
 
 void Graphics::Begin2DFrame()
 {
-	pRenderTarget2D->BeginDraw();
+	pDeviceContext2D->BeginDraw();
 
 	//wrl::ComPtr<ID2D1SolidColorBrush> pBrush;
 
@@ -310,12 +624,12 @@ void Graphics::Begin2DFrame()
 
 void Graphics::End2DFrame()
 {
-	pRenderTarget2D->EndDraw();
+	pDeviceContext2D->EndDraw();
 }
 
 void Graphics::ClearScreen(LinearColor color)
 {
-	pRenderTarget2D->Clear(D2D1::ColorF(color.R, color.G, color.B, color.A));
+	pDeviceContext2D->Clear(D2D1::ColorF(color.R, color.G, color.B, color.A));
 }
 
 void Graphics::DrawCircle()
@@ -351,22 +665,14 @@ void Graphics::DrawCircle()
 	//);
 
 	//pRenderTarget2D->FillRectangle(&rect, radialBrush.Get());
-
-
 }
 
 void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY,const std::wstring& fontName)
 {
-	// Create a DirectWrite factory.
-	DWriteCreateFactory(
-		DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(pDwriteFactory),
-		&pDwriteFactory
-	);
 
 	wrl::ComPtr<IDWriteTextFormat> pTextFormat;
 
-	pDwriteFactory->CreateTextFormat(
+	pDwriteFactory2D->CreateTextFormat(
 		fontName.c_str(),
 		nullptr,
 		DWRITE_FONT_WEIGHT_NORMAL,
@@ -381,20 +687,20 @@ void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearCo
 	pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
 	wrl::ComPtr<ID2D1SolidColorBrush> pBrush;
-	pRenderTarget2D->CreateSolidColorBrush(
+	pDeviceContext2D->CreateSolidColorBrush(
 		D2D1::ColorF(D2D1::ColorF(textColor.R,textColor.G, textColor.B, textColor.A)),
 		&pBrush
 	);
 	
-	D2D1_SIZE_F renderTargetSize = pRenderTarget2D->GetSize();
+	D2D1_SIZE_F renderTargetSize = pDeviceContext2D->GetSize();
 
 	wrl::ComPtr<IDWriteTextLayout> pTextLayout;
-	pDwriteFactory->CreateTextLayout(text.c_str(), (UINT32)text.length(), pTextFormat.Get(), renderTargetSize.width, renderTargetSize.height, &pTextLayout);
+	pDwriteFactory2D->CreateTextLayout(text.c_str(), (UINT32)text.length(), pTextFormat.Get(), renderTargetSize.width, renderTargetSize.height, &pTextLayout);
 
 	DWRITE_TEXT_METRICS tm = {};
 	pTextLayout->GetMetrics(&tm);
 
-	pRenderTarget2D->DrawTextLayout(D2D1::Point2F(screenX, screenY), pTextLayout.Get(), pBrush.Get());
+	pDeviceContext2D->DrawTextLayout(D2D1::Point2F(screenX, screenY), pTextLayout.Get(), pBrush.Get());
 }
 
 void Graphics::SetViewport(int width, int height)
@@ -408,7 +714,7 @@ void Graphics::SetViewport(int width, int height)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 
-	pContext->RSSetViewports(1u, &vp); // one viewport, not split screen
+	pDeviceContext3D->RSSetViewports(1u, &vp); // one viewport, not split screen
 
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "SetViewport %dx%d", width, height );
 }
@@ -438,16 +744,16 @@ void Graphics::BeginFrame(float red, float green, float blue)
 	Begin2DFrame();
 
 	// bind depth stencil view to OM
-	pContext->OMSetRenderTargets(1u, pTargetView.GetAddressOf(), pDepthStencilView.Get());
+	pDeviceContext3D->OMSetRenderTargets(1u, pRenderTargetView3D.GetAddressOf(), pDepthStencilView3D.Get());
 
 	const float color[] = { red, green, blue, 1.0f };
-	pContext->ClearRenderTargetView(pTargetView.Get(), color);
-	pContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	pDeviceContext3D->ClearRenderTargetView(pRenderTargetView3D.Get(), color);
+	pDeviceContext3D->ClearDepthStencilView(pDepthStencilView3D.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Graphics::DrawIndexed(UINT count)
 {
-	pContext->DrawIndexed(count,0u, 0u);
+	pDeviceContext3D->DrawIndexed(count,0u, 0u);
 }
 
 void Graphics::EnableImgui()

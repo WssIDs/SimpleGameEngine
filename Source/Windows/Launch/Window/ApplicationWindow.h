@@ -9,6 +9,7 @@
 
 #include "Graphics/DX11/Primitive/Mesh.h"
 #include "Graphics/DX11/Primitive/TestPlane.h"
+#include "Graphics/Test/Serialization/TestObject.h"
 
 class ApplicationWindow: public Window
 {
@@ -28,6 +29,10 @@ public:
 	void ShowImguiDemoWindow();
 	void ShowRawInputWindow();
 
+
+	void OnResize() override;
+	void OnPosChange() override;
+
 private:
 	int fps;							// frames per second
 	double mspf;					    // milliseconds per frame
@@ -41,8 +46,11 @@ private:
 	float speedFactor = 1.0f;
 
 	//Model model{ Gfx(), BASE_MODELS_DIR + "Wall.fbx" };
-	Model girl{ Gfx(), BASE_MODELS_DIR + "girl.fbx" };
+	//Model girl{ Gfx(), BASE_MODELS_DIR + "girl.fbx" };
 	//TestPlane plane {Gfx(), 50.0f };
+	// 
+
+	TestObject test;
 };
 
 

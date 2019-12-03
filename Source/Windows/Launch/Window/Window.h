@@ -49,7 +49,8 @@ public:
 	// window is run
 	bool isRun() const;
 
-	virtual void onResize();
+	virtual void OnResize();
+	virtual void OnPosChange();
 
 	// loop messages
 	std::optional<int> ProcessMessages();
@@ -59,6 +60,8 @@ public:
 
 	bool IsPaused() const;
 	void SetPause(bool newPause);
+
+	void CloseWindow();
 
 protected:
 
@@ -125,6 +128,8 @@ private:
 	void Wnd_OnEnterSizeMove();
 	void Wnd_OnExitSizeMove();
 	void Wnd_OnGetMinMaxInfo(HWND hwnd, LPMINMAXINFO lpMinMaxInfo);
+	void Wnd_OnWindowPosChanged(HWND hwnd, const LPWINDOWPOS lpwpos);
+	BOOL Wnd_Sizing(HWND hwnd, LPRECT lprect);
 
 	/// keyboard event
 	void Wnd_OnKeyDown(HWND hwnd, UINT vk, BOOL fDown, int cRepeat, UINT flags);
@@ -147,6 +152,9 @@ public:
 	MouseInput mouseInput;
 protected:
 	Timer timer;
+
+	int width = 0;
+	int height = 0;
 private:
 
 	bool bActive;
@@ -161,9 +169,6 @@ private:
 	bool is_run;
 	bool cursorEnabled = true;
 	bool bConsole = false;
-
-	int width = 0;
-	int height = 0;
 
 	std::string windowName;
 	std::unique_ptr<Graphics> pGfx;
