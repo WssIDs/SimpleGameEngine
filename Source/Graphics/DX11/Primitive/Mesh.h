@@ -5,11 +5,13 @@
 #include <type_traits>
 #include "Graphics/Engine/Core.h"
 #include "Imgui\imgui.h"
-
+#include "..\..\Test\Serialization\TestObject.h"
+#include <boost/serialization/export.hpp>
 
 struct aiMesh;
 struct aiMaterial;
 struct aiNode;
+
 
 class Mesh : public Drawable
 {
@@ -127,15 +129,31 @@ private:
 };
 
 
-class Model
+class Model : public IWObject
 {
 public:
+	Model() = default;
 	Model(Graphics& gfx, const std::string path, DirectX::XMFLOAT3 scale3D = {1.0f,1.0f,1.0f});
 	void Draw(Graphics& gfx) const;
 	void ShowWindow(Graphics& gfx, const char* windowName = nullptr);
 	void SetRootTransform(DirectX::FXMMATRIX transform);
 	~Model();
+
+	void Tick(Graphics& gfx, double deltaTime) override;
+	void Render(Graphics& gfx, double deltaTime) override;
+
 private:
+	friend class boost::serialization::access;
+
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+		boost::serialization::base_object<IWObject>(*this);
+		ar& modelName;
+	}
+
+	std::string modelName = "Sponza";
+
 	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, DirectX::XMFLOAT3 scale3D);
 	std::unique_ptr<Node> ParseNode(int& nextId, const aiNode& node);
 private:
@@ -144,5 +162,7 @@ private:
 	std::unique_ptr<class ModelWindow> pWindow;
 };
 
+
+BOOST_SERIALIZATION_ASSUME_ABSTRACT(IWObject)
 
 DECLARE_LOG_CATEGORY_EXTERN(MeshLog)

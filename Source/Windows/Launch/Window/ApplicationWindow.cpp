@@ -10,10 +10,6 @@
 #include "Imgui/imgui.h"
 #include "Graphics/DX11/Bindable/Sampler.h"
 #include <thread>
-#include <iosfwd>
-// include headers that implement a archive in simple text format
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 DEFINE_LOG_CATEGORY(ApplicationWindowLog);
 
@@ -21,7 +17,6 @@ namespace dx = DirectX;
 
 GDIPlusManager gdipm;
 ImguiManager imgui;
-
 
 ApplicationWindow::ApplicationWindow(int width, int height, const std::string& name, const std::string& commandLine)
 	:
@@ -34,42 +29,19 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
 	
-	//model.SetRootTransform(dx::XMMatrixTranslation(-60.0f, 50.0f, 0.0f));
-	//plane.SetPosition({ 60.f,50.0f,0.0f });
+	level = new Level(Gfx());
 
-	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 500.0f));
-
-	test.PrintAll();
-
-	test.Change();
-
-	test.PrintAll();
-	// create and open a character archive for output
-	std::ofstream ofs("filename");
-
-	//save
+	if (level != nullptr)
 	{
-		boost::archive::text_oarchive oa(ofs);
-		oa << test;
+		level->Load();
 	}
 
-	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "---------------------------------");
-
-	TestObject newTest;
-
-	//load
-	{
-		std::ifstream ifs("filename");
-		boost::archive::text_iarchive ia(ifs);
-		ia >> newTest;
-	}
-
-	newTest.PrintAll();
-
+	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
 }
 
 ApplicationWindow::~ApplicationWindow()
 {
+	delete level;
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Destroy");
 }
 
@@ -197,7 +169,7 @@ void ApplicationWindow::Update(double deltaTime)
 		while (!mouseInput.IsEmpty())
 		{
 			const auto mEvent = mouseInput.Read();
-			float step = 3.0f;
+			float step = 10.0f;
 
 			if (mEvent->GetType() == MouseInput::Event::Type::WheelUp)
 			{
@@ -213,7 +185,7 @@ void ApplicationWindow::Update(double deltaTime)
 
 	if (!IsCursorEnabled())
 	{
-		double step = 3.0f;
+		double step = 10.0f;
 
 		if (keyboardInput.KeyIsPressed('W'))
 		{
@@ -240,6 +212,8 @@ void ApplicationWindow::Update(double deltaTime)
 			camera.Translate({ 0.0f, (float)(-deltaTime * step), 0.0f });
 		}
 	}
+
+	level->Tick(deltaTime);
 }
 
 void ApplicationWindow::Render(double farseer)
@@ -252,11 +226,18 @@ void ApplicationWindow::Render(double farseer)
 	Gfx().DrawText(L"FPS: " + std::to_wstring(fps), 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 25.0f);
 	Gfx().DrawText(L"FrameTime: " + std::to_wstring(mspf) + L" ms", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 40.0f);
 
+	Gfx().DrawFillRect(10.0f, 80.0f, 140.0f, 200.f, LinearColor(0.0f, 0.5f, 1.0f, 1.0f));
+
 	Gfx().SetCamera(camera.GetMatrix());
 	light.Bind(Gfx(), camera.GetMatrix());
 
 
-	//model.Draw(Gfx());
+	level->Render(farseer);
+
+	//if (model != nullptr)
+	//{
+	//	model->Draw(Gfx());
+	//}
 	//plane.Draw(Gfx());
 	//girl.Draw(Gfx());
 	light.Draw(Gfx());
@@ -266,7 +247,11 @@ void ApplicationWindow::Render(double farseer)
 	camera.SpawnControlWindow();
 	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
-	//model.ShowWindow("Wall");
+
+	//if (model != nullptr)
+	//{
+	//	model->ShowWindow(Gfx(), "Sponza");
+	//}
 	//girl.ShowWindow(Gfx(), "Girl");
 	//plane.SpawnControlWindow(Gfx());
 	//ShowRawInputWindow();

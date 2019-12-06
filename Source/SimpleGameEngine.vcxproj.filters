@@ -48,15 +48,6 @@
     <ClCompile Include="Graphics\DX11\Render\Surface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\DX12\CommandQueue.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\DX12\GraphicsEngine.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\DX12\PipelineState.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Windows\Logger\Log.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -78,9 +69,6 @@
     <ClCompile Include="Windows\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\DX12\SwapChain.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="ThirdParty\Imgui\imgui.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_demo.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_draw.cpp" />
@@ -98,7 +86,9 @@
     <ClCompile Include="Graphics\DX11\Primitive\TestCube.cpp" />
     <ClCompile Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="Graphics\2D\Canvas.cpp" />
-    <ClCompile Include="Graphics\Test\Serialization\TestObject.cpp" />
+    <ClCompile Include="ThirdParty\OpenFBX\miniz.c" />
+    <ClCompile Include="ThirdParty\OpenFBX\ofbx.cpp" />
+    <ClCompile Include="Graphics\Test\Level.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -152,16 +142,7 @@
     <ClInclude Include="Graphics\DX11\Render\Surface.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\DX12\CommandQueue.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\DX12\d3dx12.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX12\GraphicsEngine.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX12\PipelineState.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Helpers\DirectXHelper.h">
@@ -189,9 +170,6 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Windows\Launch\Window\ApplicationWindow.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DX12\SwapChain.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DX11\Math\WGMath.h">
@@ -455,7 +433,11 @@
     <ClInclude Include="Graphics\DX11\Math\XM.h" />
     <ClInclude Include="Graphics\2D\Canvas.h" />
     <ClInclude Include="Windows\Launch\Window\WindowHandle.h" />
-    <ClInclude Include="Graphics\Test\Serialization\TestObject.h" />
+    <ClInclude Include="Graphics\Helpers\Path.h" />
+    <ClInclude Include="ThirdParty\OpenFBX\miniz.h" />
+    <ClInclude Include="ThirdParty\OpenFBX\ofbx.h" />
+    <ClInclude Include="Graphics\Test\Level.h" />
+    <ClInclude Include="Graphics\Test\Serialization\Object.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

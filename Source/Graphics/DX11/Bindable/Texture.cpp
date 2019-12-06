@@ -5,6 +5,10 @@
 //#include "DirectXTex.h"
 #include "BindableCodex.h"
 #include "DirectXTex.h"
+#include "../Render/Color.h"
+#include "../../Helpers/Path.h"
+#include "boost\archive\binary_oarchive.hpp"
+#include "boost/archive/binary_iarchive.hpp"
 
 #pragma comment(lib, "dxguid.lib")
 
@@ -54,14 +58,51 @@ namespace Bind
 		//else
 		//{
 			DirectX::TexMetadata info;
-			auto image = std::make_unique<DirectX::ScratchImage>();
+			auto image = std::make_shared<DirectX::ScratchImage>();
 			//DirectX::LoadFromTGAFile(std::wstring(path.begin(), path.end()).c_str(), nullptr, *image);
 			DirectX::LoadFromDDSFile(std::wstring(path.begin(), path.end()).c_str(), DirectX::DDS_FLAGS_NONE, &info, *image);
 
-			bAlpha = !image->IsAlphaAllOpaque();
+			if (image->GetImages() != nullptr)
+			{
+				image = Convert(image);
+			}
 
-			DirectX::CreateShaderResourceView(GetDevice(gfx), image->GetImages(), image->GetImageCount(), image->GetMetadata(), &pTextureView);
+			bAlpha = !image->IsAlphaAllOpaque();
+			//pixels = image->GetPixels();
+
+			//sizePixels = sizeof(pixels);
+			//if (pixels != nullptr)
+			//{
+			//	for (int y = 0; y < info.height; ++y)
+			//	{
+			//		for (int x = 0; x < info.width; ++x)
+			//		{
+			//			auto red = (unsigned int)pixels[x + 0 + y];
+			//			auto green = (unsigned int)pixels[x + 1 + y];
+			//			auto blue = (unsigned int)pixels[x + 2 + y];
+
+			//			if (!bAlpha)
+			//			{
+			//				Colors.push_back(RGBAColor(red, green, blue));
+			//			}
+			//			else
+			//			{
+			//				auto alpha = (unsigned int)pixels[x + 2 + y];
+			//				Colors.push_back(RGBAColor(red, green, blue, alpha));
+			//			}
+			//		}
+			//	}
+			//}
+
+			DirectX::ScratchImage mipchain;
+			DirectX::GenerateMipMaps(image->GetImages(), image->GetImageCount(), image->GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipchain);
+			DirectX::CreateShaderResourceView(GetDevice(gfx), mipchain.GetImages(), mipchain.GetImageCount(), mipchain.GetMetadata(), &pTextureView);
 		//}
+	}
+
+	Texture::Texture()
+	{
+		////
 	}
 
 	void Texture::Bind(Graphics& gfx)
@@ -85,9 +126,51 @@ namespace Bind
 		return GenerateUID(path, slot);
 	}
 
+	void Texture::Serialize()
+	{
+		std::ofstream ofs(Path::GetFileNameWithoutExtension(path) + ".asset", std::ios::out | std::ios::binary);
+		boost::archive::binary_oarchive oa(ofs, boost::archive::no_header);
+		oa << (*this);
+	}
+
+	void Texture::Deserialize(const std::string& filename)
+	{
+		name = Path::GetFileNameWithoutExtension(filename);
+		std::ifstream ifs(filename, std::ios::in | std::ios::binary);
+		boost::archive::binary_iarchive ia(ifs, boost::archive::no_header);
+		ia >> (*this);
+	}
+
+	std::vector<RGBAColor> Texture::GetColors() const
+	{
+		return Colors;
+	}
+
 	bool Texture::HasAlpha() const
 	{
 		return bAlpha;
+	}
+
+	std::shared_ptr<DirectX::ScratchImage> Texture::Convert(std::shared_ptr<DirectX::ScratchImage> scratch)
+	{
+		auto decompressed = std::make_shared<DirectX::ScratchImage>();
+		DirectX::Decompress(scratch->GetImages(), scratch->GetImageCount(), scratch->GetMetadata(), DXGI_FORMAT_UNKNOWN, *decompressed);
+
+		if (decompressed->GetImages()->format != DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM)
+		{
+			auto converted = std::make_shared<DirectX::ScratchImage>();
+			DirectX::Convert(
+				*decompressed->GetImages(),
+				DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM,
+				DirectX::TEX_FILTER_DEFAULT,
+				DirectX::TEX_THRESHOLD_DEFAULT,
+				*converted
+			);
+
+			return converted;
+		}
+
+		return decompressed;
 	}
 
 }

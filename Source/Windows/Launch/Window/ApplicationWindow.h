@@ -7,9 +7,8 @@
 #include <memory>
 #include <set>
 
-#include "Graphics/DX11/Primitive/Mesh.h"
 #include "Graphics/DX11/Primitive/TestPlane.h"
-#include "Graphics/Test/Serialization/TestObject.h"
+#include "Graphics/Test/Level.h"
 
 class ApplicationWindow: public Window
 {
@@ -45,12 +44,7 @@ private:
 	PointLight light;
 	float speedFactor = 1.0f;
 
-	//Model model{ Gfx(), BASE_MODELS_DIR + "Wall.fbx" };
-	//Model girl{ Gfx(), BASE_MODELS_DIR + "girl.fbx" };
-	//TestPlane plane {Gfx(), 50.0f };
-	// 
-
-	TestObject test;
+	Level* level;
 };
 
 

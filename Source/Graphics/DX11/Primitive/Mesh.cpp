@@ -11,8 +11,11 @@
 #include <assimp\material.h>
 #include "..\Math\XM.h"
 #include "assimp\config.h"
+#include <Graphics\Helpers\Path.h>
 
 DEFINE_LOG_CATEGORY(MeshLog)
+
+BOOST_CLASS_EXPORT(Model)
 
 namespace dx = DirectX;
 
@@ -163,7 +166,7 @@ public:
 				ImGui::SliderFloat("Y", &transform.y, -20.0f, 20.0f);
 				ImGui::SliderFloat("Z", &transform.z, -20.0f, 20.0f);
 
-				if( !pSelectedNode->ControlMaterial(gfx, fullTexturedMaterial))
+				if (!pSelectedNode->ControlMaterial(gfx, fullTexturedMaterial))
 				{
 					pSelectedNode->ControlMaterial(gfx, noTexturedMaterial);
 				}
@@ -171,14 +174,14 @@ public:
 		}
 		ImGui::End();
 	}
-	dx::XMMATRIX GetTransform() const noexcept
+	DirectX::XMMATRIX GetTransform() const noexcept
 	{
 		const auto& transform = transforms.at(pSelectedNode->GetId());
-		return dx::XMMatrixRotationRollPitchYaw(transform.roll, transform.pitch, transform.yaw) *
-			dx::XMMatrixTranslation(transform.x, transform.y, transform.z);
+		return DirectX::XMMatrixRotationRollPitchYaw(transform.roll, transform.pitch, transform.yaw) *
+			DirectX::XMMatrixTranslation(transform.x, transform.y, transform.z);
 	}
 
-	Node*  GetSelectedNode() const
+	Node* GetSelectedNode() const
 	{
 		return pSelectedNode;
 	}
@@ -199,6 +202,7 @@ private:
 	Node::PSMaterialConstantNotex noTexturedMaterial;
 	std::unordered_map<int, TransformParameters> transforms;
 };
+
 
 
 // Model
@@ -269,21 +273,26 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		auto& material = *pMaterials[mesh.mMaterialIndex];
 		aiString texFileName;
 		
+		std::filesystem::path currentTexturePath;
+
 		if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Success, "DiffuseMap loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Success, "DiffuseMap loaded");
 
-			auto DiffuseTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str());
+			auto DiffuseTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()));
 			if(DiffuseTexture->HasAlpha())
 			{
 				bDiffuseMapAlpha = true;
 
-				WGE_LOG(MeshLog, LogVerbosity::Success, "DiffuseMapAlpha loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Success, "DiffuseMapAlpha loaded");
 			}
 			else
 			{
 				WGE_LOG(MeshLog, LogVerbosity::Warning, "DiffuseMapAlpha not loaded");
 			}
+
+			//DiffuseTexture->Init(BASE_TEXTURES_DIR + Path::GetFileNameWithoutExtension(texFileName.C_Str()) + ".dat");
+			//TestObject::SerilizeObject(BASE_TEXTURES_DIR + Path::GetFileNameWithoutExtension(texFileName.C_Str())+".dat", DiffuseTexture);
 
 			bindablePtrs.push_back(std::move(DiffuseTexture));
 			bDiffuseMap = true;
@@ -295,7 +304,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 			if(material.Get(AI_MATKEY_COLOR_DIFFUSE, reinterpret_cast<aiColor3D&>(diffuseColor)) == aiReturn_SUCCESS)
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Success, "Diffuse color loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Success, "Diffuse color loaded");
 			}
 			else
 			{
@@ -305,13 +314,13 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Success, "SpecularMap loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Success, "SpecularMap loaded");
 
-			auto SpecularTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 1);
+			auto SpecularTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 1);
 			if (SpecularTexture->HasAlpha())
 			{
 				bSpecularMapAlpha = true;
-				WGE_LOG(MeshLog, LogVerbosity::Success, "SpecularMapAlpha loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Success, "SpecularMapAlpha loaded");
 			}
 			else
 			{
@@ -328,7 +337,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 			if (material.Get(AI_MATKEY_COLOR_SPECULAR, reinterpret_cast<aiColor3D&>(specularColor)) == aiReturn_SUCCESS)
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Success, "Specular color loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Success, "Specular color loaded");
 			}
 			else
 			{
@@ -338,13 +347,13 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		if (material.GetTexture(aiTextureType_SHININESS, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Success, "GlossinessMap loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Success, "GlossinessMap loaded");
 
-			auto GlossinessTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 2);
+			auto GlossinessTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 2);
 			if (GlossinessTexture->HasAlpha())
 			{
 				bGlossinesMapAlpha = true;
-				WGE_LOG(MeshLog, LogVerbosity::Success, "GlossinessMapAlpha loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Success, "GlossinessMapAlpha loaded");
 			}
 			else
 			{
@@ -363,9 +372,9 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Success, "NormalMap loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Success, "NormalMap loaded");
 
-			auto NormalTexture = Bind::Texture::Resolve(gfx, BASE_MODELS_DIR + texFileName.C_Str(), 3);
+			auto NormalTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 3);
 			if (NormalTexture->HasAlpha())
 			{
 				bNormalMapAlpha = true;
@@ -729,3 +738,14 @@ void Model::SetRootTransform(DirectX::FXMMATRIX transform)
 
 Model::~Model()
 {}
+
+void Model::Tick(Graphics& gfx, double deltaTime)
+{
+
+}
+
+void Model::Render(Graphics& gfx, double deltaTime)
+{
+	Draw(gfx);
+	ShowWindow(gfx, "Mesh");
+}
