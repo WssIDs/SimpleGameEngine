@@ -686,11 +686,8 @@ void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearCo
 	pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
 	pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
-	wrl::ComPtr<ID2D1SolidColorBrush> pBrush;
-	pDeviceContext2D->CreateSolidColorBrush(
-		D2D1::ColorF(D2D1::ColorF(textColor.R,textColor.G, textColor.B, textColor.A)),
-		&pBrush
-	);
+	wrl::ComPtr<ID2D1SolidColorBrush> pBrush = CreateSolidColorBrush(textColor);
+
 	
 	D2D1_SIZE_F renderTargetSize = pDeviceContext2D->GetSize();
 
@@ -701,6 +698,49 @@ void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearCo
 	pTextLayout->GetMetrics(&tm);
 
 	pDeviceContext2D->DrawTextLayout(D2D1::Point2F(screenX, screenY), pTextLayout.Get(), pBrush.Get());
+}
+
+void Graphics::DrawRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color, const float strokeWidth /*= 1.0f*/)
+{
+	D2D1_RECT_F rect = D2D1::RectF(
+		screenX,
+		screenY,
+		screenW,
+		screenH
+	);
+
+	pDeviceContext2D->DrawRectangle(rect, CreateSolidColorBrush(color).Get(), strokeWidth);
+}
+
+void Graphics::DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color)
+{
+	D2D1_RECT_F rect = D2D1::RectF(
+		screenX,
+		screenY,
+		screenW,
+		screenH
+	);
+
+	pDeviceContext2D->FillRectangle(rect, CreateSolidColorBrush(color).Get());
+}
+
+void Graphics::DrawEllipse(const float screenX, const float screenY, const float radiusX, const float radiusY, const LinearColor& color, const float strokeWidth)
+{
+	D2D1_POINT_2F centre = {screenX, screenY};
+	D2D1_ELLIPSE ellipse = {centre, radiusX, radiusY};
+
+	pDeviceContext2D->DrawEllipse(ellipse, CreateSolidColorBrush(color).Get(), strokeWidth);
+}
+
+wrl::ComPtr<ID2D1SolidColorBrush> Graphics::CreateSolidColorBrush(LinearColor color)
+{
+	wrl::ComPtr<ID2D1SolidColorBrush> pBrush;
+	pDeviceContext2D->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF(color.R, color.G, color.B, color.A)),
+			&pBrush
+		);
+
+	return pBrush;
 }
 
 void Graphics::SetViewport(int width, int height)

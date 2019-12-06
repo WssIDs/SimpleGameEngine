@@ -61,6 +61,13 @@ public:
 	void DrawCircle();
 
 	void DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY, const std::wstring& fontName = L"Verdana");
+	
+	void DrawRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color, const float strokeWidth = 1.0f);
+	void DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color);
+
+	void DrawEllipse(const float screenX, const float screenY, const float radiusX, const float radiusY, const LinearColor& color, const float strokeWidth);
+
+	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> CreateSolidColorBrush(LinearColor color);
 
 	void SetViewport(int width, int height);
 
