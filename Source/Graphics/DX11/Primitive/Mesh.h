@@ -5,7 +5,7 @@
 #include <type_traits>
 #include "Graphics/Engine/Core.h"
 #include "Imgui\imgui.h"
-#include "..\..\Test\Serialization\TestObject.h"
+#include "..\..\Test\Serialization\Object.h"
 #include <boost/serialization/export.hpp>
 
 struct aiMesh;
