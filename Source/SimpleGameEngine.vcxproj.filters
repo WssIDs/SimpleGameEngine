@@ -89,6 +89,7 @@
     <ClCompile Include="ThirdParty\OpenFBX\miniz.c" />
     <ClCompile Include="ThirdParty\OpenFBX\ofbx.cpp" />
     <ClCompile Include="Graphics\Test\Level.cpp" />
+    <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -438,6 +439,7 @@
     <ClInclude Include="ThirdParty\OpenFBX\ofbx.h" />
     <ClInclude Include="Graphics\Test\Level.h" />
     <ClInclude Include="Graphics\Test\Serialization\Object.h" />
+    <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

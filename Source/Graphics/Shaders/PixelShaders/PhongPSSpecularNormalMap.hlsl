@@ -25,6 +25,9 @@ SamplerState splr;
 
 float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, float3 viewTangent : Tangent, float3 viewBitangent : Bitangent, float2 texCoord : Texcoord) : SV_TARGET
 {
+    float4 diffuseTex = diffuseMap.Sample(splr, texCoord);
+    clip(diffuseTex.a < 0.1f ? -1 : 1);
+    
     viewNormal = normalize(viewNormal);
     // sample normal from map if normal mapping enabled
     if (normalMapEnabled)
@@ -66,5 +69,5 @@ float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, 
         specularReflected = specularReflected * glossinessSample.rgb;
     }
 	// final color
-    return float4(saturate((diffuse + ambient) * diffuseMap.Sample(splr, texCoord).rgb + specularReflected), 1.0f);
+    return float4(saturate((diffuse + ambient) * diffuseTex.rgb + specularReflected), diffuseTex.a);
 }

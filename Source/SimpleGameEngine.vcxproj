@@ -209,6 +209,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
     <ClCompile Include="Graphics\2D\Canvas.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\Mesh.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Vertex.cpp" />
@@ -252,6 +253,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Windows\Launch\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
     <ClInclude Include="Graphics\2D\Canvas.h" />
     <ClInclude Include="Graphics\DX11\Bindable\BindableCodex.h" />
     <ClInclude Include="Graphics\DX11\Geometry\Cube.h" />

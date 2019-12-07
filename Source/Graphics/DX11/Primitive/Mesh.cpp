@@ -12,6 +12,7 @@
 #include "..\Math\XM.h"
 #include "assimp\config.h"
 #include <Graphics\Helpers\Path.h>
+#include "..\Bindable\Blender.h"
 
 DEFINE_LOG_CATEGORY(MeshLog)
 
@@ -690,6 +691,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 	}
 
 	WGE_LOG(MeshLog, LogVerbosity::Default, "End parse mesh = %s", mesh.mName.C_Str());
+
+	bindablePtrs.push_back(Bind::Blender::Resolve(gfx, false));
 
 	return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
 }

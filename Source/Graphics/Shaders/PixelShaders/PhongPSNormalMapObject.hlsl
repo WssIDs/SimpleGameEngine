@@ -21,6 +21,9 @@ SamplerState splr;
 
 float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, float2 texCoord : Texcoord) : SV_Target
 {
+    float4 diffuseTex = diffuseMap.Sample(splr, texCoord);
+    clip(diffuseTex.a < 0.1f ? -1 : 1);
+    
 	// sample normal from map if normal mapping enabled
     if (normalMapEnabled)
     {
@@ -41,5 +44,5 @@ float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, 
     
     const float3 specular = Speculate(specularIntensity.rrr, 1.0f, viewNormal, lv.viewFragmentToLight, viewFragmentPosition, att, specularPower);
 	// final color
-    return float4(saturate((diffuse + ambient) * diffuseMap.Sample(splr, texCoord).rgb + specular), 1.0f);
+    return float4(saturate((diffuse + ambient) * diffuseTex.rgb + specular), diffuseTex.a);
 }

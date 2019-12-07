@@ -18,6 +18,9 @@ SamplerState splr;
 
 float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, float2 texCoord : Texcoord) : SV_Target
 {
+    float4 diffuseTex = diffuseMap.Sample(splr, texCoord);
+    clip(diffuseTex.a < 0.1f ? -1 : 1);
+    
      // normalize the mesh normal
     viewNormal = normalize(viewNormal);
      
@@ -41,5 +44,5 @@ float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, 
     
     float3 specularReflected = Speculate(specularReflectionColor, 1.0f, viewNormal, lv.viewFragmentToLight, viewFragmentPosition, att, specularPower);
    
-    return float4(saturate((diffuse + ambient) * diffuseMap.Sample(splr, texCoord).rgb + specularReflected), 1.0f);
+    return float4(saturate((diffuse + ambient) * diffuseTex.rgb + specularReflected), diffuseTex.a);
 }
