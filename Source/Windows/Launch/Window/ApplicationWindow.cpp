@@ -33,7 +33,7 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 
 	if (level != nullptr)
 	{
-		level->Load();
+		//level->Load();
 	}
 
 	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
@@ -145,7 +145,7 @@ void ApplicationWindow::Update(double deltaTime)
 			showDemoWindow = !showDemoWindow;
 		}
 
-		if (keyboardInput.KeyIsPressed(VK_ESCAPE))
+		if (keyboardInput.KeyIsPressed(VK_MENU) && keyboardInput.KeyIsPressed(VK_F4))
 		{
 			CloseWindow();
 		}
@@ -284,6 +284,7 @@ void ApplicationWindow::ShowRawInputWindow()
 
 void ApplicationWindow::OnResize()
 {
+	Window::OnResize();
 	Gfx().OnResize();
 }
 

@@ -620,6 +620,11 @@ void Graphics::Begin2DFrame()
 	//elipse.radiusY = 30;
 
 	//pRenderTarget2D->DrawEllipse(elipse, pBrush.Get(), 10.0f);
+
+	if (pDeviceContext2D != nullptr)
+	{
+		pDefaultBrush = CreateSolidColorBrush(LinearColor(0.0f,0.0f,0.0f,1.0f));
+	}
 }
 
 void Graphics::End2DFrame()
@@ -686,8 +691,7 @@ void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearCo
 	pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
 	pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
-	wrl::ComPtr<ID2D1SolidColorBrush> pBrush = CreateSolidColorBrush(textColor);
-
+	SetColor(textColor);
 	
 	D2D1_SIZE_F renderTargetSize = pDeviceContext2D->GetSize();
 
@@ -697,7 +701,7 @@ void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearCo
 	DWRITE_TEXT_METRICS tm = {};
 	pTextLayout->GetMetrics(&tm);
 
-	pDeviceContext2D->DrawTextLayout(D2D1::Point2F(screenX, screenY), pTextLayout.Get(), pBrush.Get());
+	pDeviceContext2D->DrawTextLayout(D2D1::Point2F(screenX, screenY), pTextLayout.Get(), GetDefaultBrush().Get());
 }
 
 void Graphics::DrawRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color, const float strokeWidth /*= 1.0f*/)
@@ -709,7 +713,8 @@ void Graphics::DrawRect(const float screenX, const float screenY, const float sc
 		screenH
 	);
 
-	pDeviceContext2D->DrawRectangle(rect, CreateSolidColorBrush(color).Get(), strokeWidth);
+	SetColor(color);
+	pDeviceContext2D->DrawRectangle(rect, GetDefaultBrush().Get(), strokeWidth);
 }
 
 void Graphics::DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color)
@@ -721,7 +726,8 @@ void Graphics::DrawFillRect(const float screenX, const float screenY, const floa
 		screenH
 	);
 
-	pDeviceContext2D->FillRectangle(rect, CreateSolidColorBrush(color).Get());
+	SetColor(color);
+	pDeviceContext2D->FillRectangle(rect, GetDefaultBrush().Get());
 }
 
 void Graphics::DrawEllipse(const float screenX, const float screenY, const float radiusX, const float radiusY, const LinearColor& color, const float strokeWidth)
@@ -729,7 +735,8 @@ void Graphics::DrawEllipse(const float screenX, const float screenY, const float
 	D2D1_POINT_2F centre = {screenX, screenY};
 	D2D1_ELLIPSE ellipse = {centre, radiusX, radiusY};
 
-	pDeviceContext2D->DrawEllipse(ellipse, CreateSolidColorBrush(color).Get(), strokeWidth);
+	SetColor(color);
+	pDeviceContext2D->DrawEllipse(ellipse, GetDefaultBrush().Get(), strokeWidth);
 }
 
 wrl::ComPtr<ID2D1SolidColorBrush> Graphics::CreateSolidColorBrush(LinearColor color)
@@ -809,6 +816,25 @@ void Graphics::DisableImgui()
 bool Graphics::IsImguiEnabled() const
 {
 	return imguiEnabled;
+}
+
+Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> Graphics::GetDefaultBrush() const
+{
+	return pDefaultBrush;
+}
+
+void Graphics::SetColor(const LinearColor& color)
+{
+	D2D_COLOR_F colorF = D2D1::ColorF(color.R, color.G, color.B, color.A);
+
+	if (pDefaultBrush != nullptr)
+	{
+		pDefaultBrush->SetColor(colorF);
+	}
+	else
+	{
+		WGE_LOG(LogD2D_RHI, LogVerbosity::Warning, "Default brush not created");
+	}
 }
 
 void Graphics::PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId)

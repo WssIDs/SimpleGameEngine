@@ -239,7 +239,7 @@ void Window::EnableCursor()
 	cursorEnabled = true;
 	ShowCursor();
 	EnableImguiMouse();
-	FreeCursor();
+	ConfineCursor();
 }
 
 void Window::DisableCursor()
@@ -341,7 +341,7 @@ void Window::onCreate()
 
 void Window::OnResize()
 {
-	/// When Windows resize
+	ConfineCursor();
 }
 
 void Window::OnPosChange()
@@ -597,14 +597,20 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 {
 	bActive = (int)state;
 
+	ConfineCursor();
+
 	if(bActive == 0)
 	{
-		if (!cursorEnabled)
-		{
-			WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Cursor confine"));
-			FreeCursor();
-			ShowCursor();
-		}
+		//if (!cursorEnabled)
+		//{
+		//	WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Cursor confine"));
+		//	//ConfineCursor();
+		//	//FreeCursor();
+		//	ShowCursor();
+		//}
+		FreeCursor();
+		ShowCursor();
+
 		SetPause(true);
 		timer.stop();
 		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Paused"));
@@ -614,7 +620,7 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 		if (!cursorEnabled)
 		{
 			WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Cursor free"));
-			ConfineCursor();
+			//ConfineCursor();
 			HideCursor();
 		}
 		SetPause(false);
@@ -784,8 +790,8 @@ void Window::Wnd_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 			HideCursor();
 		}
 	}
-	if (!ImGui::GetIO().WantCaptureKeyboard)
-	{
+	//if (!ImGui::GetIO().WantCaptureKeyboard)
+	//{
 		if (x >= 0 && x < width && y >= 0 && y < height)
 		{
 			mouseInput.OnMouseMove(x, y);
@@ -807,7 +813,7 @@ void Window::Wnd_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 				mouseInput.OnMouseLeave();
 			}
 		}
-	}
+	//}
 }
 
 void Window::Wnd_OnMouseWheel(HWND hwnd, int xPos, int yPos, int zDelta, UINT fwKeys)

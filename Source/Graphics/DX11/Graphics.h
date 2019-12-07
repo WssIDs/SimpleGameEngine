@@ -89,6 +89,10 @@ public:
 
 private:
 
+	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> GetDefaultBrush() const;
+	// Set Color Default brush
+	void SetColor(const LinearColor& color);
+
 	HWND hWnd;
 
 	void PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId);
@@ -123,6 +127,8 @@ private:
 	Microsoft::WRL::ComPtr<ID2D1Factory2> pFactory2D;			// pointer to the Direct2D factory
 	Microsoft::WRL::ComPtr<ID2D1Device1> pDevice2D;				// pointer to the Direct2D device
 	Microsoft::WRL::ComPtr<ID2D1DeviceContext1> pDeviceContext2D;		// pointer to the device context
+
+	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pDefaultBrush;
 };
 
 
