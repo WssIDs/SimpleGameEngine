@@ -13,6 +13,7 @@
 #include "assimp\config.h"
 #include <Graphics\Helpers\Path.h>
 #include "..\Bindable\Blender.h"
+#include "..\Bindable\Rasterizer.h"
 
 DEFINE_LOG_CATEGORY(MeshLog)
 
@@ -693,6 +694,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 	WGE_LOG(MeshLog, LogVerbosity::Default, "End parse mesh = %s", mesh.mName.C_Str());
 
 	bindablePtrs.push_back(Bind::Blender::Resolve(gfx, false));
+
+	bindablePtrs.push_back(Bind::Rasterizer::Resolve(gfx, bDiffuseMapAlpha));
 
 	return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
 }

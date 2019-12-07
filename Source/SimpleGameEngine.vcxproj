@@ -234,6 +234,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\DX11\Primitive\TestPlane.cpp" />
     <ClCompile Include="Graphics\DX11\Primitive\TestCube.cpp" />
     <ClCompile Include="Graphics\Test\Level.cpp" />
+    <ClCompile Include="Graphics\DX11\Bindable\Rasterizer.cpp" />
     <ClCompile Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_demo.cpp" />
@@ -293,6 +294,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\Helpers\StringHelper.h" />
     <ClInclude Include="Graphics\Test\Serialization\Object.h" />
     <ClInclude Include="Graphics\Test\Level.h" />
+    <ClInclude Include="Graphics\DX11\Bindable\Rasterizer.h" />
     <ClInclude Include="ThirdParty\Assimp\aabb.h" />
     <ClInclude Include="ThirdParty\Assimp\ai_assert.h" />
     <ClInclude Include="ThirdParty\Assimp\anim.h" />

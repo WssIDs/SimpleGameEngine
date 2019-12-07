@@ -12,6 +12,13 @@ cbuffer ObjectConstantBuffer
 
 float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal) : SV_TARGET
 {
+    // flip normal when backface
+    if (dot(viewNormal, viewFragmentPosition) >= 0.0f)
+    {
+        viewNormal = -viewNormal;
+    }
+    
+    
     viewNormal = normalize(viewNormal);
     // fragment to light vector data
     const LightVectorData lv = CalculateLightVectorData(viewLightPosition, viewFragmentPosition);

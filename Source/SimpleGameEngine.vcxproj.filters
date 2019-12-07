@@ -90,6 +90,7 @@
     <ClCompile Include="ThirdParty\OpenFBX\ofbx.cpp" />
     <ClCompile Include="Graphics\Test\Level.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
+    <ClCompile Include="Graphics\DX11\Bindable\Rasterizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -440,6 +441,7 @@
     <ClInclude Include="Graphics\Test\Level.h" />
     <ClInclude Include="Graphics\Test\Serialization\Object.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
+    <ClInclude Include="Graphics\DX11\Bindable\Rasterizer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

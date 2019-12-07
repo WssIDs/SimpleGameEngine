@@ -20,6 +20,12 @@ float4 main(float3 viewFragmentPosition : Position, float3 viewNormal : Normal, 
     
     clip(diffuseTex.a < 0.1f ? -1 : 1);
     
+     // flip normal when backface
+    if (dot(viewNormal, viewFragmentPosition) >= 0.0f)
+    {
+        viewNormal = -viewNormal;
+    }
+    
     viewNormal = normalize(viewNormal);
  
     // fragment to light vector data
