@@ -91,6 +91,7 @@
     <ClCompile Include="Graphics\Test\Level.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Rasterizer.cpp" />
+    <ClCompile Include="Graphics\Test\WObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -442,6 +443,7 @@
     <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Rasterizer.h" />
     <ClInclude Include="Graphics\Test\Serialization\IWObject.h" />
+    <ClInclude Include="Graphics\Test\WObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

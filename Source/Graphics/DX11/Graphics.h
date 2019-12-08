@@ -35,15 +35,16 @@ class Graphics
 {
 	friend Bind::Bindable;
 public:
-	Graphics(HWND hWnd, int width, int height);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
 	~Graphics();
 
+	void InitGraphics(HWND hWnd, int width, int height);
+
 	// init DX11_0
-	void InitDX11(HWND hWnd);
+	void InitDX11();
 	// init DX11_1
-	void InitDX11_1(HWND hWnd);
+	void InitDX11_1();
 
 	// functions to change screen resolutions
 
@@ -55,7 +56,7 @@ public:
 	bool GetFullScreenState() const;			// get full screen state
 	bool IsCurrentInFullScreen() const;
 	// test function
-	void InitDX2D(HWND hWnd);
+	void InitDX2D();
 	void Begin2DFrame();
 	void End2DFrame();
 	void ClearScreen(LinearColor color);
@@ -88,27 +89,35 @@ public:
 	void DisableImgui();
 	bool IsImguiEnabled() const;
 
+protected:
+
+	Graphics() {};
+
+public:
+
+	static Graphics& GetGraphics();
+
 private:
 
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> GetDefaultBrush() const;
 	// Set Color Default brush
 	void SetColor(const LinearColor& color);
 
-	HWND hWnd;
+	HWND hWnd = nullptr;
 
 	void PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId);
 
-	int width;
-	int height;
+	int width = 0;
+	int height = 0;
 
-	// colour format
-	DXGI_FORMAT desiredColourFormat;						// the desired colour format
-	unsigned int numberOfSupportedModes;					// the number of supported screen modes for the desired colour format
-	DXGI_MODE_DESC* supportedModes;							// list of all supported screen modes for the desired colour format
+	// color format
+	DXGI_FORMAT desiredColourFormat;						// the desired color format
+	unsigned int numberOfSupportedModes;					// the number of supported screen modes for the desired color format
+	DXGI_MODE_DESC* supportedModes;							// list of all supported screen modes for the desired color format
 	DXGI_MODE_DESC  currentModeDescription;					// description of the currently active screen mode
 	unsigned int currentModeIndex;							// the index of the current mode in the list of all supported screen modes
-	bool startInFullscreen;									// true if the game should start in fullscreen mode
-	bool currentlyInFullscreen;								// true if the game is currently in fullscreen mode
+	bool startInFullscreen;									// true if the game should start in full screen mode
+	bool currentlyInFullscreen;								// true if the game is currently in full screen mode
 	bool changeMode;										// true if the screen resolution should be changed this frame
 
 	DirectX::XMMATRIX projection;
@@ -124,12 +133,12 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView3D = nullptr;
 
 
-	Microsoft::WRL::ComPtr<IDWriteFactory2> pDwriteFactory2D;	// pointer to the DirectWrite factory
-	Microsoft::WRL::ComPtr<ID2D1Factory2> pFactory2D;			// pointer to the Direct2D factory
-	Microsoft::WRL::ComPtr<ID2D1Device1> pDevice2D;				// pointer to the Direct2D device
-	Microsoft::WRL::ComPtr<ID2D1DeviceContext1> pDeviceContext2D;		// pointer to the device context
+	Microsoft::WRL::ComPtr<IDWriteFactory2> pDwriteFactory2D = nullptr;			// pointer to the DirectWrite factory
+	Microsoft::WRL::ComPtr<ID2D1Factory2> pFactory2D = nullptr;					// pointer to the Direct2D factory
+	Microsoft::WRL::ComPtr<ID2D1Device1> pDevice2D = nullptr;					// pointer to the Direct2D device
+	Microsoft::WRL::ComPtr<ID2D1DeviceContext1> pDeviceContext2D = nullptr;		// pointer to the device context
 
-	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pDefaultBrush;
+	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pDefaultBrush = nullptr;
 };
 
 

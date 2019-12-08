@@ -2,18 +2,23 @@
 #include "Graphics/DX11/Graphics.h"
 #include "Graphics/DX11/Bindable/ConstantBuffers.h"
 #include "../Primitive/SolidSphere.h"
+#include "../../Test/WObject.h"
 
 
 
 
-class PointLight
+class PointLight : public WObject
 {
 public:
-	PointLight(Graphics& gfx, float radius = 0.5f);
+	PointLight(float radius = 0.5f);
 	void SpawnControlWindow();
 	void Reset();
-	void Draw(Graphics& gfx) const;
-	void Bind(Graphics& gfx, DirectX::FXMMATRIX view) const;
+	void Draw() const;
+	void Bind(Graphics& gfx) const;
+
+	virtual void Tick(double deltaTime) override;
+	virtual void Render(double deltaTime) override;
+
 private:
 	struct PointLightConstantBuffer
 	{

@@ -1,10 +1,11 @@
 #include "PointLight.h"
 #include "Imgui\imgui.h"
+#include "..\Graphics.h"
 
-PointLight::PointLight(Graphics& gfx, float radius /*= 0.5f*/)
+PointLight::PointLight(float radius /*= 0.5f*/)
 	:
-	mesh (gfx, radius),
-	constantBuffer(gfx)
+	mesh (Graphics::GetGraphics(), radius),
+	constantBuffer(Graphics::GetGraphics())
 {
 	Reset();
 }
@@ -49,17 +50,30 @@ void PointLight::Reset()
 	};
 }
 
-void PointLight::Draw(Graphics& gfx) const
+void PointLight::Draw() const
 {
 	mesh.SetPosition(pcbData.pos);
-	mesh.Draw(gfx);
+	mesh.Draw(Graphics::GetGraphics());
 }
 
-void PointLight::Bind(Graphics& gfx, DirectX::FXMMATRIX view) const
+void PointLight::Bind(Graphics& gfx) const
 {
 	auto pcbDataCopy = pcbData;
 	const auto pos = DirectX::XMLoadFloat3(&pcbData.pos);
-	DirectX::XMStoreFloat3(&pcbDataCopy.pos,DirectX::XMVector3Transform( pos, view));
-	constantBuffer.Update(gfx,pcbDataCopy);
-	constantBuffer.Bind(gfx);
+	DirectX::XMStoreFloat3(&pcbDataCopy.pos,DirectX::XMVector3Transform( pos, gfx.GetCamera()));
+	constantBuffer.Update(Graphics::GetGraphics(),pcbDataCopy);
+	constantBuffer.Bind(Graphics::GetGraphics());
+}
+
+void PointLight::Tick(double deltaTime)
+{
+	
+}
+
+void PointLight::Render(double deltaTime)
+{
+	WObject::Render(deltaTime);
+	Bind(Graphics::GetGraphics());
+	Draw();
+	SpawnControlWindow();
 }

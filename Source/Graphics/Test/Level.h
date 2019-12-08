@@ -6,18 +6,16 @@
 #include "..\DX11\Primitive\Mesh.h"
 #include "boost\serialization\access.hpp"
 #include <boost\serialization\shared_ptr.hpp>
+#include "WObject.h"
+#include "..\Engine\Actors\Camera.h"
+#include "..\DX11\Render\PointLight.h"
 
 
 
-class Level
+class Level : public WObject
 {
 public:
-	Level(Graphics& gfx)
-		:
-		gfx(&gfx)
-	{
-
-	}
+	Level() = default;
 
 	~Level()
 	{
@@ -30,36 +28,36 @@ public:
 
 	std::vector<std::shared_ptr<IWObject>> SceneObjects;
 
-	Graphics* gfx;
-
 	void Init(const std::string& filename);
 
 	void Load(const std::string& filename);
 
 	void Load()
 	{
-		if (gfx != nullptr)
-		{
-			std::shared_ptr<IWObject> model(new Model(*gfx, BASE_MODELS_DIR + "sponza.fbx"));
+		std::shared_ptr<IWObject> camera(new Camera());
+		SceneObjects.push_back(camera);
 
-			SceneObjects.push_back(model);
-		}
+		std::shared_ptr<IWObject> light(new PointLight());
+		SceneObjects.push_back(light);
+
+		std::shared_ptr<IWObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
+		SceneObjects.push_back(model);
 	}
 
-	void Tick(double deltaTime)
+	void Tick(double deltaTime) override
 	{
 		for (auto& item : SceneObjects)
 		{
-			item->Tick(*gfx, deltaTime);
+			item->Tick(deltaTime);
 		}
 	}
 
 
-	void Render(double deltaTime)
+	void Render(double deltaTime) override
 	{
 		for (auto& item : SceneObjects)
 		{
-			item->Render(*gfx, deltaTime);
+			item->Render(deltaTime);
 		}
 	}
 

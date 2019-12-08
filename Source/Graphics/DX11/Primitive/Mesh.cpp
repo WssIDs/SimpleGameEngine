@@ -208,7 +208,7 @@ private:
 
 
 // Model
-Model::Model(Graphics& gfx, const std::string path, dx::XMFLOAT3 scale3D)
+Model::Model(const std::string path, dx::XMFLOAT3 scale3D)
 	:
 	pWindow(std::make_unique<ModelWindow>())
 {
@@ -231,7 +231,7 @@ Model::Model(Graphics& gfx, const std::string path, dx::XMFLOAT3 scale3D)
 
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
-			meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials, scale3D));
+			meshPtrs.push_back(ParseMesh(*pScene->mMeshes[i], pScene->mMaterials, scale3D));
 		}
 
 		int nextId = 0;
@@ -245,7 +245,7 @@ Model::Model(Graphics& gfx, const std::string path, dx::XMFLOAT3 scale3D)
 	}
 }
 
-std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, dx::XMFLOAT3 scale3D)
+std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* const* pMaterials, dx::XMFLOAT3 scale3D)
 {
 	WGE_LOG(MeshLog, LogVerbosity::Default, "----------------------------------");
 	WGE_LOG(MeshLog, LogVerbosity::Default, "Start parse mesh = %s", mesh.mName.C_Str());
@@ -281,7 +281,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		{
 			//WGE_LOG(MeshLog, LogVerbosity::Success, "DiffuseMap loaded");
 
-			auto DiffuseTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()));
+			auto DiffuseTexture = Bind::Texture::Resolve(Graphics::GetGraphics(), BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()));
 			if(DiffuseTexture->HasAlpha())
 			{
 				bDiffuseMapAlpha = true;
@@ -318,7 +318,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		{
 			//WGE_LOG(MeshLog, LogVerbosity::Success, "SpecularMap loaded");
 
-			auto SpecularTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 1);
+			auto SpecularTexture = Bind::Texture::Resolve(Graphics::GetGraphics(), BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 1);
 			if (SpecularTexture->HasAlpha())
 			{
 				bSpecularMapAlpha = true;
@@ -351,7 +351,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		{
 			//WGE_LOG(MeshLog, LogVerbosity::Success, "GlossinessMap loaded");
 
-			auto GlossinessTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 2);
+			auto GlossinessTexture = Bind::Texture::Resolve(Graphics::GetGraphics(), BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 2);
 			if (GlossinessTexture->HasAlpha())
 			{
 				bGlossinesMapAlpha = true;
@@ -376,7 +376,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		{
 			//WGE_LOG(MeshLog, LogVerbosity::Success, "NormalMap loaded");
 
-			auto NormalTexture = Bind::Texture::Resolve(gfx, BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 3);
+			auto NormalTexture = Bind::Texture::Resolve(Graphics::GetGraphics(), BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()), 3);
 			if (NormalTexture->HasAlpha())
 			{
 				bNormalMapAlpha = true;
@@ -397,7 +397,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		if (bDiffuseMap || bNormalMap || bSpecularMap)
 		{
-			bindablePtrs.push_back(Bind::Sampler::Resolve(gfx));
+			bindablePtrs.push_back(Bind::Sampler::Resolve(Graphics::GetGraphics()));
 		}
 	}
 	else
@@ -443,17 +443,17 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 			indices.push_back(face.mIndices[2]);
 		}
 
-		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(Graphics::GetGraphics(), meshTag, vertexBuffer));
 
-		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(Graphics::GetGraphics(), meshTag, indices));
 
-		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
+		auto pvs = Bind::VertexShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
 		auto pvsbc = pvs->GetByteCode();
 		bindablePtrs.push_back(std::move(pvs));
 
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSSpecularNormalMap.cso"));
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongPSSpecularNormalMap.cso"));
 
-		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(Graphics::GetGraphics(), vertexBuffer.GetLayout(), pvsbc));
 
 		Node::PSMaterialConstantFull pmc;
 
@@ -461,7 +461,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		//pmc.specularMapAlpha = bSpecularMapAlpha ? TRUE : FALSE;
 		pmc.glossinesMapEnabled = bGlossinesMap ? TRUE : FALSE;
 
-		bindablePtrs.push_back(Bind::PixelConstantBuffer<Node::PSMaterialConstantFull>::Resolve(gfx, pmc, 1u));
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<Node::PSMaterialConstantFull>::Resolve(Graphics::GetGraphics(), pmc, 1u));
 	}
 	else if (bDiffuseMap && bNormalMap)
 	{
@@ -499,17 +499,17 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 			indices.push_back(face.mIndices[2]);
 		}
 
-		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(Graphics::GetGraphics(), meshTag, vertexBuffer));
 
-		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(Graphics::GetGraphics(), meshTag, indices));
 
-		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
+		auto pvs = Bind::VertexShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongVSNormalMap.cso");
 		auto pvsbc = pvs->GetByteCode();
 		bindablePtrs.push_back(std::move(pvs));
 
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSNormalMap.cso"));
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongPSNormalMap.cso"));
 
-		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(Graphics::GetGraphics(), vertexBuffer.GetLayout(), pvsbc));
 
 		struct PSMaterialConstantDiffuseNormal
 		{
@@ -521,7 +521,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		pmc.specularPower = shininess;
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
-		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuseNormal>::Resolve(gfx, pmc, 1u));
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuseNormal>::Resolve(Graphics::GetGraphics(), pmc, 1u));
 	}
 	else if (bDiffuseMap && bSpecularMap && !bNormalMap)
 	{
@@ -555,17 +555,17 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 			indices.push_back(face.mIndices[2]);
 		}
 
-		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(Graphics::GetGraphics(), meshTag, vertexBuffer));
 
-		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(Graphics::GetGraphics(), meshTag, indices));
 
-		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVS.cso");
+		auto pvs = Bind::VertexShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongVS.cso");
 		auto pvsbc = pvs->GetByteCode();
 		bindablePtrs.push_back(std::move(pvs));
 
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSSpecular.cso"));
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongPSSpecular.cso"));
 
-		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(Graphics::GetGraphics(), vertexBuffer.GetLayout(), pvsbc));
 
 		struct PSMaterialConstantDiffuseSpecular
 		{
@@ -578,7 +578,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 		pmc.specularPowerConst = shininess;
 		pmc.specularMapWeight = 1.0f;
 		pmc.specularMapAlpha = bSpecularMapAlpha ? TRUE : FALSE;
-		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuseSpecular>::Resolve(gfx, pmc, 1u));
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuseSpecular>::Resolve(Graphics::GetGraphics(), pmc, 1u));
 
 	}
 	else if (bDiffuseMap)
@@ -613,17 +613,17 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 			indices.push_back(face.mIndices[2]);
 		}
 
-		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(Graphics::GetGraphics(), meshTag, vertexBuffer));
 
-		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(Graphics::GetGraphics(), meshTag, indices));
 
-		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVS.cso");
+		auto pvs = Bind::VertexShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongVS.cso");
 		auto pvsbc = pvs->GetByteCode();
 		bindablePtrs.push_back(std::move(pvs));
 
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPS.cso"));
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongPS.cso"));
 
-		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(Graphics::GetGraphics(), vertexBuffer.GetLayout(), pvsbc));
 
 		struct PSMaterialConstantDiffuse
 		{
@@ -634,7 +634,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 		pmc.specularPower = shininess;
 		pmc.specularIntensity = (specularColor.x + specularColor.y + specularColor.z) / 3.0f;
-		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuse>::Resolve(gfx, pmc, 1u));
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<PSMaterialConstantDiffuse>::Resolve(Graphics::GetGraphics(), pmc, 1u));
 	}
 	else if (!bDiffuseMap && !bNormalMap && !bSpecularMap)
 	{
@@ -666,24 +666,24 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 			indices.push_back(face.mIndices[2]);
 		}
 
-		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(gfx, meshTag, vertexBuffer));
+		bindablePtrs.push_back(Bind::VertexBuffer::Resolve(Graphics::GetGraphics(), meshTag, vertexBuffer));
 
-		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(gfx, meshTag, indices));
+		bindablePtrs.push_back(Bind::IndexBuffer::Resolve(Graphics::GetGraphics(), meshTag, indices));
 
-		auto pvs = Bind::VertexShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongVSNotex.cso");
+		auto pvs = Bind::VertexShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongVSNotex.cso");
 		auto pvsbc = pvs->GetByteCode();
 		bindablePtrs.push_back(std::move(pvs));
 
-		bindablePtrs.push_back(Bind::PixelShader::Resolve(gfx, BASE_SHADERS_DIR + "PhongPSNotex.cso"));
+		bindablePtrs.push_back(Bind::PixelShader::Resolve(Graphics::GetGraphics(), BASE_SHADERS_DIR + "PhongPSNotex.cso"));
 
-		bindablePtrs.push_back(Bind::InputLayout::Resolve(gfx, vertexBuffer.GetLayout(), pvsbc));
+		bindablePtrs.push_back(Bind::InputLayout::Resolve(Graphics::GetGraphics(), vertexBuffer.GetLayout(), pvsbc));
 
 		Node::PSMaterialConstantNotex pmc;
 
 		pmc.specularPower = shininess;
 		pmc.specularColor = specularColor;
 		pmc.materialColor = diffuseColor;
-		bindablePtrs.push_back(Bind::PixelConstantBuffer<Node::PSMaterialConstantNotex>::Resolve(gfx, pmc, 1u));
+		bindablePtrs.push_back(Bind::PixelConstantBuffer<Node::PSMaterialConstantNotex>::Resolve(Graphics::GetGraphics(), pmc, 1u));
 	}
 	else
 	{
@@ -693,11 +693,11 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh, const 
 
 	WGE_LOG(MeshLog, LogVerbosity::Default, "End parse mesh = %s", mesh.mName.C_Str());
 
-	bindablePtrs.push_back(Bind::Blender::Resolve(gfx, false));
+	bindablePtrs.push_back(Bind::Blender::Resolve(Graphics::GetGraphics(), false));
 
-	bindablePtrs.push_back(Bind::Rasterizer::Resolve(gfx, bDiffuseMapAlpha));
+	bindablePtrs.push_back(Bind::Rasterizer::Resolve(Graphics::GetGraphics(), bDiffuseMapAlpha));
 
-	return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
+	return std::make_unique<Mesh>(Graphics::GetGraphics(), std::move(bindablePtrs));
 }
 
 std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node)
@@ -723,13 +723,13 @@ std::unique_ptr<Node> Model::ParseNode(int& nextId, const aiNode& node)
 	return pNode;
 }
 
-void Model::Draw(Graphics& gfx) const
+void Model::Draw() const
 {
 	if(auto node = pWindow->GetSelectedNode())
 	{
 		node->SetTransform(pWindow->GetTransform());
 	}
-	pRoot->Draw(gfx, dx::XMMatrixIdentity());
+	pRoot->Draw(Graphics::GetGraphics(), dx::XMMatrixIdentity());
 }
 
 void Model::ShowWindow(Graphics& gfx, const char* windowName /*= nullptr*/)
@@ -745,13 +745,14 @@ void Model::SetRootTransform(DirectX::FXMMATRIX transform)
 Model::~Model()
 {}
 
-void Model::Tick(Graphics& gfx, double deltaTime)
+void Model::Tick(double deltaTime)
 {
-
+	WObject::Tick(deltaTime);
 }
 
-void Model::Render(Graphics& gfx, double deltaTime)
+void Model::Render(double deltaTime)
 {
-	Draw(gfx);
-	ShowWindow(gfx, "Mesh");
+	WObject::Render(deltaTime);
+	Draw();
+	ShowWindow(Graphics::GetGraphics(), "Mesh");
 }

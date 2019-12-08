@@ -80,6 +80,15 @@ void Camera::Translate(DirectX::XMFLOAT3 translation)
 	};
 }
 
-constexpr float Camera::rotationspeed;
+void Camera::Tick(double deltaTime)
+{
+	WObject::Tick(deltaTime);
+}
 
-constexpr float Camera::travelSpeed;
+void Camera::Render(double deltaTime)
+{
+	WObject::Render(deltaTime);
+	Graphics::GetGraphics().SetCamera(GetMatrix());
+	
+	SpawnControlWindow();
+}

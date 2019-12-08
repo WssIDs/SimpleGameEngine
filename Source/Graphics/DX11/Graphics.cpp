@@ -20,21 +20,6 @@ namespace wrl = Microsoft::WRL;
 
 namespace dx = DirectX;
 
-Graphics::Graphics(HWND hWnd, int width, int height)
-	:
-	width(width),
-	height(height),
-	desiredColourFormat(DXGI_FORMAT_B8G8R8A8_UNORM),
-	hWnd(hWnd)
-{
-	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Create");
-
-	InitDX11_1(this->hWnd);
-	InitDX2D(this->hWnd);
-	ImGui_ImplDX11_Init(pDevice3D.Get(), pDeviceContext3D.Get());
-	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui DX11 Init");
-}
-
 Graphics::~Graphics()
 {
 	ImGui_ImplDX11_Shutdown();
@@ -44,7 +29,24 @@ Graphics::~Graphics()
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics Release");
 }
 
-void Graphics::InitDX11(HWND hWnd)
+void Graphics::InitGraphics(HWND hWnd, int width, int height)
+{
+	this->hWnd = hWnd;
+	this->width = width;
+	this->height = height;
+
+	desiredColourFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Create");
+
+	InitDX11_1();
+	InitDX2D();
+	ImGui_ImplDX11_Init(pDevice3D.Get(), pDeviceContext3D.Get());
+	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui DX11 Init");
+
+}
+
+void Graphics::InitDX11()
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferDesc.Width = width;
@@ -145,7 +147,7 @@ void Graphics::InitDX11(HWND hWnd)
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics DX11 Init");
 }
 
-void Graphics::InitDX11_1(HWND hWnd)
+void Graphics::InitDX11_1()
 {
 	auto  FeatureLevelsRequested = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 	UINT               numLevelsRequested = 1;
@@ -632,7 +634,7 @@ bool Graphics::IsCurrentInFullScreen() const
 	return currentlyInFullscreen;
 }
 
-void Graphics::InitDX2D(HWND hWnd)
+void Graphics::InitDX2D()
 {
 	if(FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), &pDwriteFactory2D)))
 	{
@@ -921,6 +923,12 @@ void Graphics::DisableImgui()
 bool Graphics::IsImguiEnabled() const
 {
 	return imguiEnabled;
+}
+
+Graphics& Graphics::GetGraphics()
+{
+	static Graphics graphics;
+	return graphics;
 }
 
 Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> Graphics::GetDefaultBrush() const

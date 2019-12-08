@@ -196,7 +196,9 @@ Window::Window(int width, int height, const std::string& name, const std::string
 	ImGui_ImplWin32_Init(hwnd);
 	WGE_LOG(WindowLog, LogVerbosity::Default, "ImGuiWin32 Init");
 
-	pGfx = std::make_unique<Graphics>(hwnd, this->width, this->height);
+	Graphics::GetGraphics().InitGraphics(hwnd, this->width, this->height);
+
+	//pGfx = std::make_unique<Graphics>(hwnd, this->width, this->height);
 
 	// register mouse raw input device
 	RAWINPUTDEVICE rid;
@@ -366,7 +368,7 @@ void Window::ToggleBordlessFullScreenMode()
 		SetWindowLong(GetHwnd(), GWL_EXSTYLE, WS_EX_TOPMOST);
 		ShowWindow(GetHwnd(), SW_SHOWMAXIMIZED);
 
-		Gfx().OnBordlessMaximize();
+		Graphics::GetGraphics().OnBordlessMaximize();
 		ConfineCursor();
 		bBordlessMaximize = true;
 	}

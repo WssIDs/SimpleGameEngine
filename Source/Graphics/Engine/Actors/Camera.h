@@ -1,9 +1,10 @@
 #pragma once
 #include "Graphics/DX11/Graphics.h"
+#include "../../Test/WObject.h"
 
 
 
-class Camera
+class Camera : public WObject
 {
 public:
 	Camera();
@@ -13,6 +14,12 @@ public:
 	void Reset();
 	void Rotate(float dx, float dy);
 	void Translate(DirectX::XMFLOAT3 translation);
+
+
+	virtual void Tick(double deltaTime) override;
+
+
+	virtual void Render(double deltaTime) override;
 
 private:
 	DirectX::XMFLOAT3 pos;

@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "Window.h"
 #include "Graphics/GUI/ImguiManager.h"
-#include "Graphics/Engine/Actors/Camera.h"
-#include <Graphics\DX11\Render\PointLight.h>
 
 #include <memory>
 #include <set>
@@ -40,8 +38,6 @@ private:
 
 	int x = 0, y = 0;
 	bool showDemoWindow = false;
-	Camera camera;
-	PointLight light;
 	float speedFactor = 1.0f;
 
 	Level* level;

@@ -252,6 +252,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Windows\main.cpp" />
     <ClCompile Include="Windows\Timer\Timer.cpp" />
     <ClCompile Include="Windows\Launch\Window\Window.cpp" />
+    <ClCompile Include="Graphics\Test\WObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
@@ -545,6 +546,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="Windows\Timer\Timer.h" />
     <ClInclude Include="Windows\Launch\Window\Window.h" />
+    <ClInclude Include="Graphics\Test\WObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico" />

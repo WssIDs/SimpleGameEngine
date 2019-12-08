@@ -5,8 +5,8 @@
 #include <type_traits>
 #include "Graphics/Engine/Core.h"
 #include "Imgui\imgui.h"
-#include "..\..\Test\Serialization\IWObject.h"
 #include <boost/serialization/export.hpp>
+#include "..\..\Test\WObject.h"
 
 struct aiMesh;
 struct aiMaterial;
@@ -129,18 +129,18 @@ private:
 };
 
 
-class Model : public IWObject
+class Model : public WObject
 {
 public:
 	Model() = default;
-	Model(Graphics& gfx, const std::string path, DirectX::XMFLOAT3 scale3D = {1.0f,1.0f,1.0f});
-	void Draw(Graphics& gfx) const;
+	Model(const std::string path, DirectX::XMFLOAT3 scale3D = {1.0f,1.0f,1.0f});
+	void Draw() const;
 	void ShowWindow(Graphics& gfx, const char* windowName = nullptr);
 	void SetRootTransform(DirectX::FXMMATRIX transform);
 	~Model();
 
-	void Tick(Graphics& gfx, double deltaTime) override;
-	void Render(Graphics& gfx, double deltaTime) override;
+	void Tick(double deltaTime) override;
+	void Render(double deltaTime) override;
 
 private:
 	friend class boost::serialization::access;
@@ -154,7 +154,7 @@ private:
 
 	std::string modelName = "Sponza";
 
-	static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* pMaterials, DirectX::XMFLOAT3 scale3D);
+	static std::unique_ptr<Mesh> ParseMesh(const aiMesh& mesh, const aiMaterial* const* pMaterials, DirectX::XMFLOAT3 scale3D);
 	std::unique_ptr<Node> ParseNode(int& nextId, const aiNode& node);
 private:
 	std::unique_ptr<Node> pRoot;

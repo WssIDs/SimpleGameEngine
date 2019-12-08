@@ -24,19 +24,18 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	fps(0),
 	mspf(0.0),
 	deltaTime(1.0 /(double)240),
-	maxSkipFrames(10),
-	light(Gfx(), 5.0f)
+	maxSkipFrames(10)
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
 	
-	level = new Level(Gfx());
+	level = new Level();
 
 	if (level != nullptr)
 	{
-		//level->Load();
+		level->Load();
 	}
 
-	Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
+	Graphics::GetGraphics().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -132,12 +131,12 @@ void ApplicationWindow::Update(double deltaTime)
 
 		if (keyboardInput.KeyIsPressed(VK_PRIOR))
 		{
-			Gfx().changeResolution(true);
+			Graphics::GetGraphics().changeResolution(true);
 		}
 
 		if (keyboardInput.KeyIsPressed(VK_NEXT))
 		{
-			Gfx().changeResolution(false);
+			Graphics::GetGraphics().changeResolution(false);
 		}
 
 		if (keyboardInput.KeyIsPressed(VK_F2))
@@ -159,83 +158,79 @@ void ApplicationWindow::Update(double deltaTime)
 
 
 
-	while (const auto delta = mouseInput.ReadRawDelta())
-	{
-		if (!IsCursorEnabled())
-		{
-			camera.Rotate((float)delta->x, (float)delta->y);
-		}
-	}
+	//while (const auto delta = mouseInput.ReadRawDelta())
+	//{
+	//	if (!IsCursorEnabled())
+	//	{
+	//		camera.Rotate((float)delta->x, (float)delta->y);
+	//	}
+	//}
 
 
 
-	if (IsCursorEnabled())
-	{
-		while (!mouseInput.IsEmpty())
-		{
-			const auto mEvent = mouseInput.Read();
-			float step = 10.0f;
+	//if (IsCursorEnabled())
+	//{
+	//	while (!mouseInput.IsEmpty())
+	//	{
+	//		const auto mEvent = mouseInput.Read();
+	//		float step = 10.0f;
 
-			if (mEvent->GetType() == MouseInput::Event::Type::WheelUp)
-			{
-				camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
-			}
-			if (mEvent->GetType() == MouseInput::Event::Type::WheelDown)
-			{
-				camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
-			}
-		}
-	}
+	//		if (mEvent->GetType() == MouseInput::Event::Type::WheelUp)
+	//		{
+	//			camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
+	//		}
+	//		if (mEvent->GetType() == MouseInput::Event::Type::WheelDown)
+	//		{
+	//			camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
+	//		}
+	//	}
+	//}
 
 
-	if (!IsCursorEnabled())
-	{
-		double step = 10.0f;
+	//if (!IsCursorEnabled())
+	//{
+	//	double step = 10.0f;
 
-		if (keyboardInput.KeyIsPressed('W'))
-		{
-			camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
-		}
-		if (keyboardInput.KeyIsPressed('A'))
-		{
-			camera.Translate({ (float)(-deltaTime * step), 0.0f, 0.0f });
-		}
-		if (keyboardInput.KeyIsPressed('S'))
-		{
-			camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
-		}
-		if (keyboardInput.KeyIsPressed('D'))
-		{
-			camera.Translate({ (float)(deltaTime * step), 0.0f, 0.0f });
-		}
-		if (keyboardInput.KeyIsPressed('R'))
-		{
-			camera.Translate({ 0.0f, (float)(deltaTime * step), 0.0f });
-		}
-		if (keyboardInput.KeyIsPressed('F'))
-		{
-			camera.Translate({ 0.0f, (float)(-deltaTime * step), 0.0f });
-		}
-	}
+	//	if (keyboardInput.KeyIsPressed('W'))
+	//	{
+	//		camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
+	//	}
+	//	if (keyboardInput.KeyIsPressed('A'))
+	//	{
+	//		camera.Translate({ (float)(-deltaTime * step), 0.0f, 0.0f });
+	//	}
+	//	if (keyboardInput.KeyIsPressed('S'))
+	//	{
+	//		camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
+	//	}
+	//	if (keyboardInput.KeyIsPressed('D'))
+	//	{
+	//		camera.Translate({ (float)(deltaTime * step), 0.0f, 0.0f });
+	//	}
+	//	if (keyboardInput.KeyIsPressed('R'))
+	//	{
+	//		camera.Translate({ 0.0f, (float)(deltaTime * step), 0.0f });
+	//	}
+	//	if (keyboardInput.KeyIsPressed('F'))
+	//	{
+	//		camera.Translate({ 0.0f, (float)(-deltaTime * step), 0.0f });
+	//	}
+	//}
 
 	level->Tick(deltaTime);
 }
 
 void ApplicationWindow::Render(double farseer)
 {
-	Gfx().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
+	Graphics::GetGraphics().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
 
 	// DRAW/LOGICS
 
-	Gfx().DrawText(L"Добро пожаловать в Direct 2D", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
-	Gfx().DrawText(L"FPS: " + std::to_wstring(fps), 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 25.0f);
-	Gfx().DrawText(L"FrameTime: " + std::to_wstring(mspf) + L" ms", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 40.0f);
+	Graphics::GetGraphics().DrawText(L"Добро пожаловать в Direct 2D", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
+	Graphics::GetGraphics().DrawText(L"FPS: " + std::to_wstring(fps), 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 25.0f);
+	Graphics::GetGraphics().DrawText(L"FrameTime: " + std::to_wstring(mspf) + L" ms", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 40.0f);
 
-	Gfx().DrawFillRect(10.0f, 80.0f, 140.0f, 200.f, LinearColor(0.0f, 0.5f, 1.0f, 1.0f));
-
-	Gfx().SetCamera(camera.GetMatrix());
-	light.Bind(Gfx(), camera.GetMatrix());
-
+	Graphics::GetGraphics().DrawFillRect(10.0f, 80.0f, 140.0f, 200.f, LinearColor(0.0f, 0.5f, 1.0f, 1.0f));
 
 	level->Render(farseer);
 
@@ -245,12 +240,7 @@ void ApplicationWindow::Render(double farseer)
 	//}
 	//plane.Draw(Gfx());
 	//girl.Draw(Gfx());
-	light.Draw(Gfx());
-
 	
-	// render imgui windows
-	camera.SpawnControlWindow();
-	light.SpawnControlWindow();
 	ShowImguiDemoWindow();
 
 	//if (model != nullptr)
@@ -261,7 +251,7 @@ void ApplicationWindow::Render(double farseer)
 	//plane.SpawnControlWindow(Gfx());
 	//ShowRawInputWindow();
 
-	Gfx().EndFrame(); // EndFrame
+	Graphics::GetGraphics().EndFrame(); // EndFrame
 }
 
 void ApplicationWindow::ShowImguiDemoWindow()
@@ -290,18 +280,18 @@ void ApplicationWindow::ShowRawInputWindow()
 void ApplicationWindow::OnResize()
 {
 	Window::OnResize();
-	Gfx().OnResize();
+	Graphics::GetGraphics().OnResize();
 }
 
 void ApplicationWindow::OnPosChange()
 {
-	bool fullscreen = Gfx().GetFullScreenState();
+	bool fullscreen = Graphics::GetGraphics().GetFullScreenState();
 
-	if (fullscreen != (bool)Gfx().IsCurrentInFullScreen())
+	if (fullscreen != (bool)Graphics::GetGraphics().IsCurrentInFullScreen())
 	{
 		SetPause(true);
 		timer.stop();
-		Gfx().OnResize();
+		Graphics::GetGraphics().OnResize();
 		timer.start();
 		SetPause(false);
 	}

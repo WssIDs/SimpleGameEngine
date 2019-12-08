@@ -7,15 +7,12 @@
 #include <boost/type_traits/is_abstract.hpp>
 
 
-class Graphics;
-class Model;
-
 class IWObject
 {
 public:
 	virtual ~IWObject() {};
-	virtual void Tick(Graphics& gfx, double deltaTime) = 0;
-	virtual void Render(Graphics& gfx, double deltaTime) = 0;
+	virtual void Tick(double deltaTime) = 0;
+	virtual void Render(double deltaTime) = 0;
 	
 private:
 	friend class boost::serialization::access;
