@@ -292,7 +292,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\DX11\Primitive\TestCube.h" />
     <ClInclude Include="Graphics\Helpers\Path.h" />
     <ClInclude Include="Graphics\Helpers\StringHelper.h" />
-    <ClInclude Include="Graphics\Test\Serialization\Object.h" />
+    <ClInclude Include="Graphics\Test\Serialization\IWObject.h" />
     <ClInclude Include="Graphics\Test\Level.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Rasterizer.h" />
     <ClInclude Include="ThirdParty\Assimp\aabb.h" />

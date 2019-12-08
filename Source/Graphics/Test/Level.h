@@ -1,6 +1,6 @@
 #pragma once
 #include "..\DX11\Graphics.h"
-#include "Serialization\Object.h"
+#include "Serialization\IWObject.h"
 #include <vector>
 #include "..\Engine\Core.h"
 #include "..\DX11\Primitive\Mesh.h"

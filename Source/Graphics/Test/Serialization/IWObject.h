@@ -23,6 +23,6 @@ private:
 	template<class Archive>
 	void serialize(Archive& ar, const unsigned int version)
 	{
-		ar.template register_type<Model>();
+		//ar.template register_type<Model>();
 	}
 };
