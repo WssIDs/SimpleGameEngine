@@ -25,7 +25,7 @@ Window::WindowClass::WindowClass()
 	wc.hInstance = getInstance();
 	wc.lpszClassName = getName();
 	wc.lpszMenuName = nullptr;
-	wc.style = CS_OWNDC;
+	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = handleMsgSetup;
 
 	RegisterClassEx(&wc);
@@ -167,7 +167,7 @@ Window::Window(int width, int height, const std::string& name, const std::string
 
 	RECT wr = { 0,0, this->width, this->height };
 
-	if(AdjustWindowRectEx(&wr, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW) == 0)
+	if(AdjustWindowRectEx(&wr, WS_EX_OVERLAPPEDWINDOW, false, WS_OVERLAPPEDWINDOW) == 0)
 	{
 		WGE_LOG(WindowLog, LogVerbosity::Error, "Cannot AdjustWindowRect");
 	}
@@ -278,6 +278,11 @@ Graphics& Window::Gfx()
 	return *pGfx;
 }
 
+HWND Window::GetHwnd() const
+{
+	return hwnd;
+}
+
 bool Window::IsPaused() const
 {
 	return bPaused;
@@ -286,6 +291,11 @@ bool Window::IsPaused() const
 void Window::SetPause(bool newPause)
 {
 	bPaused = newPause;
+}
+
+bool Window::IsWindowMaximized() const
+{
+	return bMaximized;
 }
 
 void Window::CloseWindow()
@@ -341,12 +351,33 @@ void Window::onCreate()
 
 void Window::OnResize()
 {
-	ConfineCursor();
 }
 
 void Window::OnPosChange()
 {
 	/// When Windows position changed
+}
+
+void Window::ToggleBordlessFullScreenMode()
+{
+	if (!bBordlessMaximize)
+	{
+		SetWindowLong(GetHwnd(), GWL_STYLE, WS_POPUP);
+		SetWindowLong(GetHwnd(), GWL_EXSTYLE, WS_EX_TOPMOST);
+		ShowWindow(GetHwnd(), SW_SHOWMAXIMIZED);
+
+		Gfx().OnBordlessMaximize();
+		ConfineCursor();
+		bBordlessMaximize = true;
+	}
+	else
+	{
+		SetWindowLong(GetHwnd(), GWL_STYLE, WS_OVERLAPPEDWINDOW);
+		SetWindowLong(GetHwnd(), GWL_EXSTYLE, WS_EX_OVERLAPPEDWINDOW);
+		ShowWindow(GetHwnd(), SW_SHOWDEFAULT);
+		ConfineCursor();
+		bBordlessMaximize = false;
+	}
 }
 
 void Window::onDestroy()
@@ -597,54 +628,26 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 {
 	bActive = (int)state;
 
-	ConfineCursor();
-
 	if(bActive == 0)
 	{
-		//if (!cursorEnabled)
-		//{
-		//	WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Cursor confine"));
-		//	//ConfineCursor();
-		//	//FreeCursor();
-		//	ShowCursor();
-		//}
 		FreeCursor();
 		ShowCursor();
-
 		SetPause(true);
 		timer.stop();
 		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Paused"));
 	}
 	else
 	{
+		ConfineCursor();
 		if (!cursorEnabled)
 		{
 			WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Cursor free"));
-			//ConfineCursor();
 			HideCursor();
 		}
 		SetPause(false);
 		timer.start();
 		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Resumed"));
 	}
-
-	//if(!cursorEnabled)
-	//{
-	//	WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Mouse state = %d"), bActive);
-
-	//	if(bActive == 1)
-	//	{
-	//		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor confine"));
-	//		ConfineCursor();
-	//		HideCursor();
-	//	}
-	//	else
-	//	{
-	//		WGE_LOG(TEXT(WindowLog), LogVerbosity::Default, TEXT("Cursor free"));
-	//		FreeCursor();
-	//		ShowCursor();
-	//	}
-	//}
 }
 
 void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
@@ -683,8 +686,6 @@ void Window::Wnd_OnSize(HWND hwnd, UINT state, int cx, int cy)
 		else
 			OnResize();
 	}
-
-	//S_LOG(TEXT(WindowLog), TEXT("State = %d, cx = %d, cy = %d"), state, cx, cy);
 }
 
 void Window::Wnd_OnEnterSizeMove()

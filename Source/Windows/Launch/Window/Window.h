@@ -52,15 +52,20 @@ public:
 	virtual void OnResize();
 	virtual void OnPosChange();
 
+	void ToggleBordlessFullScreenMode();
+
 	// loop messages
 	std::optional<int> ProcessMessages();
 
 	/// Graphics
 	Graphics& Gfx();
 
+	HWND GetHwnd() const;
+
 	bool IsPaused() const;
 	void SetPause(bool newPause);
 
+	bool IsWindowMaximized() const;
 	void CloseWindow();
 
 protected:
@@ -158,6 +163,7 @@ protected:
 private:
 
 	bool bActive;
+	bool bBordlessMaximize = false;
 	bool bMinimized;
 	bool bMaximized;
 	bool bResizing;

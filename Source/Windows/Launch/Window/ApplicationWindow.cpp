@@ -149,6 +149,11 @@ void ApplicationWindow::Update(double deltaTime)
 		{
 			CloseWindow();
 		}
+
+		if (keyboardInput.KeyIsPressed(VK_MENU) && keyboardInput.KeyIsPressed(VK_RETURN))
+		{
+			ToggleBordlessFullScreenMode();
+		}
 	}
 
 

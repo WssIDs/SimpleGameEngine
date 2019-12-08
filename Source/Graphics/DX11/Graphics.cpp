@@ -186,7 +186,6 @@ void Graphics::InitDX11_1(HWND hWnd)
 	DXGI_ADAPTER_DESC dad = { 0 };
 	dxgiAdapter->GetDesc(&dad);
 
-
 	PrintListAdapters(DirectVersionName::DirectX11_1, dxgiFactory, dad.DeviceId);
 
 	// set up the swap chain description
@@ -211,7 +210,7 @@ void Graphics::InitDX11_1(HWND hWnd)
 	scfd.Windowed = TRUE;
 
 	dxgiFactory->CreateSwapChainForHwnd(pDevice3D.Get(), hWnd, &scd, &scfd,nullptr, &pSwap);
-
+	dxgiFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER);
 	// enumerate all available display modes
 	// get representation of the output adapter
 	wrl::ComPtr<IDXGIOutput> output;
@@ -361,6 +360,108 @@ void Graphics::changeResolution(bool increase)
 	}
 }
 
+void Graphics::OnBordlessMaximize()
+{
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+
+	DXGI_MODE_DESC zeroRefreshRate = currentModeDescription;
+	zeroRefreshRate.RefreshRate.Numerator = 0;
+	zeroRefreshRate.RefreshRate.Denominator = 0;
+	zeroRefreshRate.Width = desktop.right;
+	zeroRefreshRate.Height = desktop.bottom;
+
+	pSwap->ResizeTarget(&zeroRefreshRate);
+
+	// release and reset all resources
+	if (pDeviceContext2D != nullptr)
+	{
+		pDeviceContext2D->SetTarget(nullptr);
+	}
+
+	pDeviceContext3D->ClearState();
+	pRenderTargetView3D = nullptr;
+	pDepthStencilView3D = nullptr;
+
+	DXGI_SWAP_CHAIN_DESC1 scd = { 0 };
+	pSwap->GetDesc1(&scd);
+	// resize the swap chain
+	if (FAILED(pSwap->ResizeBuffers(scd.BufferCount, 0, 0, scd.Format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to resize the swap chain!");
+	}
+
+	// (re)-create the render target view
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+	if (FAILED(pSwap->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()))))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to acquire the back buffer!");
+	}
+
+	if (FAILED(pDevice3D->CreateRenderTargetView(backBuffer.Get(), nullptr, &pRenderTargetView3D)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to create the render target view!");
+	}
+
+
+	// create the depth and stencil buffer
+	D3D11_TEXTURE2D_DESC dsd;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> dsBuffer;
+	backBuffer->GetDesc(&dsd);
+	dsd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsd.Usage = D3D11_USAGE_DEFAULT;
+	dsd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	if (FAILED(pDevice3D->CreateTexture2D(&dsd, nullptr, dsBuffer.GetAddressOf())))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to create a 2D-texture!");
+	}
+
+	if (FAILED(pDevice3D->CreateDepthStencilView(dsBuffer.Get(), nullptr, pDepthStencilView3D.GetAddressOf())))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Error, "Direct3D was unable to create the depth and stencil buffer!");
+	}
+
+	// activate the depth and stencil buffer
+	pDeviceContext3D->OMSetRenderTargets(1, pRenderTargetView3D.GetAddressOf(), pDepthStencilView3D.Get());
+
+	SetViewport(dsd.Width, dsd.Height);
+
+	// specify the desired bitmap properties
+	D2D1_BITMAP_PROPERTIES1 bp;
+	bp.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	bp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
+	bp.dpiX = 96.0f;
+	bp.dpiY = 96.0f;
+	bp.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
+	bp.colorContext = nullptr;
+
+	// Direct2D needs the DXGI version of the back buffer
+	wrl::ComPtr<IDXGISurface> dxgiBuffer;
+	if (FAILED(pSwap->GetBuffer(0, __uuidof(IDXGISurface), &dxgiBuffer)))
+	{
+		WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to retrieve the back buffer!");
+		throw "Critical error: Unable to retrieve the back buffer!";
+	}
+
+	// create the bitmap
+	if (pDeviceContext2D != nullptr)
+	{
+		Microsoft::WRL::ComPtr<ID2D1Bitmap1> targetBitmap;
+		if (FAILED(pDeviceContext2D->CreateBitmapFromDxgiSurface(dxgiBuffer.Get(), &bp, &targetBitmap)))
+		{
+			WGE_LOG(GraphicsLog, LogVerbosity::Fatal, "Unable to create the Direct2D bitmap from the DXGI surface!");
+			throw "Critical error: Unable to create the Direct2D bitmap from the DXGI surface!";
+		}
+
+		pDeviceContext2D->SetTarget(targetBitmap.Get());
+	}
+
+	ImGui::GetIO().DisplaySize.x = currentModeDescription.Width;
+	ImGui::GetIO().DisplaySize.y = currentModeDescription.Height;
+}
+
 bool Graphics::OnResize()
 {
 	// Microsoft recommends zeroing out the refresh rate of the description before resizing the targets
@@ -401,7 +502,7 @@ bool Graphics::OnResize()
 
 			 //recompute client area and set new window size
 			RECT rect = { 0, 0, (long)currentModeDescription.Width,  (long)currentModeDescription.Height };
-			if (FAILED(AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW)))
+			if (FAILED(AdjustWindowRectEx(&rect, WS_EX_OVERLAPPEDWINDOW, false, WS_OVERLAPPEDWINDOW)))
 			{
 				WGE_LOG(GraphicsLog, LogVerbosity::Error, "Failed to adjust window rectangle!");
 				return false;
@@ -509,6 +610,10 @@ bool Graphics::OnResize()
 
 		pDeviceContext2D->SetTarget(targetBitmap.Get());
 	}
+
+
+	ImGui::GetIO().DisplaySize.x = currentModeDescription.Width;
+	ImGui::GetIO().DisplaySize.y = currentModeDescription.Height;
 
 	return true;
 }

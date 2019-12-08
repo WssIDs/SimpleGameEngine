@@ -49,7 +49,8 @@ public:
 
 	// changes the screen resolution, if increase is true, a higher resolution is chosen, else the resolution is lowered
 	// returns true if the screen resolution should be changed
-	void changeResolution(bool increase);					
+	void changeResolution(bool increase);	
+	void OnBordlessMaximize();						// resize the resources
 	bool OnResize();						// resize the resources
 	bool GetFullScreenState() const;			// get full screen state
 	bool IsCurrentInFullScreen() const;
