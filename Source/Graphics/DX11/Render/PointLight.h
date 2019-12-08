@@ -2,7 +2,7 @@
 #include "Graphics/DX11/Graphics.h"
 #include "Graphics/DX11/Bindable/ConstantBuffers.h"
 #include "../Primitive/SolidSphere.h"
-#include "../../Test/WObject.h"
+#include "../../Engine/Core.h"
 
 
 
@@ -10,7 +10,7 @@
 class PointLight : public WObject
 {
 public:
-	PointLight(float radius = 0.5f);
+	PointLight(const std::string& name, float radius = 0.5f);
 	void SpawnControlWindow();
 	void Reset();
 	void Draw() const;
@@ -33,6 +33,7 @@ private:
 private:
 	PointLightConstantBuffer pcbData;
 	mutable SolidSphere mesh;
+	mutable std::string name;
 	mutable Bind::PixelConstantBuffer<PointLightConstantBuffer> constantBuffer;
 };
 

@@ -2,8 +2,9 @@
 #include "Imgui\imgui.h"
 #include "..\Graphics.h"
 
-PointLight::PointLight(float radius /*= 0.5f*/)
+PointLight::PointLight(const std::string& name, float radius /*= 0.5f*/)
 	:
+	name(name),
 	mesh (Graphics::GetGraphics(), radius),
 	constantBuffer(Graphics::GetGraphics())
 {
@@ -12,7 +13,7 @@ PointLight::PointLight(float radius /*= 0.5f*/)
 
 void PointLight::SpawnControlWindow()
 {
-	if (ImGui::Begin("Light"))
+	if (ImGui::Begin(name.c_str()))
 	{
 		ImGui::Text("Position");
 		ImGui::SliderFloat("X", &pcbData.pos.x, -1000.0f, 1000.0f, "%.1f");

@@ -615,7 +615,6 @@ bool Graphics::OnResize()
 		pDeviceContext2D->SetTarget(targetBitmap.Get());
 	}
 
-
 	ImGui::GetIO().DisplaySize.x = (float)currentModeDescription.Width;
 	ImGui::GetIO().DisplaySize.y = (float)currentModeDescription.Height;
 

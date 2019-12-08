@@ -88,10 +88,12 @@
     <ClCompile Include="Graphics\2D\Canvas.cpp" />
     <ClCompile Include="ThirdParty\OpenFBX\miniz.c" />
     <ClCompile Include="ThirdParty\OpenFBX\ofbx.cpp" />
-    <ClCompile Include="Graphics\Test\Level.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Rasterizer.cpp" />
-    <ClCompile Include="Graphics\Test\WObject.cpp" />
+    <ClCompile Include="Graphics\Engine\Core\WObject.cpp" />
+    <ClCompile Include="Graphics\Engine\Core\Level\Level.cpp" />
+    <ClCompile Include="Graphics\Engine\Actors\Actor.cpp" />
+    <ClCompile Include="Graphics\Engine\Actors\Light\TestPointLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -439,11 +441,13 @@
     <ClInclude Include="Graphics\Helpers\Path.h" />
     <ClInclude Include="ThirdParty\OpenFBX\miniz.h" />
     <ClInclude Include="ThirdParty\OpenFBX\ofbx.h" />
-    <ClInclude Include="Graphics\Test\Level.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Rasterizer.h" />
-    <ClInclude Include="Graphics\Test\Serialization\IWObject.h" />
-    <ClInclude Include="Graphics\Test\WObject.h" />
+    <ClInclude Include="Graphics\Engine\Core\IWObject.h" />
+    <ClInclude Include="Graphics\Engine\Core\WObject.h" />
+    <ClInclude Include="Graphics\Engine\Core\Level\Level.h" />
+    <ClInclude Include="Graphics\Engine\Actors\Actor.h" />
+    <ClInclude Include="Graphics\Engine\Actors\Light\TestPointLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

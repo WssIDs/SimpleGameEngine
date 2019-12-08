@@ -6,7 +6,6 @@
 #include "Graphics/Engine/Core.h"
 #include "Imgui\imgui.h"
 #include <boost/serialization/export.hpp>
-#include "..\..\Test\WObject.h"
 
 struct aiMesh;
 struct aiMaterial;

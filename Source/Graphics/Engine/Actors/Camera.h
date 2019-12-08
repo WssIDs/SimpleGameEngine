@@ -1,6 +1,6 @@
 #pragma once
 #include "Graphics/DX11/Graphics.h"
-#include "../../Test/WObject.h"
+#include "../Core.h"
 
 
 

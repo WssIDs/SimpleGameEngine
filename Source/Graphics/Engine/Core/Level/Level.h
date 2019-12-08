@@ -1,15 +1,16 @@
 #pragma once
-#include "..\DX11\Graphics.h"
-#include "Serialization\IWObject.h"
+#include "..\..\Core.h"
 #include <vector>
-#include "..\Engine\Core.h"
-#include "..\DX11\Primitive\Mesh.h"
 #include "boost\serialization\access.hpp"
 #include <boost\serialization\shared_ptr.hpp>
-#include "WObject.h"
-#include "..\Engine\Actors\Camera.h"
-#include "..\DX11\Render\PointLight.h"
-#include "..\2D\Canvas.h"
+
+
+#include "Graphics\2D\Canvas.h"
+#include "..\..\Actors\Camera.h"
+#include "Graphics\DX11\Render\PointLight.h"
+#include "Graphics\DX11\Primitive\Mesh.h"
+#include "..\..\Actors\Light\TestPointLight.h"
+#include "..\..\Actors\Actor.h"
 
 
 
@@ -27,8 +28,8 @@ public:
 		//}
 	}
 
-	std::vector<std::shared_ptr<IWObject>> SceneObjects;
-
+	std::vector<std::shared_ptr<WObject>> SceneObjects;
+	std::vector<std::shared_ptr<Actor>> ActorObjects;
 	std::shared_ptr<Canvas> SceneViewportUI;
 
 	void Init(const std::string& filename);
@@ -39,20 +40,30 @@ public:
 	{
 		SceneViewportUI = std::make_shared<Canvas>();
 
-		std::shared_ptr<IWObject> camera(new Camera());
+		std::shared_ptr<WObject> camera(new Camera());
 		SceneObjects.push_back(camera);
 
-		std::shared_ptr<IWObject> light(new PointLight());
-		SceneObjects.push_back(light);
+		std::shared_ptr<Actor> light(new TestPointLight());
+		ActorObjects.push_back(light);
 
-		//std::shared_ptr<IWObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
-		//SceneObjects.push_back(model);
+		std::shared_ptr<WObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
+		SceneObjects.push_back(model);
 	}
 
 	void Tick(double deltaTime) override
 	{
 		WObject::Tick(deltaTime);
 		SceneViewportUI->Tick(deltaTime);
+
+		for (auto& item : ActorObjects)
+		{
+			item->Tick(deltaTime);
+
+			for (auto& child : item->GetChildObjects())
+			{
+				child->Tick(deltaTime);
+			}
+		}
 
 		for (auto& item : SceneObjects)
 		{
@@ -65,6 +76,16 @@ public:
 	{
 		WObject::Render(deltaTime);
 		SceneViewportUI->Render(deltaTime);
+
+		for (auto& item : ActorObjects)
+		{
+			item->Render(deltaTime);
+
+			for (auto& child : item->GetChildObjects())
+			{
+				child->Render(deltaTime);
+			}
+		}
 
 		for (auto& item : SceneObjects)
 		{

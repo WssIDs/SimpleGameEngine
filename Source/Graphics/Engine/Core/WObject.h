@@ -1,5 +1,5 @@
 #pragma once
-#include "Serialization\IWObject.h"
+#include "IWObject.h"
 
 class Graphics;
 

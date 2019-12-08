@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Core\WObject.h"
 #include "Windows\Logger\LogDefinitions.h"
 
 
