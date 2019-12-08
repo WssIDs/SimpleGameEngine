@@ -156,7 +156,6 @@ public:
 	KeyboardInput keyboardInput;
 	MouseInput mouseInput;
 protected:
-	Timer timer;
 
 	int width = 0;
 	int height = 0;

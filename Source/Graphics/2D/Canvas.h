@@ -1,10 +1,14 @@
 #pragma once
+#include "..\Test\WObject.h"
 
-class Graphics;
 
-class Canvas
+
+class Canvas : public WObject
 {
 public:
-	void Render(Graphics& gfx);
+
+	virtual void Tick(double deltaTime) override;
+	virtual void Render(double deltaTime) override;
+
 };
 

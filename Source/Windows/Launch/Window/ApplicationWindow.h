@@ -15,8 +15,6 @@ public:
 
 	~ApplicationWindow();
 
-	void CalculateFrameStats();
-
 	int Run();
 	
 	void Update(double deltaTime);
@@ -31,8 +29,6 @@ public:
 	void OnPosChange() override;
 
 private:
-	int fps;							// frames per second
-	double mspf;					    // milliseconds per frame
 	double deltaTime;
 	int maxSkipFrames;
 

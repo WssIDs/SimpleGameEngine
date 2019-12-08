@@ -21,8 +21,6 @@ ImguiManager imgui;
 ApplicationWindow::ApplicationWindow(int width, int height, const std::string& name, const std::string& commandLine)
 	:
 	Window(width, height, name, commandLine),
-	fps(0),
-	mspf(0.0),
 	deltaTime(1.0 /(double)240),
 	maxSkipFrames(10)
 {
@@ -44,29 +42,10 @@ ApplicationWindow::~ApplicationWindow()
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Destroy");
 }
 
-void ApplicationWindow::CalculateFrameStats()
-{
-	static int nFrames;				    // number of frames seen
-	static double elapsedTime;		    // time since last call
-	nFrames++;
-
-	// compute average statistics over one second
-	if ((timer.getTotalTime() - elapsedTime) >= 1.0)
-	{
-		// set fps and mspf
-		fps = nFrames;
-		mspf = 1000.0 / (double)fps;
-
-		// reset
-		nFrames = 0;
-		elapsedTime += 1.0;
-	}
-}
-
 int ApplicationWindow::Run()
 {
 	// reset (start) the timer
-	timer.reset();
+	Graphics::GetGraphics().GetTimer()->reset();
 
 	double accumulatedTime = 0.0;		// stores the time accumulated by the rendered
 	int nLoops = 0;						// the number of completed loops while updating the game
@@ -79,15 +58,15 @@ int ApplicationWindow::Run()
 		}
 
 		// let the timer tick
-		timer.tick();
+		Graphics::GetGraphics().GetTimer()->tick();
 
 		if (!IsPaused())
 		{
 			// calculate fps
-			CalculateFrameStats();
+			Graphics::GetGraphics().CalculateFrameStats();
 			
 			// accumulate the elapsed time since the last frame
-			accumulatedTime += timer.getDeltaTime();
+			accumulatedTime += Graphics::GetGraphics().GetTimer()->getDeltaTime();
 
 			// now update the game logic with fixed deltaTime as often as possible
 			nLoops = 0;
@@ -226,12 +205,6 @@ void ApplicationWindow::Render(double farseer)
 
 	// DRAW/LOGICS
 
-	Graphics::GetGraphics().DrawText(L"Добро пожаловать в Direct 2D", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
-	Graphics::GetGraphics().DrawText(L"FPS: " + std::to_wstring(fps), 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 25.0f);
-	Graphics::GetGraphics().DrawText(L"FrameTime: " + std::to_wstring(mspf) + L" ms", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 40.0f);
-
-	Graphics::GetGraphics().DrawFillRect(10.0f, 80.0f, 140.0f, 200.f, LinearColor(0.0f, 0.5f, 1.0f, 1.0f));
-
 	level->Render(farseer);
 
 	//if (model != nullptr)
@@ -290,9 +263,9 @@ void ApplicationWindow::OnPosChange()
 	if (fullscreen != (bool)Graphics::GetGraphics().IsCurrentInFullScreen())
 	{
 		SetPause(true);
-		timer.stop();
+		Graphics::GetGraphics().GetTimer()->stop();
 		Graphics::GetGraphics().OnResize();
-		timer.start();
+		Graphics::GetGraphics().GetTimer()->start();
 		SetPause(false);
 	}
 }

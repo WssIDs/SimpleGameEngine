@@ -10,6 +10,7 @@
 #include <d2d1_3.h>
 #include <dwrite_3.h>
 #include "Render/Color.h"
+#include "Windows/Timer/Timer.h"
 
 
 #pragma comment(lib,"d3d11.lib")
@@ -72,6 +73,11 @@ public:
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> CreateSolidColorBrush(LinearColor color);
 
 	void SetViewport(int width, int height);
+
+	void CalculateFrameStats();
+	Timer* GetTimer() const;
+	int GetFPS() const;
+	double GetFrameTime() const;
 
 	// Clear buffers and set a new TragetView 
 	void BeginFrame(float red, float green, float blue);
@@ -139,6 +145,13 @@ private:
 	Microsoft::WRL::ComPtr<ID2D1DeviceContext1> pDeviceContext2D = nullptr;		// pointer to the device context
 
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pDefaultBrush = nullptr;
+
+	std::shared_ptr<Timer> timer;
+	int fps = 0;							// frames per second
+	double mspf = 0.0;					    // milliseconds per frame
+
+	int nFrames = 0;				    // number of frames seen
+	double elapsedTime = 0.0;		    // time since last call
 };
 
 

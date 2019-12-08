@@ -9,6 +9,7 @@
 #include "WObject.h"
 #include "..\Engine\Actors\Camera.h"
 #include "..\DX11\Render\PointLight.h"
+#include "..\2D\Canvas.h"
 
 
 
@@ -28,24 +29,31 @@ public:
 
 	std::vector<std::shared_ptr<IWObject>> SceneObjects;
 
+	std::shared_ptr<Canvas> SceneViewportUI;
+
 	void Init(const std::string& filename);
 
 	void Load(const std::string& filename);
 
 	void Load()
 	{
+		SceneViewportUI = std::make_shared<Canvas>();
+
 		std::shared_ptr<IWObject> camera(new Camera());
 		SceneObjects.push_back(camera);
 
 		std::shared_ptr<IWObject> light(new PointLight());
 		SceneObjects.push_back(light);
 
-		std::shared_ptr<IWObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
-		SceneObjects.push_back(model);
+		//std::shared_ptr<IWObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
+		//SceneObjects.push_back(model);
 	}
 
 	void Tick(double deltaTime) override
 	{
+		WObject::Tick(deltaTime);
+		SceneViewportUI->Tick(deltaTime);
+
 		for (auto& item : SceneObjects)
 		{
 			item->Tick(deltaTime);
@@ -55,6 +63,9 @@ public:
 
 	void Render(double deltaTime) override
 	{
+		WObject::Render(deltaTime);
+		SceneViewportUI->Render(deltaTime);
+
 		for (auto& item : SceneObjects)
 		{
 			item->Render(deltaTime);
