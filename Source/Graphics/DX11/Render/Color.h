@@ -1,5 +1,7 @@
 #pragma once
 #include "boost\serialization\access.hpp"
+#include <string>
+#include <sstream>
 
 
 
@@ -59,26 +61,33 @@ struct LinearColor
 		A = 0.0f;
 	}
 
-	LinearColor(float red, float green, float blue)
+	LinearColor(float red, float green, float blue, float alpha = 1.0f)
 	{
 		R = red;
 		G = green;
 		B = blue;
-		A = 1.0f;
-	}
-
-	LinearColor(float red, float green, float blue, float alpha)
-		: LinearColor(red,green,blue)
-	{
 		A = alpha;
 	}
 
 	template <typename Archive>
 	void serialize(Archive& ar, const unsigned int version)
 	{
-		ar& R;
-		ar& G;
-		ar& B;
-		ar& A;
+		ar& R & G & B & A;
 	}
+
+	std::string ToString() const
+	{
+		std::stringstream stream;
+		stream << "(R=" << R << ",G=" << G << ",B=" << B << ",A=" << A;
+		return stream.str();
+	}
+
+	static const LinearColor White;
+	static const LinearColor Gray;
+	static const LinearColor Black;
+	static const LinearColor Transparent;
+	static const LinearColor Red;
+	static const LinearColor Green;
+	static const LinearColor Blue;
+	static const LinearColor Yellow;
 };

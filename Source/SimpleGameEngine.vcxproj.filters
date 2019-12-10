@@ -96,6 +96,7 @@
     <ClCompile Include="Graphics\Engine\Actors\Light\TestPointLight.cpp" />
     <ClCompile Include="Graphics\Test\TestInputSystem.cpp" />
     <ClCompile Include="Windows\Launch\Window\WindowKeyMessageHandler.cpp" />
+    <ClCompile Include="Graphics\DX11\Render\Color.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">

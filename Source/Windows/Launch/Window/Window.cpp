@@ -49,7 +49,6 @@ Window::WindowClass::~WindowClass()
 
 Window::Window(int width, int height, const std::string& name, const std::string& commandLine)
 	:
-	speedInput(0.0f),
 	windowName(name),
 	width(width),
 	height(height),

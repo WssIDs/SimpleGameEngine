@@ -209,6 +209,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\DX11\Render\Color.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Actor.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
     <ClCompile Include="Graphics\2D\Canvas.cpp" />

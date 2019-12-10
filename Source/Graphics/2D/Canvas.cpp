@@ -9,9 +9,9 @@ void Canvas::Render(double deltaTime)
 {
 	WObject::Render(deltaTime);
 
-	DrawText(L"Добро пожаловать в Direct 2D", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f);
-	DrawText(L"FPS: " + std::to_wstring(Graphics::GetGraphics().GetFPS()), 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 25.0f);
-	DrawText(L"FrameTime: " + std::to_wstring(Graphics::GetGraphics().GetFrameTime()) + L" ms", 10.0f, LinearColor(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 40.0f);
+	DrawText(L"Добро пожаловать в Direct 2D", 10.0f, LinearColor::White, 10.0f, 10.0f);
+	DrawText(L"FPS: " + std::to_wstring(Graphics::GetGraphics().GetFPS()), 10.0f, LinearColor::White, 10.0f, 25.0f);
+	DrawText(L"FrameTime: " + std::to_wstring(Graphics::GetGraphics().GetFrameTime()) + L" ms", 10.0f, LinearColor::White, 10.0f, 40.0f);
 
 	DrawFillRect(10.0f, 80.0f, 140.0f, 200.f, LinearColor(0.0f, 0.5f, 1.0f, 1.0f));
 }

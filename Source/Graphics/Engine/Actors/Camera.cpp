@@ -106,7 +106,7 @@ void Camera::Render(double deltaTime)
 
 void Camera::MoveForward(float forward)
 {
-	//WGE_LOG(CameraLog, LogVerbosity::Default, "forward = %lf", forward);
+	WGE_LOG(CameraLog, LogVerbosity::Default, "forward = %lf", forward);
 	Translate({ 0.0f, 0.0f, (float)(forward) * 0.01f });
 }
 
