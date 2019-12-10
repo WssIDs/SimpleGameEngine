@@ -94,6 +94,8 @@
     <ClCompile Include="Graphics\Engine\Core\Level\Level.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Actor.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Light\TestPointLight.cpp" />
+    <ClCompile Include="Graphics\Test\TestInputSystem.cpp" />
+    <ClCompile Include="Windows\Launch\Window\WindowKeyMessageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -448,6 +450,9 @@
     <ClInclude Include="Graphics\Engine\Core\Level\Level.h" />
     <ClInclude Include="Graphics\Engine\Actors\Actor.h" />
     <ClInclude Include="Graphics\Engine\Actors\Light\TestPointLight.h" />
+    <ClInclude Include="Graphics\Engine\ObjectGlobals.h" />
+    <ClInclude Include="Graphics\Test\TestInputSystem.h" />
+    <ClInclude Include="Windows\Launch\Window\WindowKeyMessageHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

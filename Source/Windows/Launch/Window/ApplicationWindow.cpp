@@ -25,7 +25,7 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	maxSkipFrames(10)
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
-	
+
 	level = new Level();
 
 	if (level != nullptr)
@@ -87,6 +87,9 @@ int ApplicationWindow::Run()
 
 void ApplicationWindow::Update(double deltaTime)
 {
+	handler.Tick(deltaTime);
+
+
 	while (const auto e = keyboardInput.ReadKey())
 	{
 		if (!e->IsPress())
@@ -135,67 +138,6 @@ void ApplicationWindow::Update(double deltaTime)
 	}
 
 
-
-
-	//while (const auto delta = mouseInput.ReadRawDelta())
-	//{
-	//	if (!IsCursorEnabled())
-	//	{
-	//		camera.Rotate((float)delta->x, (float)delta->y);
-	//	}
-	//}
-
-
-
-	//if (IsCursorEnabled())
-	//{
-	//	while (!mouseInput.IsEmpty())
-	//	{
-	//		const auto mEvent = mouseInput.Read();
-	//		float step = 10.0f;
-
-	//		if (mEvent->GetType() == MouseInput::Event::Type::WheelUp)
-	//		{
-	//			camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
-	//		}
-	//		if (mEvent->GetType() == MouseInput::Event::Type::WheelDown)
-	//		{
-	//			camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
-	//		}
-	//	}
-	//}
-
-
-	//if (!IsCursorEnabled())
-	//{
-	//	double step = 10.0f;
-
-	//	if (keyboardInput.KeyIsPressed('W'))
-	//	{
-	//		camera.Translate({ 0.0f, 0.0f, (float)(deltaTime * step) });
-	//	}
-	//	if (keyboardInput.KeyIsPressed('A'))
-	//	{
-	//		camera.Translate({ (float)(-deltaTime * step), 0.0f, 0.0f });
-	//	}
-	//	if (keyboardInput.KeyIsPressed('S'))
-	//	{
-	//		camera.Translate({ 0.0f, 0.0f, (float)(-deltaTime * step) });
-	//	}
-	//	if (keyboardInput.KeyIsPressed('D'))
-	//	{
-	//		camera.Translate({ (float)(deltaTime * step), 0.0f, 0.0f });
-	//	}
-	//	if (keyboardInput.KeyIsPressed('R'))
-	//	{
-	//		camera.Translate({ 0.0f, (float)(deltaTime * step), 0.0f });
-	//	}
-	//	if (keyboardInput.KeyIsPressed('F'))
-	//	{
-	//		camera.Translate({ 0.0f, (float)(-deltaTime * step), 0.0f });
-	//	}
-	//}
-
 	level->Tick(deltaTime);
 }
 
@@ -205,24 +147,9 @@ void ApplicationWindow::Render(double farseer)
 
 	// DRAW/LOGICS
 
-	level->Render(farseer);
+	level->Render(farseer);	
 
-	//if (model != nullptr)
-	//{
-	//	model->Draw(Gfx());
-	//}
-	//plane.Draw(Gfx());
-	//girl.Draw(Gfx());
-	
 	ShowImguiDemoWindow();
-
-	//if (model != nullptr)
-	//{
-	//	model->ShowWindow(Gfx(), "Sponza");
-	//}
-	//girl.ShowWindow(Gfx(), "Girl");
-	//plane.SpawnControlWindow(Gfx());
-	//ShowRawInputWindow();
 
 	Graphics::GetGraphics().EndFrame(); // EndFrame
 }

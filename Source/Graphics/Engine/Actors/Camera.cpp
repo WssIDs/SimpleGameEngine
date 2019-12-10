@@ -2,11 +2,21 @@
 #include "Imgui\imgui.h"
 #include "..\..\DX11\Math\WGMath.h"
 #include <algorithm>
+#include "..\..\Test\TestInputSystem.h"
+
+DEFINE_LOG_CATEGORY(CameraLog)
 
 namespace dx = DirectX;
 
 Camera::Camera()
 {
+	TestInputSystem::Get().BindAxis( "MoveCameraForward", 'w', EInputEvent::IE_Pressed,this, &Camera::MoveForward);
+	TestInputSystem::Get().BindAxis("MoveCameraBackward", 's', EInputEvent::IE_Pressed, this, &Camera::MoveForward);
+	TestInputSystem::Get().BindAxis("MoveCameraLeft", 'a', EInputEvent::IE_Pressed, this, &Camera::MoveRight);
+	TestInputSystem::Get().BindAxis("MoveCameraRight", 'd', EInputEvent::IE_Pressed, this, &Camera::MoveRight);
+	TestInputSystem::Get().BindAxis("MoveCameraUp", 'e', EInputEvent::IE_Pressed, this, &Camera::MoveUp);
+	TestInputSystem::Get().BindAxis("MoveCameraDown", 'f', EInputEvent::IE_Pressed, this, &Camera::MoveUp);
+
 	Reset();
 }
 
@@ -35,6 +45,7 @@ void Camera::SpawnControlWindow()
 	if (ImGui::Begin("Camera"))
 	{
 		ImGui::Text("Position");
+		ImGui::SliderFloat("Step speed", &step, 0.0f, 50.0f, "%.1f");
 		ImGui::SliderFloat("X",&pos.x,-80.0f,80.0f, "%.1f");
 		ImGui::SliderFloat("Y", &pos.y, -800.0f, 800.0f, "%.1f");
 		ImGui::SliderFloat("Z", &pos.z, -800.0f, 800.0f, "%.1f");
@@ -91,4 +102,22 @@ void Camera::Render(double deltaTime)
 	Graphics::GetGraphics().SetCamera(GetMatrix());
 	
 	SpawnControlWindow();
+}
+
+void Camera::MoveForward(float forward)
+{
+	//WGE_LOG(CameraLog, LogVerbosity::Default, "forward = %lf", forward);
+	Translate({ 0.0f, 0.0f, (float)(forward) * 0.01f });
+}
+
+void Camera::MoveRight(float right)
+{
+	//WGE_LOG(CameraLog, LogVerbosity::Default, "right = %lf", right);
+	Translate({ (float)(right) * 0.01f , 0.0f, 0.0f });
+}
+
+void Camera::MoveUp(float up)
+{
+	//WGE_LOG(CameraLog, LogVerbosity::Default, "up = %lf", up);
+	Translate({ 0.0f, (float)(up) * 0.01f , 0.0f });
 }

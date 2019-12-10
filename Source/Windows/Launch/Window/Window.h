@@ -8,6 +8,7 @@
 #include <memory>
 #include "Graphics/Engine/Core.h"
 #include "../../Timer/Timer.h"
+#include "WindowKeyMessageHandler.h"
 
 
 class Window
@@ -57,9 +58,6 @@ public:
 	// loop messages
 	std::optional<int> ProcessMessages();
 
-	/// Graphics
-	Graphics& Gfx();
-
 	HWND GetHwnd() const;
 
 	bool IsPaused() const;
@@ -71,6 +69,8 @@ public:
 protected:
 
 	RECT GetWindowSize() const;
+
+	WindowKeyMessageHandler handler;
 
 private:
 	void ConfineCursor();
@@ -182,4 +182,4 @@ private:
 };
 
 
-DECLARE_LOG_CATEGORY_EXTERN(WindowLog);
+DECLARE_LOG_CATEGORY_EXTERN(WindowLog)

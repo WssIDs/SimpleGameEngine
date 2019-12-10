@@ -21,7 +21,13 @@ public:
 
 	virtual void Render(double deltaTime) override;
 
+	void MoveForward(float forward);
+	void MoveRight(float right);
+	void MoveUp(float up);
+
 private:
+	float step = 10.f;
+
 	DirectX::XMFLOAT3 pos;
 	float pitch = 0.0f;
 	float yaw = 0.0f;
@@ -30,3 +36,6 @@ private:
 	static constexpr float travelSpeed = 12.0f;
 	static constexpr float rotationspeed = 0.004f;
 };
+
+
+DECLARE_LOG_CATEGORY_EXTERN(CameraLog)

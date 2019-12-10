@@ -7,6 +7,7 @@
 
 #include "Graphics/DX11/Primitive/TestPlane.h"
 #include "Graphics/Engine/Core/Level/Level.h"
+#include "Graphics/Test/TestInputSystem.h"
 
 class ApplicationWindow: public Window
 {
@@ -23,7 +24,6 @@ public:
 
 	void ShowImguiDemoWindow();
 	void ShowRawInputWindow();
-
 
 	void OnResize() override;
 	void OnPosChange() override;

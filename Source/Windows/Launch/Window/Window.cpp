@@ -6,6 +6,7 @@
 #include <sstream>
 #include "Graphics/DX11/Math/WGMath.h"
 #include "Graphics/Helpers/StringHelper.h"
+#include "Graphics/Test/TestInputSystem.h"
 
 DEFINE_LOG_CATEGORY(WindowLog);
 
@@ -48,6 +49,7 @@ Window::WindowClass::~WindowClass()
 
 Window::Window(int width, int height, const std::string& name, const std::string& commandLine)
 	:
+	speedInput(0.0f),
 	windowName(name),
 	width(width),
 	height(height),
@@ -198,8 +200,6 @@ Window::Window(int width, int height, const std::string& name, const std::string
 
 	Graphics::GetGraphics().InitGraphics(hwnd, this->width, this->height);
 
-	//pGfx = std::make_unique<Graphics>(hwnd, this->width, this->height);
-
 	// register mouse raw input device
 	RAWINPUTDEVICE rid;
 	rid.usUsagePage = 0x01; // mouse page
@@ -273,11 +273,6 @@ std::optional<int> Window::ProcessMessages()
 	}
 	
 	return {};
-}
-
-Graphics& Window::Gfx()
-{
-	return *pGfx;
 }
 
 HWND Window::GetHwnd() const
@@ -856,6 +851,7 @@ void Window::Wnd_OnLeftButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UI
 	if (!ImGui::GetIO().WantCaptureKeyboard)
 	{
 		mouseInput.OnLeftPressed(x, y);
+		//TestInputSystem::Get().Execute("LeftButtonPress");
 	}
 }
 
@@ -864,6 +860,7 @@ void Window::Wnd_OnLeftButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
 	if (!ImGui::GetIO().WantCaptureKeyboard)
 	{
 		mouseInput.OnLeftReleased(x, y);
+		//TestInputSystem::Get().Execute("LeftButtonRelease");
 	}
 }
 
