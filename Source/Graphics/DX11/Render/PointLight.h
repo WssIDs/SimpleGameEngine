@@ -10,6 +10,8 @@
 class PointLight : public WObject
 {
 public:
+	PointLight();
+	PointLight(const std::string& name);
 	PointLight(const std::string& name, float radius = 0.5f);
 	void SpawnControlWindow();
 	void Reset();
@@ -18,6 +20,8 @@ public:
 
 	virtual void Tick(double deltaTime) override;
 	virtual void Render(double deltaTime) override;
+
+	DirectX::XMFLOAT3 GetPosition() const;
 
 private:
 	struct PointLightConstantBuffer

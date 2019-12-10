@@ -4,16 +4,32 @@
 
 PointLight::PointLight(const std::string& name, float radius /*= 0.5f*/)
 	:
-	name(name),
 	mesh (Graphics::GetGraphics(), radius),
 	constantBuffer(Graphics::GetGraphics())
 {
 	Reset();
 }
 
+PointLight::PointLight()
+	:
+	mesh(Graphics::GetGraphics(), 1.0f),
+	constantBuffer(Graphics::GetGraphics())
+{
+	//SetName("Default0");
+	Reset();
+}
+
+PointLight::PointLight(const std::string& name)
+	:
+	mesh(Graphics::GetGraphics(), 1.0f),
+	constantBuffer(Graphics::GetGraphics())
+{
+	SetName(name);
+}
+
 void PointLight::SpawnControlWindow()
 {
-	if (ImGui::Begin(name.c_str()))
+	if (ImGui::Begin(GetName().c_str()))
 	{
 		ImGui::Text("Position");
 		ImGui::SliderFloat("X", &pcbData.pos.x, -1000.0f, 1000.0f, "%.1f");
@@ -77,4 +93,9 @@ void PointLight::Render(double deltaTime)
 	Bind(Graphics::GetGraphics());
 	Draw();
 	SpawnControlWindow();
+}
+
+DirectX::XMFLOAT3 PointLight::GetPosition() const
+{
+	return pcbData.pos;
 }

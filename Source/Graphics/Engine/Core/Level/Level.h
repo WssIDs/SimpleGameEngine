@@ -46,8 +46,8 @@ public:
 		std::shared_ptr<Actor> light(new TestPointLight());
 		ActorObjects.push_back(light);
 
-		std::shared_ptr<WObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
-		SceneObjects.push_back(model);
+		//std::shared_ptr<WObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
+		//SceneObjects.push_back(model);
 	}
 
 	void Tick(double deltaTime) override
@@ -58,11 +58,6 @@ public:
 		for (auto& item : ActorObjects)
 		{
 			item->Tick(deltaTime);
-
-			for (auto& child : item->GetChildObjects())
-			{
-				child->Tick(deltaTime);
-			}
 		}
 
 		for (auto& item : SceneObjects)
@@ -80,11 +75,6 @@ public:
 		for (auto& item : ActorObjects)
 		{
 			item->Render(deltaTime);
-
-			for (auto& child : item->GetChildObjects())
-			{
-				child->Render(deltaTime);
-			}
 		}
 
 		for (auto& item : SceneObjects)

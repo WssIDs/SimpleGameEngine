@@ -23,3 +23,4 @@ private:
 	std::string Name;
 };
 
+DECLARE_LOG_CATEGORY_EXTERN(TestPointLightLog)

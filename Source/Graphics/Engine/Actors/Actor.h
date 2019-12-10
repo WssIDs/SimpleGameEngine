@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Core\WObject.h"
+#include "..\Core.h"
 #include <vector>
 #include <memory>
 
@@ -11,11 +11,17 @@ public:
 	virtual void Tick(double deltaTime) override;
 	void Render(double deltaTime) final;
 
-	std::vector<std::shared_ptr<WObject>> GetChildObjects();
+	//template<typename T>
+	//std::shared_ptr<T> NewObject(const std::string& name)
+	//{
+	//	std::shared_ptr<T> newObject = std::make_shared<T>();
+	//	newObject.SetName(name);
+
+	//	ChildObjects.push_back(newObject);
+	//	return newObject;
+	//}
 
 protected:
-
-	std::vector<std::shared_ptr<WObject>> ChildObjects;
 
 	/// position
 	/// rotation

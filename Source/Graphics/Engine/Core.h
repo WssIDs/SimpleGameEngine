@@ -1,5 +1,6 @@
 #pragma once
 #include "Core\WObject.h"
+#include "ObjectGlobals.h"
 #include "Windows\Logger\LogDefinitions.h"
 
 
