@@ -16,5 +16,7 @@ public:
 	void DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY);
 	void DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color);
 
+	void ShowFPS();
+
 };
 
