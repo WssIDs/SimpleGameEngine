@@ -247,8 +247,8 @@ Model::Model(const std::string path, dx::XMFLOAT3 scale3D)
 
 std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* const* pMaterials, dx::XMFLOAT3 scale3D)
 {
-	WGE_LOG(MeshLog, LogVerbosity::Default, "----------------------------------");
-	WGE_LOG(MeshLog, LogVerbosity::Default, "Start parse mesh = %s", mesh.mName.C_Str());
+	//WGE_LOG(MeshLog, LogVerbosity::Default, "----------------------------------");
+	//WGE_LOG(MeshLog, LogVerbosity::Default, "Start parse mesh = %s", mesh.mName.C_Str());
 
 	using DynamicVtx::VertexLayout;
 
@@ -282,6 +282,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 			//WGE_LOG(MeshLog, LogVerbosity::Success, "DiffuseMap loaded");
 
 			auto DiffuseTexture = Bind::Texture::Resolve(Graphics::GetGraphics(), BASE_TEXTURES_DIR + "Sponza\\" + Path::GetFileNameWithExtension(texFileName.C_Str()));
+
 			if(DiffuseTexture->HasAlpha())
 			{
 				bDiffuseMapAlpha = true;
@@ -290,7 +291,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 			}
 			else
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Warning, "DiffuseMapAlpha not loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Warning, "DiffuseMapAlpha not loaded");
 			}
 
 			//DiffuseTexture->Init(BASE_TEXTURES_DIR + Path::GetFileNameWithoutExtension(texFileName.C_Str()) + ".dat");
@@ -301,8 +302,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 		}
 		else
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Warning, "DiffuseMap not loaded");
-			WGE_LOG(MeshLog, LogVerbosity::Default, "Try to loading diffuse color");
+			//WGE_LOG(MeshLog, LogVerbosity::Warning, "DiffuseMap not loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Default, "Try to loading diffuse color");
 
 			if(material.Get(AI_MATKEY_COLOR_DIFFUSE, reinterpret_cast<aiColor3D&>(diffuseColor)) == aiReturn_SUCCESS)
 			{
@@ -310,7 +311,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 			}
 			else
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Warning, "Diffuse color not loaded, will be used default color");
+				//WGE_LOG(MeshLog, LogVerbosity::Warning, "Diffuse color not loaded, will be used default color");
 			}
 		}
 
@@ -326,7 +327,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 			}
 			else
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Warning, "SpecularMapAlpha not loaded");
+				///WGE_LOG(MeshLog, LogVerbosity::Warning, "SpecularMapAlpha not loaded");
 			}
 
 			bindablePtrs.push_back(std::move(SpecularTexture));
@@ -334,8 +335,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 		}
 		else
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Warning, "SpecularMap not loaded");
-			WGE_LOG(MeshLog, LogVerbosity::Default, "Try to loading specular color");
+			//WGE_LOG(MeshLog, LogVerbosity::Warning, "SpecularMap not loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Default, "Try to loading specular color");
 
 			if (material.Get(AI_MATKEY_COLOR_SPECULAR, reinterpret_cast<aiColor3D&>(specularColor)) == aiReturn_SUCCESS)
 			{
@@ -343,7 +344,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 			}
 			else
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Warning, "Specular color not loaded, will be used default color");
+				//WGE_LOG(MeshLog, LogVerbosity::Warning, "Specular color not loaded, will be used default color");
 			}
 		}
 
@@ -359,7 +360,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 			}
 			else
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Warning, "GlossinessMapAlpha not loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Warning, "GlossinessMapAlpha not loaded");
 			}
 
 			material.Get(AI_MATKEY_SHININESS, shininess);
@@ -369,7 +370,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 		}
 		else
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Warning, "GlossinessMap not loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Warning, "GlossinessMap not loaded");
 		}
 
 		if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
@@ -380,11 +381,11 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 			if (NormalTexture->HasAlpha())
 			{
 				bNormalMapAlpha = true;
-				WGE_LOG(MeshLog, LogVerbosity::Success, "NormalMapAlpha loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Success, "NormalMapAlpha loaded");
 			}
 			else
 			{
-				WGE_LOG(MeshLog, LogVerbosity::Warning, "NormalMapAlpha not loaded");
+				//WGE_LOG(MeshLog, LogVerbosity::Warning, "NormalMapAlpha not loaded");
 			}
 
 			bindablePtrs.push_back(std::move(NormalTexture));
@@ -392,7 +393,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 		}
 		else
 		{
-			WGE_LOG(MeshLog, LogVerbosity::Warning, "NormalMap not loaded");
+			//WGE_LOG(MeshLog, LogVerbosity::Warning, "NormalMap not loaded");
 		}
 
 		if (bDiffuseMap || bNormalMap || bSpecularMap)
@@ -402,14 +403,14 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 	}
 	else
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Warning, "Mesh - % hasn't materials", mesh.mName.C_Str());
+		//WGE_LOG(MeshLog, LogVerbosity::Warning, "Mesh - % hasn't materials", mesh.mName.C_Str());
 	}
 
 	auto meshTag = BASE_MODELS_DIR + "%" + mesh.mName.C_Str();
 
 	if(bDiffuseMap && bNormalMap && bSpecularMap)
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseNormalSpecular");
+		//WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseNormalSpecular");
 
 		DynamicVtx::VertexBuffer vertexBuffer(std::move(
 			VertexLayout{}
@@ -465,7 +466,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 	}
 	else if (bDiffuseMap && bNormalMap)
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseNormal");
+		//WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseNormal");
 
 		DynamicVtx::VertexBuffer vertexBuffer(std::move(
 			VertexLayout{}
@@ -525,7 +526,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 	}
 	else if (bDiffuseMap && bSpecularMap && !bNormalMap)
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseSpecular");
+		//WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = DiffuseSpecular");
 
 		DynamicVtx::VertexBuffer vertexBuffer(std::move(
 			VertexLayout{}
@@ -583,7 +584,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 	}
 	else if (bDiffuseMap)
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = Diffuse");
+		//WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = Diffuse");
 
 		DynamicVtx::VertexBuffer vertexBuffer(std::move(
 			VertexLayout{}
@@ -638,7 +639,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 	}
 	else if (!bDiffuseMap && !bNormalMap && !bSpecularMap)
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = NoTextures");
+		//WGE_LOG(MeshLog, LogVerbosity::Default, "Select init mesh mode = NoTextures");
 
 		DynamicVtx::VertexBuffer vertexBuffer(std::move(
 			VertexLayout{}
@@ -687,11 +688,11 @@ std::unique_ptr<Mesh> Model::ParseMesh(const aiMesh& mesh, const aiMaterial* con
 	}
 	else
 	{
-		WGE_LOG(MeshLog, LogVerbosity::Fatal, "Terrible combination of textures in material smh");
+		//WGE_LOG(MeshLog, LogVerbosity::Fatal, "Terrible combination of textures in material smh");
 		throw std::runtime_error("Terrible combination of textures in material smh");
 	}
 
-	WGE_LOG(MeshLog, LogVerbosity::Default, "End parse mesh = %s", mesh.mName.C_Str());
+	//WGE_LOG(MeshLog, LogVerbosity::Default, "End parse mesh = %s", mesh.mName.C_Str());
 
 	bindablePtrs.push_back(Bind::Blender::Resolve(Graphics::GetGraphics(), false));
 
