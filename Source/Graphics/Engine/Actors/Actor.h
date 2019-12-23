@@ -2,14 +2,19 @@
 #include "..\Core.h"
 #include <vector>
 #include <memory>
+#include "..\..\Test\TestInputSystem.h"
 
 
 class Actor : public WObject
 {
 public:
 
+	void CreatePlayerInputComponent();
+
+	virtual void SetupPlayerInputComponent(TestInputSystem* InputComponent);
+
 	virtual void Tick(double deltaTime) override;
-	void Render(double deltaTime) final;
+	void Render(double deltaTime) override;
 
 	//template<typename T>
 	//std::shared_ptr<T> NewObject(const std::string& name)
@@ -20,6 +25,12 @@ public:
 	//	ChildObjects.push_back(newObject);
 	//	return newObject;
 	//}
+	//} 
+
+	void DisableInput();
+	void EnableInput();
+	void ToggleInput();
+	bool IsBlockInput() const;
 
 protected:
 
@@ -27,5 +38,11 @@ protected:
 	/// rotation
 	/// scale
 	/// transform
+	/// 
+	/// 
+
+private:
+
+	std::shared_ptr<TestInputSystem> InputSystem;
 };
 

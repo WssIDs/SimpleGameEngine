@@ -5,18 +5,22 @@
 #include "Graphics/DX11/Math/WGMath.h"
 #include <algorithm>
 
-#include "Graphics/DX11/GDIPlusManager.h"
 #include "Graphics/DX11/Render/Surface.h"
 #include "Imgui/imgui.h"
 #include "Graphics/DX11/Bindable/Sampler.h"
 #include <thread>
+#include "WindowKeyMessageHandler.h"
+#include "../LaunchEngineLoop.h"
+#include "Graphics/Test/TestNewCube.h"
 
 DEFINE_LOG_CATEGORY(ApplicationWindowLog);
 
 namespace dx = DirectX;
 
-GDIPlusManager gdipm;
 ImguiManager imgui;
+
+
+FEngineLoop	GEngineLoop;
 
 ApplicationWindow::ApplicationWindow(int width, int height, const std::string& name, const std::string& commandLine)
 	:
@@ -34,6 +38,11 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	}
 
 	Graphics::GetGraphics().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
+
+	EngineInit();
+
+	//Cube = std::make_shared<TestNewCube>();
+	Sphere = std::make_shared<TestNewSphere>();
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -42,8 +51,21 @@ ApplicationWindow::~ApplicationWindow()
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Destroy");
 }
 
+int ApplicationWindow::EngineInit()
+{
+	int errorLever = GEngineLoop.Init();
+	return errorLever;
+}
+
+void ApplicationWindow::EngineTick()
+{
+	GEngineLoop.Tick();
+}
+
 int ApplicationWindow::Run()
 {
+	EngineTick();
+
 	// reset (start) the timer
 	Graphics::GetGraphics().GetTimer()->reset();
 
@@ -87,8 +109,9 @@ int ApplicationWindow::Run()
 
 void ApplicationWindow::Update(double deltaTime)
 {
-	handler.Tick(deltaTime);
+	WindowKeyMessageHandler::Get()->Tick(deltaTime);
 
+	Sphere->Update((float)deltaTime);
 
 	while (const auto e = keyboardInput.ReadKey())
 	{
@@ -137,8 +160,10 @@ void ApplicationWindow::Update(double deltaTime)
 		}
 	}
 
-
-	level->Tick(deltaTime);
+	if (level != nullptr)
+	{
+		level->Tick(deltaTime);
+	}
 }
 
 void ApplicationWindow::Render(double farseer)
@@ -147,9 +172,12 @@ void ApplicationWindow::Render(double farseer)
 
 	// DRAW/LOGICS
 
-	level->Render(farseer);	
+	if (level != nullptr)
+	{
+		level->Render(farseer);
+	}
 
-	ShowImguiDemoWindow();
+	Sphere->Draw();
 
 	Graphics::GetGraphics().EndFrame(); // EndFrame
 }

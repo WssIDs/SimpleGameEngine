@@ -6,6 +6,7 @@
 #include "..\Engine\Core.h"
 #include <unordered_map>
 #include <memory>
+#include "InputTypes.h"
 
 
 enum class EInputEvent
@@ -52,19 +53,102 @@ struct KeyBinding
 {
 	KeyBinding()
 		:
+		ActionName(""),
 		Key(0),
 		KeyEvent(EInputEvent::IE_MAX)
 	{}
 
 	KeyBinding(unsigned char Key, EInputEvent KeyEvent)
 		:
+		ActionName(""),
 		Key(Key),
 		KeyEvent(KeyEvent)
 	{
 	}
 
+	//KeyBinding(std::string ActionName, unsigned char Key)
+	//	:
+	//	ActionName(ActionName),
+	//	Key(Key),
+	//	KeyEvent(EInputEvent::IE_MAX),
+	//	bAlt(false),
+	//	bShift(false),
+	//	bCtrl(false)
+	//{
+	//}
+
+	KeyBinding(std::string ActionName, unsigned char Key, bool bShift = false, bool bAlt = false, bool bCtrl = false)
+		:
+		ActionName(ActionName),
+		Key(Key),
+		KeyEvent(EInputEvent::IE_MAX),
+		bShift(bShift),
+		bAlt(bAlt),
+		bCtrl(bCtrl)
+	{
+	}
+
+	KeyBinding(std::string ActionName, FKey Key, bool bShift = false, bool bAlt = false, bool bCtrl = false, bool bCmd = false)
+		:
+		ActionName(ActionName),
+		TestKey(Key),
+		KeyEvent(EInputEvent::IE_Released),
+		bShift(bShift),
+		bAlt(bAlt),
+		bCtrl(bCtrl),
+		bCmd(bCmd)
+	{
+	}
+
+	KeyBinding(std::string ActionName, EInputEvent KeyEvent)
+		:
+		ActionName(ActionName),
+		Key(0),
+		KeyEvent(KeyEvent)
+	{
+	}
+
+	bool IsShiftDown() const
+	{
+		return bShift;
+	}
+
+	bool IsAltDown() const
+	{
+		return bAlt;
+	}
+
+	bool IsControlDown() const
+	{
+		return bCtrl;
+	}
+
+	bool IsCommandDown() const
+	{
+		return bCmd;
+	}
+
+	bool KeyIsDown() const
+	{
+		return KeyEvent == EInputEvent::IE_Pressed ? true : false;
+	}
+
+	bool KeyIsUp() const
+	{
+		return KeyEvent == EInputEvent::IE_Released ? true : false;
+	}
+
+	bool bShift = false;
+	bool bAlt = false;
+	bool bCtrl = false;
+	bool bCmd = false;
+
+	std::string ActionName;
 	unsigned char Key;
 	EInputEvent KeyEvent;
+
+
+	FKey TestKey;
 };
 
 struct AxisBinding
@@ -74,7 +158,7 @@ struct AxisBinding
 		Scale(0.0f),
 		MaxScale(0.0f),
 		Key(0),
-		KeyEvent(EInputEvent::IE_MAX)
+		KeyEvent(EInputEvent::IE_Axis)
 	{}
 
 	AxisBinding(unsigned char Key, EInputEvent KeyEvent)
@@ -85,12 +169,65 @@ struct AxisBinding
 		KeyEvent(KeyEvent)
 	{}
 
+	AxisBinding(unsigned char Key, float MaxScale)
+		:
+		Scale(0.0f),
+		MaxScale(MaxScale),
+		Key(Key),
+		KeyEvent(EInputEvent::IE_Axis)
+	{
+	}
+
 	AxisBinding(unsigned char Key, EInputEvent KeyEvent, float MaxScale)
 		:
 		Scale(0.0f),
 		MaxScale(MaxScale),
 		Key(Key),
 		KeyEvent(KeyEvent)
+	{
+	}
+
+
+	// for Bindind Axis
+	AxisBinding(const std::string& AxisName)
+		:
+		AxisName(AxisName),
+		Scale(0.0f),
+		MaxScale(0.0f),
+		Key(0),
+		KeyEvent(EInputEvent::IE_Axis)
+	{
+	}
+
+	// For Message Handler
+	AxisBinding(const std::string& AxisName, float MaxScale, unsigned char Key)
+		:
+		AxisName(AxisName),
+		Scale(0.0f),
+		MaxScale(MaxScale),
+		Key(Key),
+		KeyEvent(EInputEvent::IE_Axis)
+	{
+	}
+
+	AxisBinding(const std::string& AxisName, float MaxScale, FKey Key)
+		:
+		AxisName(AxisName),
+		Scale(0.0f),
+		MaxScale(MaxScale),
+		TestKey(Key),
+		KeyEvent(EInputEvent::IE_Axis)
+	{
+	}
+
+	// For Message Handler
+	AxisBinding(const std::string& AxisName, float MaxScale)
+		:
+		AxisName(AxisName),
+		Scale(0.0f),
+		MaxScale(MaxScale),
+		Key(0),
+		KeyEvent(EInputEvent::IE_Axis)
 	{
 	}
 
@@ -106,10 +243,13 @@ struct AxisBinding
 		}
 	}
 
+	std::string AxisName;
 	float MaxScale = 0.0f;
 	float Scale = 0.0f;
 	unsigned char Key;
 	EInputEvent KeyEvent;
+
+	FKey TestKey;
 };
 
 //   онтейнер дл€ хранени€ указател€ на метод.
@@ -230,6 +370,18 @@ public:
 		DelegateContainer = new Container<UserClass, Func>(Object, Method);
 	}
 
+	template< class UserClass, class Func>
+	void Bind(const std::string& ActionName, const EInputEvent KeyEvent, UserClass* Object, Func Method)
+	{
+		if (DelegateContainer)
+		{
+			delete DelegateContainer;
+		}
+
+		Binding = KeyBinding(ActionName, KeyEvent);
+		DelegateContainer = new Container<UserClass, Func>(Object, Method);
+	}
+
 	void Execute()
 	{
 		DelegateContainer->Execute(&Arguments<>());
@@ -244,6 +396,16 @@ public:
 	//{
 	//	m_container->Call(&Arguments< T1, T2 >(i_arg1, i_arg2));
 	//}
+
+	std::string GetActionName() const
+	{
+		return Binding.ActionName;
+	}
+
+	EInputEvent GetKeyEvent() const
+	{
+		return Binding.KeyEvent;
+	}
 
 	KeyBinding GetKeyInfo() const
 	{
@@ -285,6 +447,18 @@ public:
 		DelegateContainer = new Container<UserClass, Func>(Object, Method);
 	}
 
+	template< class UserClass, class Func>
+	void Bind(const std::string& AxisName, UserClass* Object, Func Method)
+	{
+		if (DelegateContainer)
+		{
+			delete DelegateContainer;
+		}
+
+		Binding = AxisBinding(AxisName);
+		DelegateContainer = new Container<UserClass, Func>(Object, Method);
+	}
+
 	template<class Arg>
 	void Execute(Arg Args)
 	{
@@ -301,6 +475,11 @@ public:
 	//	m_container->Call(&Arguments< T1, T2 >(i_arg1, i_arg2));
 	//}
 
+	std::string GetAxisName() const
+	{
+		return Binding.AxisName;
+	}
+
 	AxisBinding GetAxisInfo() const
 	{
 		return Binding;
@@ -314,6 +493,7 @@ private:
 class TestInputSystem
 {
 public:
+	TestInputSystem() {};
 	TestInputSystem(const TestInputSystem&) = delete;
 	TestInputSystem& operator=(const TestInputSystem&) = delete;
 
@@ -354,10 +534,48 @@ public:
 	}
 
 	template< class UserClass, class Func>
-	void BindAxis(const std::string& ActionName, const unsigned char Key, const EInputEvent KeyEvent, UserClass* Object, Func Method)
+	void BindAction(const std::string& ActionName, const EInputEvent KeyEvent, UserClass* Object, Func Method)
+	{
+		auto newdelegate = new DelegateNoArgs();
+		newdelegate->Bind(ActionName, KeyEvent, Object, Method);
+		auto BindIt = std::find(BindsKeyAction.begin(), BindsKeyAction.end(), newdelegate);
+
+		if (BindIt == BindsKeyAction.end())
+		{
+			BindsKeyAction.push_back(newdelegate);
+		}
+		else
+		{
+			delete newdelegate;
+			newdelegate = nullptr;
+			assert("Current action already added");
+		}
+	}
+
+	template< class UserClass, class Func>
+	void BindAxis(const std::string& AxisName, const unsigned char Key, const EInputEvent KeyEvent, UserClass* Object, Func Method)
 	{
 		auto newdelegate = new DelegateWithOneArg();
 		newdelegate->Bind(Key, KeyEvent, 0, Object, Method);
+		auto BindIt = std::find(BindsAxisAction.begin(), BindsAxisAction.end(), newdelegate);
+
+		if (BindIt == BindsAxisAction.end())
+		{
+			BindsAxisAction.push_back(newdelegate);
+		}
+		else
+		{
+			delete newdelegate;
+			newdelegate = nullptr;
+			assert("Current action already added");
+		}
+	}
+
+	template< class UserClass, class Func>
+	void BindAxis(const std::string& AxisName, UserClass* Object, Func Method)
+	{
+		auto newdelegate = new DelegateWithOneArg();
+		newdelegate->Bind(AxisName, Object, Method);
 		auto BindIt = std::find(BindsAxisAction.begin(), BindsAxisAction.end(), newdelegate);
 
 		if (BindIt == BindsAxisAction.end())
@@ -386,34 +604,48 @@ public:
 
 	}
 
-	void ExecuteAxis(const unsigned char Key, const EInputEvent KeyEvent)
+	void ExecuteKey(const std::string ActionName, const EInputEvent KeyEvent)
 	{
-		for (auto& Bind : BindsAxisAction)
-		{
-			if (Bind->GetAxisInfo().Key == Key && Bind->GetAxisInfo().KeyEvent == KeyEvent)
+		auto BindIt = std::find_if(BindsKeyAction.begin(), BindsKeyAction.end(),
+			[ActionName,KeyEvent](DelegateNoArgs* keyDelegate)
 			{
-				Bind->Execute(Bind->GetAxisInfo().Scale);
+				return (keyDelegate->GetActionName() == ActionName) && (keyDelegate->GetKeyEvent() == KeyEvent);
+			});
+
+		if (BindIt != BindsKeyAction.end())
+		{
+			if (*BindIt != nullptr)
+			{
+				(*BindIt)->Execute();
 			}
 		}
 	}
 
-	void ExecuteAxis(const unsigned char Key, const EInputEvent KeyEvent, float Scale)
+	void ExecuteAxis(const std::string AxisName, float Scale)
 	{
-		for (auto& Bind : BindsAxisAction)
-		{
-			if (Bind->GetAxisInfo().Key == Key && Bind->GetAxisInfo().KeyEvent == KeyEvent)
+		auto BindIt = std::find_if(BindsAxisAction.begin(), BindsAxisAction.end(),
+			[AxisName](DelegateWithOneArg* axisDelegate)
 			{
-				Bind->Execute(Scale);
+				return axisDelegate->GetAxisName() == AxisName;
+			});
+
+		if(BindIt != BindsAxisAction.end())
+		{
+			if(*BindIt != nullptr)
+			{
+				(*BindIt)->Execute(Scale);
 			}
 		}
 	}
 
-protected:
-	TestInputSystem() {};
 public:
-	static TestInputSystem& Get();
+
+	bool IsBlockInput() const;
+	void ToggleBlockInput();
+	void SetBlockInput(bool bNewBlockInput);
 
 private:
+	bool bBlockInput = true;
 
 	std::vector<DelegateNoArgs*> BindsKeyAction;
 	std::vector<DelegateWithOneArg*> BindsAxisAction;

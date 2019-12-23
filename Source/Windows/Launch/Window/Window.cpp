@@ -7,6 +7,7 @@
 #include "Graphics/DX11/Math/WGMath.h"
 #include "Graphics/Helpers/StringHelper.h"
 #include "Graphics/Test/TestInputSystem.h"
+#include "WindowKeyMessageHandler.h"
 
 DEFINE_LOG_CATEGORY(WindowLog);
 
@@ -193,6 +194,8 @@ Window::Window(int width, int height, const std::string& name, const std::string
 	//this->height = rc.bottom;
 
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
+
+	WindowKeyMessageHandler::Get()->SetHwnd(GetHwnd());
 
 	ImGui_ImplWin32_Init(hwnd);
 	WGE_LOG(WindowLog, LogVerbosity::Default, "ImGuiWin32 Init");
@@ -763,10 +766,10 @@ void Window::Wnd_OnChar(HWND hwnd, TCHAR ch, int cRepeat)
 
 void Window::Wnd_OnInput(HWND hwnd, UINT code, HRAWINPUT hRawInput)
 {
-	if(!mouseInput.RawEnabled())
-	{
-		return;
-	}
+	//if(!mouseInput.RawEnabled())
+	//{
+	//	return;
+	//}
 
 	UINT size = 0;
 	if (GetRawInputData(hRawInput, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)) == -1)
@@ -787,6 +790,7 @@ void Window::Wnd_OnInput(HWND hwnd, UINT code, HRAWINPUT hRawInput)
 		(ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
 	{
 		mouseInput.OnRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
+		WindowKeyMessageHandler::Get()->ProcessRaw(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
 	}
 }
 
@@ -808,6 +812,7 @@ void Window::Wnd_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 		if (x >= 0 && x < width && y >= 0 && y < height)
 		{
 			mouseInput.OnMouseMove(x, y);
+
 			if (!mouseInput.IsInWindow())
 			{
 				SetCapture(hwnd);

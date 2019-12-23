@@ -2,8 +2,18 @@
 
 DEFINE_LOG_CATEGORY(InputLog)
 
-TestInputSystem& TestInputSystem::Get()
+
+bool TestInputSystem::IsBlockInput() const
 {
-	static TestInputSystem input;
-	return input;
+	return bBlockInput;
+}
+
+void TestInputSystem::ToggleBlockInput()
+{
+	bBlockInput = !bBlockInput;
+}
+
+void TestInputSystem::SetBlockInput(bool bNewBlockInput)
+{
+	bBlockInput = bNewBlockInput;
 }

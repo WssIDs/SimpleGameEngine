@@ -8,6 +8,7 @@
 #include "Graphics/DX11/Primitive/TestPlane.h"
 #include "Graphics/Engine/Core/Level/Level.h"
 #include "Graphics/Test/TestInputSystem.h"
+#include "Graphics/Test/TestNewSphere.h"
 
 class ApplicationWindow: public Window
 {
@@ -15,6 +16,10 @@ public:
 	ApplicationWindow(int width, int height,const std::string& name, const std::string& commandLine = "");
 
 	~ApplicationWindow();
+
+	int EngineInit();
+	void EngineTick();
+	//void EngineExit();
 
 	int Run();
 	
@@ -37,6 +42,9 @@ private:
 	float speedFactor = 1.0f;
 
 	Level* level;
+
+	std::shared_ptr<TestNewCube> Cube;
+	std::shared_ptr<TestNewSphere> Sphere;
 };
 
 

@@ -8,7 +8,6 @@
 #include <memory>
 #include "Graphics/Engine/Core.h"
 #include "../../Timer/Timer.h"
-#include "WindowKeyMessageHandler.h"
 
 
 class Window
@@ -69,8 +68,6 @@ public:
 protected:
 
 	RECT GetWindowSize() const;
-
-	WindowKeyMessageHandler handler;
 
 private:
 	void ConfineCursor();

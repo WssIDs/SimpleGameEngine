@@ -1,10 +1,11 @@
 #pragma once
 #include "Graphics/DX11/Graphics.h"
 #include "../Core.h"
+#include "Actor.h"
 
 
 
-class Camera : public WObject
+class Camera : public Actor
 {
 public:
 	Camera();
@@ -21,12 +22,21 @@ public:
 
 	virtual void Render(double deltaTime) override;
 
+	void Test();
+
+	void Turn(float turn);
+	void LookUp(float lookup);
+
 	void MoveForward(float forward);
 	void MoveRight(float right);
 	void MoveUp(float up);
 
+	void ToggleCamera();
+
+	virtual void SetupPlayerInputComponent(TestInputSystem* InputComponent) override;
+
 private:
-	float step = 10.f;
+	float step = 3.0f;
 
 	DirectX::XMFLOAT3 pos;
 	float pitch = 0.0f;
