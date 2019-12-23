@@ -747,37 +747,6 @@ void Graphics::ClearScreen(LinearColor color)
 
 void Graphics::DrawCircle()
 {
-	//wrl::ComPtr<ID2D1RadialGradientBrush> radialBrush;
-	//D2D1_GRADIENT_STOP stops[] =
-	//{
-	//	{0.0f, D2D1::ColorF(D2D1::ColorF::White,1) },
-	//	{1.0f, D2D1::ColorF(D2D1::ColorF::Black,1) }
-	//};
-
-	//wrl::ComPtr<ID2D1GradientStopCollection> collection;
-	//pRenderTarget2D->CreateGradientStopCollection(stops, 2, D2D1_GAMMA_2_2,
-	//	D2D1_EXTEND_MODE_CLAMP, &collection);
-
-	//D2D1_RADIAL_GRADIENT_BRUSH_PROPERTIES newprops = {};
-	//pRenderTarget2D->CreateRadialGradientBrush(newprops, D2D1::BrushProperties(), collection.Get(), radialBrush.GetAddressOf());
-
-
-	//D2D1_SIZE_F targetSize = pRenderTarget2D->GetSize();
-
-
-
-	//radialBrush->SetTransform(
-	//	D2D1::Matrix3x2F::Scale(targetSize)
-	//);
-
-	//D2D1_RECT_F rect = D2D1::RectF(
-	//	0.0f,
-	//	0.0f,
-	//	targetSize.width,
-	//	targetSize.height
-	//);
-
-	//pRenderTarget2D->FillRectangle(&rect, radialBrush.Get());
 }
 
 void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY,const std::wstring& fontName)
@@ -934,7 +903,7 @@ void Graphics::BeginFrame(float red, float green, float blue)
 
 	const float color[] = { red, green, blue, 1.0f };
 	pDeviceContext3D->ClearRenderTargetView(pRenderTargetView3D.Get(), color);
-	pDeviceContext3D->ClearDepthStencilView(pDepthStencilView3D.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	pDeviceContext3D->ClearDepthStencilView(pDepthStencilView3D.Get(), D3D11_CLEAR_DEPTH| D3D11_CLEAR_STENCIL, 1.0f, 0u);
 }
 
 void Graphics::DrawIndexed(UINT count)

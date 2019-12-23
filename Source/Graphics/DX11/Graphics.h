@@ -19,6 +19,11 @@
 #pragma comment(lib,"d2d1.lib")
 #pragma comment(lib,"dwrite.lib")
 
+class TestTexture;
+class Material;
+class TestNewCube;
+class TestNewSphere;
+
 namespace Bind
 {
 	class Bindable;
@@ -35,6 +40,10 @@ enum class DirectVersionName
 class Graphics
 {
 	friend Bind::Bindable;
+	friend TestTexture;
+	friend Material;
+	friend TestNewCube;
+	friend TestNewSphere;
 public:
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;

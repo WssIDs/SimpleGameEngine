@@ -209,6 +209,14 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\Test\InputTypes.cpp" />
+    <ClCompile Include="Graphics\Test\TestTexture.cpp" />
+    <ClCompile Include="Graphics\Test\TestNewCube.cpp" />
+    <ClCompile Include="Graphics\Test\Material.cpp" />
+    <ClCompile Include="Graphics\Test\TestNewSphere.cpp" />
+    <ClCompile Include="Graphics\Test\PlatformInput.cpp" />
+    <ClCompile Include="Windows\Launch\StreamingContent.cpp" />
+    <ClCompile Include="Windows\Launch\App.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Color.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Actor.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
@@ -228,7 +236,6 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\DX11\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\VertexShader.cpp" />
     <ClCompile Include="Graphics\DX11\Drawable\Drawable.cpp" />
-    <ClCompile Include="Graphics\DX11\GDIPlusManager.cpp" />
     <ClCompile Include="Graphics\DX11\Graphics.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Surface.cpp" />
     <ClCompile Include="Graphics\GUI\ImguiManager.cpp" />
@@ -249,6 +256,8 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.cpp" />
     <ClCompile Include="ThirdParty\OpenFBX\miniz.c" />
     <ClCompile Include="ThirdParty\OpenFBX\ofbx.cpp" />
+    <ClCompile Include="Windows\Launch\LaunchEngineLoop.cpp" />
+    <ClCompile Include="Windows\Launch\WEngine.cpp" />
     <ClCompile Include="Windows\Launch\Window\WindowKeyMessageHandler.cpp" />
     <ClCompile Include="Windows\Launch\Window\ApplicationWindow.cpp" />
     <ClCompile Include="Windows\Input\KeyboardInput.cpp" />
@@ -260,6 +269,16 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\Engine\Core\WObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\Test\InputTypes.h" />
+    <ClInclude Include="Graphics\Test\Primitive.h" />
+    <ClInclude Include="Graphics\Test\TestTexture.h" />
+    <ClInclude Include="Graphics\Test\TestNewCube.h" />
+    <ClInclude Include="Graphics\Test\Material.h" />
+    <ClInclude Include="Graphics\Test\TestNewSphere.h" />
+    <ClInclude Include="Graphics\Test\PlatformInput.h" />
+    <ClInclude Include="Windows\Launch\StreamingContent.h" />
+    <ClInclude Include="Windows\Launch\App.h" />
+    <ClInclude Include="Graphics\Engine\Engine.h" />
     <ClInclude Include="Graphics\Engine\Actors\Actor.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
     <ClInclude Include="Graphics\2D\Canvas.h" />
@@ -284,7 +303,6 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\DX11\Bindable\VertexBuffer.h" />
     <ClInclude Include="Graphics\DX11\Bindable\VertexShader.h" />
     <ClInclude Include="Graphics\DX11\Drawable\Drawable.h" />
-    <ClInclude Include="Graphics\DX11\GDIPlusManager.h" />
     <ClInclude Include="Graphics\DX11\Geometry\IndexedTriangleList.h" />
     <ClInclude Include="Graphics\DX11\Geometry\Sphere.h" />
     <ClInclude Include="Graphics\DX11\Graphics.h" />
@@ -546,6 +564,8 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.h" />
     <ClInclude Include="ThirdParty\OpenFBX\miniz.h" />
     <ClInclude Include="ThirdParty\OpenFBX\ofbx.h" />
+    <ClInclude Include="Windows\Launch\LaunchEngineLoop.h" />
+    <ClInclude Include="Windows\Launch\WEngine.h" />
     <ClInclude Include="Windows\Launch\Window\WindowKeyMessageHandler.h" />
     <ClInclude Include="Windows\Launch\Window\ApplicationWindow.h" />
     <ClInclude Include="Windows\Input\KeyboardInput.h" />
@@ -682,6 +702,12 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Graphics\Shaders\VertexShaders\VSDefault.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
