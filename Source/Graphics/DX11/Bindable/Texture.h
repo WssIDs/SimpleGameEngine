@@ -55,6 +55,7 @@ namespace Bind
 		bool bAlpha = false;
 		std::string path;
 		std::string name;
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> pTexture;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTextureView;
 	};
 }

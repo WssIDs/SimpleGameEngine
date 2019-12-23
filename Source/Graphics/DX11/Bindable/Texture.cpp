@@ -9,6 +9,7 @@
 #include "../../Helpers/Path.h"
 #include "boost\archive\binary_oarchive.hpp"
 #include "boost/archive/binary_iarchive.hpp"
+#include "../../Helpers/StringHelper.h"
 
 #pragma comment(lib, "dxguid.lib")
 
@@ -57,17 +58,17 @@ namespace Bind
 		//}
 		//else
 		//{
-			DirectX::TexMetadata info;
-			auto image = std::make_shared<DirectX::ScratchImage>();
+			//DirectX::TexMetadata info;
+			//auto image = std::make_shared<DirectX::ScratchImage>();
 			//DirectX::LoadFromTGAFile(std::wstring(path.begin(), path.end()).c_str(), nullptr, *image);
-			DirectX::LoadFromDDSFile(std::wstring(path.begin(), path.end()).c_str(), DirectX::DDS_FLAGS_NONE, &info, *image);
+			//DirectX::LoadFromDDSFile(std::wstring(path.begin(), path.end()).c_str(), DirectX::DDS_FLAGS_NONE, &info, *image);
 
-			if (image->GetImages() != nullptr)
-			{
-				image = Convert(image);
-			}
+			//if (image->GetImages() != nullptr)
+			//{
+			//	image = Convert(image);
+			//}
 
-			bAlpha = !image->IsAlphaAllOpaque();
+			//bAlpha = !image->IsAlphaAllOpaque();
 			//pixels = image->GetPixels();
 
 			//sizePixels = sizeof(pixels);
@@ -94,10 +95,35 @@ namespace Bind
 			//	}
 			//}
 
-			DirectX::ScratchImage mipchain;
-			DirectX::GenerateMipMaps(image->GetImages(), image->GetImageCount(), image->GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipchain);
-			DirectX::CreateShaderResourceView(GetDevice(gfx), mipchain.GetImages(), mipchain.GetImageCount(), mipchain.GetMetadata(), &pTextureView);
-		//}
+			//DirectX::ScratchImage mipchain;
+			//DirectX::GenerateMipMaps(image->GetImages(), image->GetImageCount(), image->GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipchain);
+			//DirectX::CreateShaderResourceView(GetDevice(gfx), mipchain.GetImages(), mipchain.GetImageCount(), mipchain.GetMetadata(), &pTextureView);
+
+
+		Microsoft::WRL::ComPtr<ID3D11Resource> pD3D11Resource = nullptr;
+		DirectX::DDS_ALPHA_MODE alphaMode = DirectX::DDS_ALPHA_MODE_UNKNOWN;
+
+		DirectX::CreateDDSTextureFromFile(GetDevice(gfx),
+			String::ConvertToWideChar(fileName).c_str(),
+			&pD3D11Resource,
+			&pTextureView);
+
+		if (pD3D11Resource != nullptr)
+		{
+			pD3D11Resource->QueryInterface(IID_ID3D11Texture2D, (void**)&pTexture);
+
+			D3D11_TEXTURE2D_DESC td;
+			pTexture->GetDesc(&td);
+
+			if (td.Format == DXGI_FORMAT::DXGI_FORMAT_BC1_UNORM)
+			{
+				bAlpha = false;
+			}
+			else if (td.Format == DXGI_FORMAT::DXGI_FORMAT_BC3_UNORM)
+			{
+				bAlpha = true;
+			}
+		}
 	}
 
 	Texture::Texture()
