@@ -111,7 +111,7 @@ void ApplicationWindow::Update(double deltaTime)
 {
 	WindowKeyMessageHandler::Get()->Tick(deltaTime);
 
-	Sphere->Update((float)deltaTime);
+	//Sphere->Update((float)deltaTime);
 
 	while (const auto e = keyboardInput.ReadKey())
 	{
@@ -177,7 +177,7 @@ void ApplicationWindow::Render(double farseer)
 		level->Render(farseer);
 	}
 
-	Sphere->Draw();
+	//Sphere->Draw();
 
 	Graphics::GetGraphics().EndFrame(); // EndFrame
 }

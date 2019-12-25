@@ -215,6 +215,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\Test\Material.cpp" />
     <ClCompile Include="Graphics\Test\TestNewSphere.cpp" />
     <ClCompile Include="Graphics\Test\PlatformInput.cpp" />
+    <ClCompile Include="Graphics\Test\Primitive.cpp" />
     <ClCompile Include="Windows\Launch\StreamingContent.cpp" />
     <ClCompile Include="Windows\Launch\App.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Color.cpp" />
@@ -270,12 +271,13 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\Test\InputTypes.h" />
-    <ClInclude Include="Graphics\Test\Primitive.h" />
+    <ClInclude Include="Graphics\Test\Geometry.h" />
     <ClInclude Include="Graphics\Test\TestTexture.h" />
     <ClInclude Include="Graphics\Test\TestNewCube.h" />
     <ClInclude Include="Graphics\Test\Material.h" />
     <ClInclude Include="Graphics\Test\TestNewSphere.h" />
     <ClInclude Include="Graphics\Test\PlatformInput.h" />
+    <ClInclude Include="Graphics\Test\Primitive.h" />
     <ClInclude Include="Windows\Launch\StreamingContent.h" />
     <ClInclude Include="Windows\Launch\App.h" />
     <ClInclude Include="Graphics\Engine\Engine.h" />
@@ -702,12 +704,6 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Graphics\Shaders\VertexShaders\VSDefault.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

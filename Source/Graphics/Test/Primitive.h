@@ -1,139 +1,118 @@
 #pragma once
+#include <string>
 #include <DirectXMath.h>
-#include "Graphics/DX11/Math/WGMath.h"
-#include <vector>
+#include "Geometry.h"
+#include <Graphics/DX11/Graphics.h>
+#include "Material.h"
 
-struct SphereVertex
+struct Vector
 {
-	SphereVertex(float inX, float inY, float inZ)
-		:
-		Position(inX, inY, inZ)
+	Vector()
 	{}
 
-	SphereVertex(DirectX::XMFLOAT3 pos)
+	Vector(float inX, float inY, float inZ)
 		:
-		Position(pos)
+		x(inX),
+		y(inY),
+		z(inZ)
 	{}
 
-	DirectX::XMFLOAT3 Position;
-};
-
-struct SphereData
-{
-	SphereData() {};
-
-	SphereData(std::vector<DirectX::XMFLOAT3> inVertices, std::vector<unsigned int> inIndices)
-		:
-		Vertices(inVertices),
-		Indices(inIndices)
+	static Vector IdentityVector()
 	{
+		return Vector(1.0f, 1.0f, 1.0f);
 	}
 
-	std::vector<DirectX::XMFLOAT3> Vertices;
-	std::vector<unsigned int> Indices;
+	static Vector ZeroVector()
+	{
+		return Vector(0.0f, 0.0f, 0.0f);
+	}
+
+	float x;
+	float y;
+	float z;
+};
+
+struct Rotator
+{
+	Rotator()
+	{}
+
+	Rotator(float inPitch, float inYaw, float inRoll)
+		:
+		Pitch(inPitch),
+		Roll(inRoll),
+		Yaw(inYaw)
+	{}
+
+	static Rotator IdentityRotator()
+	{
+		return Rotator(1.0f, 1.0f, 1.0f);
+	}
+
+	static Rotator ZeroRotator()
+	{
+		Vector(0.0f, 0.0f, 0.0f);
+	}
+
+	float Pitch;
+	float Roll;
+	float Yaw;
+};
+
+
+struct ConstantTransform
+{
+	//DirectX::XMMATRIX ModelWorld;
+	DirectX::XMMATRIX ModelView;
+	DirectX::XMMATRIX ModelViewProj;
 };
 
 class Primitive
 {
 public:
+	Primitive();
 
-	static SphereData MakeSphere(int latDiv, int longDiv)
-	{
-		//assert(latDiv >= 3);
-		//assert(longDiv >= 3);
+	void SetName(std::string Name);
+	virtual void InitMaterial();
+	// set shader Name
+	void SetMaterial(std::string Name);
+	void Init();
 
-		constexpr float radius = 1.0f;
-		const auto base = DirectX::XMVectorSet(0.0f, 0.0f, radius, 0.0f);
+	virtual void Update(double DeltaTime);
+	virtual void Draw();
 
-		const float lattitudeAngle = PI / latDiv;
-		const float longitudeAngle = 2.0f * PI / longDiv;
+	void SetScale3D(Vector inScale);
+	void SetLocation(Vector newLocation);
+	void SetRotation(Rotator newRotation);
+	Vector GetLocation() const;
+	Vector GetScale3D() const;
 
-		std::vector<DirectX::XMFLOAT3> vertices;
+	MeshData MeshData;
 
-		for (int iLat = 1; iLat < latDiv; iLat++)
-		{
-			const auto latBase = DirectX::XMVector3Transform(
-				base,
-				DirectX::XMMatrixRotationX(lattitudeAngle * iLat)
-			);
-			for (int iLong = 0; iLong < longDiv; iLong++)
-			{
-				DirectX::XMFLOAT3 calculatedPos;
-				auto v = DirectX::XMVector3Transform(
-					latBase,
-					DirectX::XMMatrixRotationZ(longitudeAngle * iLong)
-				);
-				DirectX::XMStoreFloat3(&calculatedPos, v);
-				vertices.emplace_back(calculatedPos);
-			}
-		}
+	Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBufferPerObject;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBufferPerFrame;
 
-		// add the cap vertices
-		const auto iNorthPole = (unsigned int)vertices.size();
-		{
-			DirectX::XMFLOAT3 northPos;
-			DirectX::XMStoreFloat3(&northPos, base);
-			vertices.emplace_back(northPos);
-		}
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> VertexLayout;
 
-		const auto iSouthPole = (unsigned int)vertices.size();
-		{
-			DirectX::XMFLOAT3 southPos;
-			DirectX::XMStoreFloat3(&southPos, DirectX::XMVectorNegate(base));
-			vertices.emplace_back(southPos);
-		}
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> RastrState;
 
-		const auto calcIdx = [latDiv, longDiv](unsigned int iLat, unsigned int iLong)
-		{
-			return iLat * longDiv + iLong;
-		};
+	std::shared_ptr<Material> MeshMaterial;
 
-		std::vector<unsigned int> indices;
+	Rotator Rotation;
+	Vector Location;
+	Vector Scale;
 
-		for (unsigned int iLat = 0; iLat < (unsigned int)latDiv - 2; iLat++)
-		{
-			for (unsigned int iLong = 0; iLong < (unsigned int)longDiv - 1; iLong++)
-			{
-				indices.push_back(calcIdx(iLat, iLong));
-				indices.push_back(calcIdx(iLat + 1, iLong));
-				indices.push_back(calcIdx(iLat, iLong + 1));
-				indices.push_back(calcIdx(iLat, iLong + 1));
-				indices.push_back(calcIdx(iLat + 1, iLong));
-				indices.push_back(calcIdx(iLat + 1, iLong + 1));
-			}
-			// wrap band
-			indices.push_back(calcIdx(iLat, longDiv - 1));
-			indices.push_back(calcIdx(iLat + 1, longDiv - 1));
-			indices.push_back(calcIdx(iLat, 0));
-			indices.push_back(calcIdx(iLat, 0));
-			indices.push_back(calcIdx(iLat + 1, longDiv - 1));
-			indices.push_back(calcIdx(iLat + 1, 0));
-		}
+	std::vector<D3D11_INPUT_ELEMENT_DESC> InputElement;
 
-		// cap fans
-		for (unsigned int iLong = 0; iLong < (unsigned int)longDiv - 1; iLong++)
-		{
-			// north
-			indices.push_back(iNorthPole);
-			indices.push_back(calcIdx(0, iLong));
-			indices.push_back(calcIdx(0, iLong + 1));
-			// south
-			indices.push_back(calcIdx(latDiv - 2, iLong + 1));
-			indices.push_back(calcIdx(latDiv - 2, iLong));
-			indices.push_back(iSouthPole);
-		}
-		// wrap triangles
-		// north
-		indices.push_back(iNorthPole);
-		indices.push_back(calcIdx(0, longDiv - 1));
-		indices.push_back(calcIdx(0, 0));
-		// south
-		indices.push_back(calcIdx(latDiv - 2, 0));
-		indices.push_back(calcIdx(latDiv - 2, longDiv - 1));
-		indices.push_back(iSouthPole);
+private:
+	std::string Name = "Primitive";
+	std::string ShaderName;
+	ConstantTransform ConstantBufferTransformPerObj;
 
-		//SphereData data(vertices, indices);
-
-		return { vertices, indices };
-	}
+	//DirectX::XMMATRIX ModelWorld;
+	DirectX::XMMATRIX ModelView;
+	DirectX::XMMATRIX ModelViewProj;
 };
+

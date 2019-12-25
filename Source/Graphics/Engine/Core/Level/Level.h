@@ -46,8 +46,8 @@ public:
 		std::shared_ptr<Actor> light(new TestPointLight());
 		ActorObjects.push_back(light);
 
-		//std::shared_ptr<WObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
-		//SceneObjects.push_back(model);
+		std::shared_ptr<WObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
+		SceneObjects.push_back(model);
 	}
 
 	void Tick(double deltaTime) override

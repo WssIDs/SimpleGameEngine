@@ -1,10 +1,10 @@
 #pragma once
 #include "Graphics/DX11/Graphics.h"
 #include "Graphics/DX11/Bindable/ConstantBuffers.h"
-#include "../Primitive/SolidSphere.h"
 #include "../../Engine/Core.h"
+#include "../../Test/TestNewCube.h"
 
-
+class TestNewSphere;
 
 
 class PointLight : public WObject
@@ -35,8 +35,14 @@ private:
 		float attQuad;
 	};
 private:
-	PointLightConstantBuffer pcbData;
-	mutable SolidSphere mesh;
+
+	Vector Location;
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pPointLightBuffer;
+	
+	PointLightConstantBuffer LightData;
+	mutable std::shared_ptr<TestNewSphere> sphere;
+	mutable std::shared_ptr<TestNewCube> cube;
 	mutable std::string name;
 	mutable Bind::PixelConstantBuffer<PointLightConstantBuffer> constantBuffer;
 };

@@ -104,6 +104,7 @@
     <ClCompile Include="Graphics\Test\TestNewSphere.cpp" />
     <ClCompile Include="Graphics\Test\InputTypes.cpp" />
     <ClCompile Include="Graphics\Test\PlatformInput.cpp" />
+    <ClCompile Include="Graphics\Test\Primitive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -466,10 +467,11 @@
     <ClInclude Include="Graphics\Test\TestTexture.h" />
     <ClInclude Include="Graphics\Test\TestNewCube.h" />
     <ClInclude Include="Graphics\Test\Material.h" />
-    <ClInclude Include="Graphics\Test\Primitive.h" />
     <ClInclude Include="Graphics\Test\TestNewSphere.h" />
     <ClInclude Include="Graphics\Test\InputTypes.h" />
     <ClInclude Include="Graphics\Test\PlatformInput.h" />
+    <ClInclude Include="Graphics\Test\Geometry.h" />
+    <ClInclude Include="Graphics\Test\Primitive.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">
@@ -527,7 +529,6 @@
     <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVS.hlsl" />
     <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSSpecular.hlsl" />
     <FxCompile Include="Graphics\Shaders\PixelShaders\SolidPS.hlsl" />
-    <FxCompile Include="Graphics\Shaders\VertexShaders\VSDefault.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\Assimp\libs\assimp-vc142-mt.lib" />

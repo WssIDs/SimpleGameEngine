@@ -932,6 +932,16 @@ Graphics& Graphics::GetGraphics()
 	return graphics;
 }
 
+Microsoft::WRL::ComPtr<ID3D11DeviceContext1> Graphics::GetDeviceContext3D() const
+{
+	return pDeviceContext3D;
+}
+
+Microsoft::WRL::ComPtr<ID3D11Device1> Graphics::GetDevice3D() const
+{
+	return pDevice3D;
+}
+
 Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> Graphics::GetDefaultBrush() const
 {
 	return pDefaultBrush;

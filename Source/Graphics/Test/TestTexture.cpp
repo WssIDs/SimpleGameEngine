@@ -8,12 +8,12 @@ TestTexture::TestTexture(const std::string& TexturePath)
 	Microsoft::WRL::ComPtr<ID3D11Resource> pD3D11Resource = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pD3D11ShaderResourceView = nullptr;
 
-	auto Device = Graphics::GetGraphics().pDevice3D.Get();
+	auto Device = Graphics::GetGraphics().GetDevice3D().Get();
 
 	DirectX::DDS_ALPHA_MODE alphaMode = DirectX::DDS_ALPHA_MODE_UNKNOWN;
 
 	DirectX::CreateDDSTextureFromFile(Device,
-		Graphics::GetGraphics().pDeviceContext3D.Get(),
+		Graphics::GetGraphics().GetDeviceContext3D().Get(),
 		String::ConvertToWideChar(TexturePath).c_str(),
 		&pD3D11Resource,
 		&pD3D11ShaderResourceView,
