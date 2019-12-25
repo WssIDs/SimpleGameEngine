@@ -45,7 +45,7 @@ void Primitive::Init()
 
 	D3D11_BUFFER_DESC vertextBufferDesc = {};
 	vertextBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertextBufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT3) * (UINT)MeshData.Vertices.size();
+	vertextBufferDesc.ByteWidth = sizeof(MainVertex) * (UINT)MeshData.Vertices.size();
 	vertextBufferDesc.CPUAccessFlags = 0;
 	vertextBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertextBufferDesc.MiscFlags = 0;
@@ -89,7 +89,7 @@ void Primitive::Update(double DeltaTime)
 
 void Primitive::Draw()
 {
-	UINT stride = sizeof(DirectX::XMFLOAT3);
+	UINT stride = sizeof(MainVertex);
 	UINT offset = 0;
 
 	Graphics::GetGraphics().GetDeviceContext3D()->IASetVertexBuffers(0, 1, VertexBuffer.GetAddressOf(), &stride, &offset);

@@ -2,34 +2,38 @@
 #include <DirectXMath.h>
 #include "Graphics/DX11/Math/WGMath.h"
 #include <vector>
+#include "../DX11/Render/Color.h"
 
 struct MainVertex
 {
-	MainVertex(float inX, float inY, float inZ)
+	MainVertex(float inX, float inY, float inZ, float inRed = 1.0f, float inGreen = 1.0f, float inBlue = 1.0f, float inAlpha = 1.0f)
 		:
-		Position(inX, inY, inZ)
+		Position(inX, inY, inZ),
+		Color(inRed, inGreen, inBlue, inAlpha)
 	{}
 
-	MainVertex(DirectX::XMFLOAT3 pos)
+	MainVertex(DirectX::XMFLOAT3 inPosition, LinearColor inColor = LinearColor::White)
 		:
-		Position(pos)
+		Position(inPosition),
+		Color(inColor)
 	{}
 
 	DirectX::XMFLOAT3 Position;
+	LinearColor Color;
 };
 
 struct MeshData
 {
 	MeshData() {};
 
-	MeshData(std::vector<DirectX::XMFLOAT3> inVertices, std::vector<unsigned int> inIndices)
+	MeshData(std::vector<MainVertex> inVertices, std::vector<unsigned int> inIndices)
 		:
 		Vertices(inVertices),
 		Indices(inIndices)
 	{
 	}
 
-	std::vector<DirectX::XMFLOAT3> Vertices;
+	std::vector<MainVertex> Vertices;
 	std::vector<unsigned int> Indices;
 };
 
@@ -48,7 +52,7 @@ public:
 		const float lattitudeAngle = PI / latDiv;
 		const float longitudeAngle = 2.0f * PI / longDiv;
 
-		std::vector<DirectX::XMFLOAT3> vertices;
+		std::vector<MainVertex> vertices;
 
 		for (int iLat = 1; iLat < latDiv; iLat++)
 		{
@@ -134,13 +138,13 @@ public:
 
 		//SphereData data(vertices, indices);
 
-		return { vertices, indices };
+		return MeshData(vertices, indices);
 	}
 
 	static MeshData MakeCube()
 	{
 		// Front Face
-		std::vector<DirectX::XMFLOAT3> vertices = {
+		std::vector<MainVertex> vertices = {
 			// Front Face
 			{-1.0f, -1.0f, -1.0f/*, 0.0f, 1.0f,-1.0f, -1.0f, -1.0f*/},
 			{-1.0f,  1.0f, -1.0f/*, 0.0f, 0.0f,-1.0f,  1.0f, -1.0f*/},
@@ -206,6 +210,6 @@ public:
 			20, 22, 23
 		};
 
-		return { vertices, indices };
+		return  MeshData(vertices, indices);
 	}
 };
