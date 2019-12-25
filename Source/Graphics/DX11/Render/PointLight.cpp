@@ -11,7 +11,6 @@ PointLight::PointLight()
 	//Mesh->SetRotation(Rotation);
 	Mesh->SetLocation(Location);
 	//SetName("Default0");
-
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
 	Reset();

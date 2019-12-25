@@ -41,7 +41,7 @@ void Primitive::Init()
 
 	D3D11_SUBRESOURCE_DATA iinitData = {};
 	iinitData.pSysMem = MeshData.Indices.data();
-	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&indexBufferDesc, &iinitData, &IndexBuffer);
+	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&indexBufferDesc, &iinitData, &pIndexBuffer);
 
 	D3D11_BUFFER_DESC vertextBufferDesc = {};
 	vertextBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -53,21 +53,11 @@ void Primitive::Init()
 	D3D11_SUBRESOURCE_DATA vertexBufferData = {};
 	vertexBufferData.pSysMem = MeshData.Vertices.data();
 
-	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&vertextBufferDesc, &vertexBufferData, &VertexBuffer);
+	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&vertextBufferDesc, &vertexBufferData, &pVertexBuffer);
 	Graphics::GetGraphics().GetDevice3D()->CreateInputLayout(InputElement.data(), (UINT)InputElement.size(), MeshMaterial->VertexShaderBufferData.data(), MeshMaterial->VertexShaderBufferData.size(), &VertexLayout);
 
-	D3D11_BUFFER_DESC cbbd;
-	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
-
-	cbbd.Usage = D3D11_USAGE_DEFAULT;
-	cbbd.ByteWidth = sizeof(ConstantTransform);
-	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbbd.CPUAccessFlags = 0;
-	cbbd.MiscFlags = 0;
-
-	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pConstantBufferPerObject);
-
-	ColorBuffer = std::make_shared<PixelBuffer>(ConstantBufferColor,1);
+	TransformConstantBuffer = std::make_shared<VertexBuffer>(ConstantBufferTransformPerObj);
+	ColorConstantBuffer = std::make_shared<PixelBuffer>(ConstantBufferColor,1);
 
 	D3D11_RASTERIZER_DESC wfdesc;
 	ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
@@ -83,8 +73,6 @@ void Primitive::Update(double DeltaTime)
 	auto scale = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
 	auto rotation = DirectX::XMMatrixRotationRollPitchYaw(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
 	auto translate = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
-
-	ModelView = scale * rotation * translate;
 }
 
 void Primitive::Draw()
@@ -92,17 +80,15 @@ void Primitive::Draw()
 	UINT stride = sizeof(MainVertex);
 	UINT offset = 0;
 
-	Graphics::GetGraphics().GetDeviceContext3D()->IASetVertexBuffers(0, 1, VertexBuffer.GetAddressOf(), &stride, &offset);
-	Graphics::GetGraphics().GetDeviceContext3D()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	Graphics::GetGraphics().GetDeviceContext3D()->IASetVertexBuffers(0, 1, pVertexBuffer.GetAddressOf(), &stride, &offset);
+	Graphics::GetGraphics().GetDeviceContext3D()->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	Graphics::GetGraphics().GetDeviceContext3D()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	ConstantBufferTransformPerObj.ModelView = DirectX::XMMatrixTranspose(ModelView);
 	ConstantBufferTransformPerObj.ModelViewProj = DirectX::XMMatrixTranspose(ModelView * Graphics::GetGraphics().GetCamera() * Graphics::GetGraphics().GetProjection());
+	TransformConstantBuffer->Update(ConstantBufferTransformPerObj);
 
-	Graphics::GetGraphics().GetDeviceContext3D()->UpdateSubresource(pConstantBufferPerObject.Get(), 0, nullptr, &ConstantBufferTransformPerObj, 0, 0);
-	Graphics::GetGraphics().GetDeviceContext3D()->VSSetConstantBuffers(0, 1, pConstantBufferPerObject.GetAddressOf());
-
-	ColorBuffer->Update(ConstantBufferColor);
+	ColorConstantBuffer->Update(ConstantBufferColor);
 
 	if (!MeshMaterial->DiffuseSamplers.empty())
 	{
@@ -140,6 +126,11 @@ void Primitive::SetRotation(Rotator newRotation)
 Vector Primitive::GetLocation() const
 {
 	return Location;
+}
+
+Rotator Primitive::GetRotation() const
+{
+	return Rotation;
 }
 
 Vector Primitive::GetScale3D() const

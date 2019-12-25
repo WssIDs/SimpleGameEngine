@@ -5,7 +5,7 @@
 #include <Graphics/DX11/Graphics.h>
 #include "Material.h"
 #include "../DX11/Render/Color.h"
-#include "PixelBuffer.h"
+#include "Buffer.h"
 
 struct Vector
 {
@@ -27,6 +27,12 @@ struct Vector
 	static Vector ZeroVector()
 	{
 		return Vector(0.0f, 0.0f, 0.0f);
+	}
+
+	friend Vector operator+(const Vector& leftVector, const Vector& rightVector)
+	{
+		Vector result = Vector(leftVector.x + rightVector.x, leftVector.y + rightVector.y, leftVector.z + rightVector.z);
+		return result;
 	}
 
 	float x;
@@ -93,17 +99,17 @@ public:
 	void SetLocation(Vector newLocation);
 	void SetRotation(Rotator newRotation);
 	Vector GetLocation() const;
+	Rotator GetRotation() const;
 	Vector GetScale3D() const;
 
 	MeshData MeshData;
 
 	ColorConstant ConstantBufferColor;
-	std::shared_ptr<PixelBuffer> ColorBuffer;
+	std::shared_ptr<PixelBuffer> ColorConstantBuffer;
+	std::shared_ptr<VertexBuffer> TransformConstantBuffer;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBufferPerObject;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBufferColor;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> VertexLayout;
 

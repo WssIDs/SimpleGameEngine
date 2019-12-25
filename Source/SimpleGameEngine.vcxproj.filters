@@ -469,10 +469,10 @@
     <ClInclude Include="Graphics\Test\PlatformInput.h" />
     <ClInclude Include="Graphics\Test\Geometry.h" />
     <ClInclude Include="Graphics\Test\Primitive.h" />
-    <ClInclude Include="Graphics\Test\PixelBuffer.h" />
     <ClInclude Include="Graphics\Test\NewCube.h" />
     <ClInclude Include="Graphics\Test\NewSphere.h" />
     <ClInclude Include="Graphics\Test\InputSystem.h" />
+    <ClInclude Include="Graphics\Test\Buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

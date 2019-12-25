@@ -2,7 +2,7 @@
 #include "Graphics/DX11/Graphics.h"
 #include "Graphics/DX11/Bindable/ConstantBuffers.h"
 #include "../../Engine/Core.h"
-#include "../../Test/PixelBuffer.h"
+#include "../../Test/Buffer.h"
 #include "../../Test/Primitive.h"
 
 
@@ -39,6 +39,5 @@ private:
 	std::shared_ptr<PixelBuffer> LightBuffer;
 
 	mutable std::shared_ptr<Primitive> Mesh;
-	//mutable std::shared_ptr<NewCube> cube;
-	mutable std::string name;
+	mutable std::string Name;
 };
