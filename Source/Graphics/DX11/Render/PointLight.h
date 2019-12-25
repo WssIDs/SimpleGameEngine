@@ -2,10 +2,8 @@
 #include "Graphics/DX11/Graphics.h"
 #include "Graphics/DX11/Bindable/ConstantBuffers.h"
 #include "../../Engine/Core.h"
-#include "../../Test/NewCube.h"
 #include "../../Test/PixelBuffer.h"
-
-class NewSphere;
+#include "../../Test/Primitive.h"
 
 
 class PointLight : public WObject
@@ -40,8 +38,7 @@ private:
 	PointLightConstantBuffer LightData;
 	std::shared_ptr<PixelBuffer> LightBuffer;
 
-	mutable std::shared_ptr<NewSphere> sphere;
-	mutable std::shared_ptr<NewCube> cube;
+	mutable std::shared_ptr<Primitive> Mesh;
+	//mutable std::shared_ptr<NewCube> cube;
 	mutable std::string name;
 };
-

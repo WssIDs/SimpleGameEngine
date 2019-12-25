@@ -42,7 +42,7 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	EngineInit();
 
 	//Cube = std::make_shared<TestNewCube>();
-	Sphere = std::make_shared<NewSphere>();
+	//Sphere = std::make_shared<NewSphere>();
 }
 
 ApplicationWindow::~ApplicationWindow()

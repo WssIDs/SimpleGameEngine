@@ -7,8 +7,9 @@ PointLight::PointLight()
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
 
-	cube = std::make_shared<NewCube>();
-	cube->SetLocation(Location);
+	Mesh = std::make_shared<NewSphere>();
+	//Mesh->SetRotation(Rotation);
+	Mesh->SetLocation(Location);
 	//SetName("Default0");
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
@@ -19,8 +20,9 @@ PointLight::PointLight()
 PointLight::PointLight(const std::string& name)
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
-	cube = std::make_shared<NewCube>();
-	cube->SetLocation(Location);
+	Mesh = std::make_shared<NewSphere>();
+	//Mesh->SetRotation(Rotation);
+	Mesh->SetLocation(Location);
 	SetName(name);
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
@@ -31,8 +33,9 @@ PointLight::PointLight(const std::string& name)
 PointLight::PointLight(const std::string& name, float radius /*= 0.5f*/)
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
-	cube = std::make_shared<NewCube>();
-	cube->SetLocation(Location);
+	Mesh = std::make_shared<NewSphere>();
+	//Mesh->SetRotation(Rotation);
+	Mesh->SetLocation(Location);
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
@@ -49,9 +52,9 @@ void PointLight::SpawnControlWindow()
 		ImGui::SliderFloat("Z", &Location.z, -1000.0f, 1000.0f, "%.1f");
 
 		ImGui::Text("Rotation");
-		ImGui::SliderAngle("Pitch", &cube->Rotation.Pitch, -180.0f, 180.0f, "%.1f");
-		ImGui::SliderAngle("Yaw", &cube->Rotation.Yaw, -180.0f, 180.0f, "%.1f");
-		ImGui::SliderAngle("Roll", &cube->Rotation.Roll, -180.0f, 180.0f, "%.1f");
+		ImGui::SliderAngle("Pitch", &Mesh->Rotation.Pitch, -180.0f, 180.0f, "%.1f");
+		ImGui::SliderAngle("Yaw", &Mesh->Rotation.Yaw, -180.0f, 180.0f, "%.1f");
+		ImGui::SliderAngle("Roll", &Mesh->Rotation.Roll, -180.0f, 180.0f, "%.1f");
 
 		ImGui::Text("Intensity/Color");
 		ImGui::SliderFloat("Intensity", &LightData.diffuseIntensity, FLT_MIN, 50.0f, "%.2f", 1);
@@ -88,8 +91,8 @@ void PointLight::Reset()
 
 void PointLight::Draw() const
 {
-	cube->SetLocation(Location);
-	cube->Draw();
+	Mesh->SetLocation(Location);
+	Mesh->Draw();
 }
 
 void PointLight::Bind(Graphics& gfx) const
@@ -100,7 +103,7 @@ void PointLight::Bind(Graphics& gfx) const
 
 void PointLight::Tick(double deltaTime)
 {
-	cube->Update(deltaTime);
+	Mesh->Update(deltaTime);
 }
 
 void PointLight::Render(double deltaTime)
