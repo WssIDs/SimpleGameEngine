@@ -7,8 +7,8 @@
 
 #include "Graphics/DX11/Primitive/TestPlane.h"
 #include "Graphics/Engine/Core/Level/Level.h"
-#include "Graphics/Test/TestInputSystem.h"
-#include "Graphics/Test/TestNewSphere.h"
+#include "Graphics/Test/InputSystem.h"
+#include "Graphics/Test/NewSphere.h"
 
 class ApplicationWindow: public Window
 {
@@ -43,8 +43,8 @@ private:
 
 	Level* level;
 
-	std::shared_ptr<TestNewCube> Cube;
-	std::shared_ptr<TestNewSphere> Sphere;
+	std::shared_ptr<NewCube> Cube;
+	std::shared_ptr<NewSphere> Sphere;
 };
 
 

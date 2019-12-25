@@ -32,7 +32,7 @@ void WindowKeyMessageHandler::SetHwnd(HWND hwnd)
 	this->hwnd = hwnd;
 }
 
-void WindowKeyMessageHandler::SetInputSystem(TestInputSystem* Input)
+void WindowKeyMessageHandler::SetInputSystem(InputSystem* Input)
 {
 	this->Input = Input;
 }

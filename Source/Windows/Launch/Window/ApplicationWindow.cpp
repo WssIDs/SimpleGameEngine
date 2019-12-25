@@ -11,7 +11,7 @@
 #include <thread>
 #include "WindowKeyMessageHandler.h"
 #include "../LaunchEngineLoop.h"
-#include "Graphics/Test/TestNewCube.h"
+#include "Graphics/Test/NewCube.h"
 
 DEFINE_LOG_CATEGORY(ApplicationWindowLog);
 
@@ -42,7 +42,7 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	EngineInit();
 
 	//Cube = std::make_shared<TestNewCube>();
-	Sphere = std::make_shared<TestNewSphere>();
+	Sphere = std::make_shared<NewSphere>();
 }
 
 ApplicationWindow::~ApplicationWindow()

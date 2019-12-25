@@ -57,10 +57,10 @@
 //	float z;
 //};
 
-class TestNewCube : public Primitive
+class NewCube : public Primitive
 {
 public:
-	TestNewCube();
+	NewCube();
 
 	virtual void InitMaterial() override;
 	virtual void Update(double DeltaTime) override;

@@ -2,7 +2,7 @@
 #include "..\Core.h"
 #include <vector>
 #include <memory>
-#include "..\..\Test\TestInputSystem.h"
+#include "..\..\Test\InputSystem.h"
 
 
 class Actor : public WObject
@@ -11,7 +11,7 @@ public:
 
 	void CreatePlayerInputComponent();
 
-	virtual void SetupPlayerInputComponent(TestInputSystem* InputComponent);
+	virtual void SetupPlayerInputComponent(InputSystem* InputComponent);
 
 	virtual void Tick(double deltaTime) override;
 	void Render(double deltaTime) override;
@@ -43,6 +43,6 @@ protected:
 
 private:
 
-	std::shared_ptr<TestInputSystem> InputSystem;
+	std::shared_ptr<InputSystem> InputComponent;
 };
 

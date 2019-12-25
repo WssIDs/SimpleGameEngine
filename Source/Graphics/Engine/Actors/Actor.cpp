@@ -3,16 +3,16 @@
 
 void Actor::CreatePlayerInputComponent()
 {
-	if(InputSystem == nullptr)
+	if(InputComponent == nullptr)
 	{
-		InputSystem = std::make_shared<TestInputSystem>();
+		InputComponent = std::make_shared<InputSystem>();
 	}
 
-	WindowKeyMessageHandler::Get()->SetInputSystem(InputSystem.get());
-	SetupPlayerInputComponent(InputSystem.get());
+	WindowKeyMessageHandler::Get()->SetInputSystem(InputComponent.get());
+	SetupPlayerInputComponent(InputComponent.get());
 }
 
-void Actor::SetupPlayerInputComponent(TestInputSystem* InputComponent)
+void Actor::SetupPlayerInputComponent(InputSystem* InputComponent)
 {
 
 }
@@ -29,20 +29,20 @@ void Actor::Render(double deltaTime)
 
 void Actor::DisableInput()
 {
-	InputSystem->SetBlockInput(true);
+	InputComponent->SetBlockInput(true);
 }
 
 void Actor::EnableInput()
 {
-	InputSystem->SetBlockInput(false);
+	InputComponent->SetBlockInput(false);
 }
 
 void Actor::ToggleInput()
 {
-	InputSystem->ToggleBlockInput();
+	InputComponent->ToggleBlockInput();
 }
 
 bool Actor::IsBlockInput() const
 {
-	return InputSystem->IsBlockInput();
+	return InputComponent->IsBlockInput();
 }

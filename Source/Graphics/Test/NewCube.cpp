@@ -1,30 +1,32 @@
-#include "TestNewSphere.h"
-#include "TestNewCube.h"
+#include "NewCube.h"
+#include "../Helpers/StringHelper.h"
+#include "Material.h"
+#include "Imgui/imgui.h"
 
-TestNewSphere::TestNewSphere()
+NewCube::NewCube()
 {
 	SetMaterial("Sphere.fx");
 
 	InitMaterial();
 
 	InputElement.push_back({ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
-	MeshData = Geometry::MakeSphere(12, 24);
+	MeshData = Geometry::MakeCube();
 
 	SetScale3D(Vector(1.0f, 1.0f, 1.0f));
 	Init();
 }
 
-void TestNewSphere::InitMaterial()
+void NewCube::InitMaterial()
 {
 	Primitive::InitMaterial();
 }
 
-void TestNewSphere::Update(double DeltaTime)
+void NewCube::Update(double DeltaTime)
 {
 	Primitive::Update(DeltaTime);
 }
 
-void TestNewSphere::Draw()
+void NewCube::Draw()
 {
 	Primitive::Draw();
 }

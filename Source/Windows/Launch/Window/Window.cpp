@@ -6,7 +6,7 @@
 #include <sstream>
 #include "Graphics/DX11/Math/WGMath.h"
 #include "Graphics/Helpers/StringHelper.h"
-#include "Graphics/Test/TestInputSystem.h"
+#include "Graphics/Test/InputSystem.h"
 #include "WindowKeyMessageHandler.h"
 
 DEFINE_LOG_CATEGORY(WindowLog);

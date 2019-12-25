@@ -2,7 +2,7 @@
 #include "Imgui\imgui.h"
 #include "..\..\DX11\Math\WGMath.h"
 #include <algorithm>
-#include "..\..\Test\TestInputSystem.h"
+#include "..\..\Test\InputSystem.h"
 
 DEFINE_LOG_CATEGORY(CameraLog)
 
@@ -157,7 +157,7 @@ void Camera::ToggleCamera()
 	ToggleInput();
 }
 
-void Camera::SetupPlayerInputComponent(TestInputSystem* InputComponent)
+void Camera::SetupPlayerInputComponent(InputSystem* InputComponent)
 {
 	InputComponent->BindAxis("MoveCameraForward", this, &Camera::MoveForward);
 	//TestInputSystem::Get().BindAxis("MoveCameraBackward", this, &Camera::MoveForward);

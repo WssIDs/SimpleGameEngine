@@ -1,6 +1,6 @@
 #pragma once
 #include <stack>
-#include "Graphics\Test\TestInputSystem.h"
+#include "Graphics\Test\InputSystem.h"
 #include "Graphics\Engine\Core.h"
 #include <set>
 #include <vector>
@@ -82,7 +82,7 @@ public:
 	~WindowKeyMessageHandler();
 
 	void SetHwnd(HWND hwnd);
-	void SetInputSystem(TestInputSystem* Input);
+	void SetInputSystem(InputSystem* Input);
 
 	HWND hwnd;
 
@@ -113,7 +113,7 @@ public:
 	int lastMousePosX;
 	int lastMousePosY;
 
-	TestInputSystem* Input;
+	InputSystem* Input;
 
 	static WindowKeyMessageHandler* Get();
 

@@ -91,7 +91,6 @@
     <ClCompile Include="Graphics\Engine\Core\Level\Level.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Actor.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Light\TestPointLight.cpp" />
-    <ClCompile Include="Graphics\Test\TestInputSystem.cpp" />
     <ClCompile Include="Windows\Launch\Window\WindowKeyMessageHandler.cpp" />
     <ClCompile Include="Graphics\DX11\Render\Color.cpp" />
     <ClCompile Include="Windows\Launch\LaunchEngineLoop.cpp" />
@@ -99,12 +98,13 @@
     <ClCompile Include="Windows\Launch\App.cpp" />
     <ClCompile Include="Windows\Launch\StreamingContent.cpp" />
     <ClCompile Include="Graphics\Test\TestTexture.cpp" />
-    <ClCompile Include="Graphics\Test\TestNewCube.cpp" />
     <ClCompile Include="Graphics\Test\Material.cpp" />
-    <ClCompile Include="Graphics\Test\TestNewSphere.cpp" />
     <ClCompile Include="Graphics\Test\InputTypes.cpp" />
     <ClCompile Include="Graphics\Test\PlatformInput.cpp" />
     <ClCompile Include="Graphics\Test\Primitive.cpp" />
+    <ClCompile Include="Graphics\Test\NewCube.cpp" />
+    <ClCompile Include="Graphics\Test\NewSphere.cpp" />
+    <ClCompile Include="Graphics\Test\InputSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DX11\Bindable\Bindable.h">
@@ -457,7 +457,6 @@
     <ClInclude Include="Graphics\Engine\Actors\Actor.h" />
     <ClInclude Include="Graphics\Engine\Actors\Light\TestPointLight.h" />
     <ClInclude Include="Graphics\Engine\ObjectGlobals.h" />
-    <ClInclude Include="Graphics\Test\TestInputSystem.h" />
     <ClInclude Include="Windows\Launch\Window\WindowKeyMessageHandler.h" />
     <ClInclude Include="Windows\Launch\WEngine.h" />
     <ClInclude Include="Windows\Launch\LaunchEngineLoop.h" />
@@ -465,14 +464,15 @@
     <ClInclude Include="Windows\Launch\App.h" />
     <ClInclude Include="Windows\Launch\StreamingContent.h" />
     <ClInclude Include="Graphics\Test\TestTexture.h" />
-    <ClInclude Include="Graphics\Test\TestNewCube.h" />
     <ClInclude Include="Graphics\Test\Material.h" />
-    <ClInclude Include="Graphics\Test\TestNewSphere.h" />
     <ClInclude Include="Graphics\Test\InputTypes.h" />
     <ClInclude Include="Graphics\Test\PlatformInput.h" />
     <ClInclude Include="Graphics\Test\Geometry.h" />
     <ClInclude Include="Graphics\Test\Primitive.h" />
     <ClInclude Include="Graphics\Test\PixelBuffer.h" />
+    <ClInclude Include="Graphics\Test\NewCube.h" />
+    <ClInclude Include="Graphics\Test\NewSphere.h" />
+    <ClInclude Include="Graphics\Test\InputSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

@@ -33,7 +33,7 @@ public:
 
 	void ToggleCamera();
 
-	virtual void SetupPlayerInputComponent(TestInputSystem* InputComponent) override;
+	virtual void SetupPlayerInputComponent(InputSystem* InputComponent) override;
 
 private:
 	float step = 3.0f;

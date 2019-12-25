@@ -2,10 +2,10 @@
 #include "Graphics/DX11/Graphics.h"
 #include "Graphics/DX11/Bindable/ConstantBuffers.h"
 #include "../../Engine/Core.h"
-#include "../../Test/TestNewCube.h"
+#include "../../Test/NewCube.h"
 #include "../../Test/PixelBuffer.h"
 
-class TestNewSphere;
+class NewSphere;
 
 
 class PointLight : public WObject
@@ -36,18 +36,12 @@ private:
 		float attQuad;
 	};
 private:
-
 	Vector Location;
-
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pPointLightBuffer;
-	
 	PointLightConstantBuffer LightData;
-
 	std::shared_ptr<PixelBuffer> LightBuffer;
 
-	mutable std::shared_ptr<TestNewSphere> sphere;
-	mutable std::shared_ptr<TestNewCube> cube;
+	mutable std::shared_ptr<NewSphere> sphere;
+	mutable std::shared_ptr<NewCube> cube;
 	mutable std::string name;
-	mutable Bind::PixelConstantBuffer<PointLightConstantBuffer> constantBuffer;
 };
 

@@ -28,7 +28,6 @@ void Primitive::SetMaterial(std::string Name)
 
 void Primitive::Init()
 {
-
 	SetScale3D(Scale);
 	SetRotation(Rotation);
 	SetLocation(Location);
@@ -55,7 +54,6 @@ void Primitive::Init()
 	vertexBufferData.pSysMem = MeshData.Vertices.data();
 
 	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&vertextBufferDesc, &vertexBufferData, &VertexBuffer);
-
 	Graphics::GetGraphics().GetDevice3D()->CreateInputLayout(InputElement.data(), (UINT)InputElement.size(), MeshMaterial->VertexShaderBufferData.data(), MeshMaterial->VertexShaderBufferData.size(), &VertexLayout);
 
 	D3D11_BUFFER_DESC cbbd;
@@ -82,9 +80,6 @@ void Primitive::Init()
 
 void Primitive::Update(double DeltaTime)
 {
-	//SetScale3D(Scale);
-	//SetLocation(Location);
-
 	auto scale = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
 	auto rotation = DirectX::XMMatrixRotationRollPitchYaw(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
 	auto translate = DirectX::XMMatrixTranslation(Location.x, Location.y, Location.z);
@@ -100,11 +95,6 @@ void Primitive::Draw()
 	Graphics::GetGraphics().GetDeviceContext3D()->IASetVertexBuffers(0, 1, VertexBuffer.GetAddressOf(), &stride, &offset);
 	Graphics::GetGraphics().GetDeviceContext3D()->IASetIndexBuffer(IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	Graphics::GetGraphics().GetDeviceContext3D()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//const auto pos = DirectX::XMLoadFloat3(&light.Position);
-	//DirectX::XMStoreFloat3(&light.Position, DirectX::XMVector3Transform(pos, Graphics::GetGraphics().GetCamera()));
-
-	//constantBufferPerFrame.light = light;
 
 	ConstantBufferTransformPerObj.ModelView = DirectX::XMMatrixTranspose(ModelView);
 	ConstantBufferTransformPerObj.ModelViewProj = DirectX::XMMatrixTranspose(ModelView * Graphics::GetGraphics().GetCamera() * Graphics::GetGraphics().GetProjection());
@@ -130,19 +120,6 @@ void Primitive::Draw()
 	Graphics::GetGraphics().GetDeviceContext3D()->PSSetShader(MeshMaterial->PixelShader.Get(), nullptr, 0);
 
 	Graphics::GetGraphics().GetDeviceContext3D()->DrawIndexed((UINT)MeshData.Indices.size(), 0, 0);
-
-	//if (ImGui::Begin(Name.c_str()))
-	//{
-	//	ImGui::Text("Location");
-	//	ImGui::SliderFloat("LocationX", &Location.x, -100.0f, 100.0f, "%.1f");
-	//	ImGui::SliderFloat("LocationY", &Location.y, -100.0f, 200.0f, "%.1f");
-	//	ImGui::SliderFloat("LocationZ", &Location.z, -100.0f, 100.0f, "%.1f");
-	//	ImGui::Text("Scale3D");
-	//	ImGui::SliderFloat("ScaleX", &Scale.x, 0.0f, 10.0f, "%.1f");
-	//	ImGui::SliderFloat("ScaleY", &Scale.y, 0.0f, 10.0f, "%.1f");
-	//	ImGui::SliderFloat("ScaleZ", &Scale.z, 0.0f, 10.0f, "%.1f");
-	//}
-	//ImGui::End();
 }
 
 void Primitive::SetScale3D(Vector inScale)

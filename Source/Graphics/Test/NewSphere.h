@@ -1,14 +1,14 @@
 #pragma once
 #include "Graphics/DX11/Graphics.h"
-#include "TestNewCube.h"
+#include "NewCube.h"
 #include "Material.h"
 #include "Geometry.h"
 #include "Primitive.h"
 
-class TestNewSphere : public Primitive
+class NewSphere : public Primitive
 {
 public:
-	TestNewSphere();
+	NewSphere();
 
 	virtual void InitMaterial() override;
 	virtual void Update(double DeltaTime) override;

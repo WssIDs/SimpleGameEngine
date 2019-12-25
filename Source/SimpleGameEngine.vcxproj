@@ -211,9 +211,9 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
   <ItemGroup>
     <ClCompile Include="Graphics\Test\InputTypes.cpp" />
     <ClCompile Include="Graphics\Test\TestTexture.cpp" />
-    <ClCompile Include="Graphics\Test\TestNewCube.cpp" />
+    <ClCompile Include="Graphics\Test\NewCube.cpp" />
     <ClCompile Include="Graphics\Test\Material.cpp" />
-    <ClCompile Include="Graphics\Test\TestNewSphere.cpp" />
+    <ClCompile Include="Graphics\Test\NewSphere.cpp" />
     <ClCompile Include="Graphics\Test\PlatformInput.cpp" />
     <ClCompile Include="Graphics\Test\Primitive.cpp" />
     <ClCompile Include="Windows\Launch\StreamingContent.cpp" />
@@ -246,7 +246,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Graphics\Engine\Core\Level\Level.cpp" />
     <ClCompile Include="Graphics\DX11\Bindable\Rasterizer.cpp" />
     <ClCompile Include="Graphics\Engine\Actors\Light\TestPointLight.cpp" />
-    <ClCompile Include="Graphics\Test\TestInputSystem.cpp" />
+    <ClCompile Include="Graphics\Test\InputSystem.cpp" />
     <ClCompile Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_demo.cpp" />
@@ -274,9 +274,9 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\Test\Geometry.h" />
     <ClInclude Include="Graphics\Test\PixelBuffer.h" />
     <ClInclude Include="Graphics\Test\TestTexture.h" />
-    <ClInclude Include="Graphics\Test\TestNewCube.h" />
+    <ClInclude Include="Graphics\Test\NewCube.h" />
     <ClInclude Include="Graphics\Test\Material.h" />
-    <ClInclude Include="Graphics\Test\TestNewSphere.h" />
+    <ClInclude Include="Graphics\Test\NewSphere.h" />
     <ClInclude Include="Graphics\Test\PlatformInput.h" />
     <ClInclude Include="Graphics\Test\Primitive.h" />
     <ClInclude Include="Windows\Launch\StreamingContent.h" />
@@ -325,7 +325,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Graphics\Engine\Core\Level\Level.h" />
     <ClInclude Include="Graphics\DX11\Bindable\Rasterizer.h" />
     <ClInclude Include="Graphics\Engine\Actors\Light\TestPointLight.h" />
-    <ClInclude Include="Graphics\Test\TestInputSystem.h" />
+    <ClInclude Include="Graphics\Test\InputSystem.h" />
     <ClInclude Include="ThirdParty\Assimp\aabb.h" />
     <ClInclude Include="ThirdParty\Assimp\ai_assert.h" />
     <ClInclude Include="ThirdParty\Assimp\anim.h" />

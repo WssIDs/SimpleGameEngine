@@ -490,12 +490,12 @@ private:
 	IContainer* DelegateContainer;
 };
 
-class TestInputSystem
+class InputSystem
 {
 public:
-	TestInputSystem() {};
-	TestInputSystem(const TestInputSystem&) = delete;
-	TestInputSystem& operator=(const TestInputSystem&) = delete;
+	InputSystem() {};
+	InputSystem(const InputSystem&) = delete;
+	InputSystem& operator=(const InputSystem&) = delete;
 
 	//template< class T, class U>
 	//void BindAction(const char& key, const std::string& ActionName, T* wObject, U method)

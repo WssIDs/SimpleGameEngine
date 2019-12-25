@@ -1,28 +1,15 @@
 #include "PointLight.h"
 #include "Imgui\imgui.h"
 #include "..\Graphics.h"
-#include "..\..\Test\TestNewSphere.h"
+#include "..\..\Test\NewSphere.h"
 
 PointLight::PointLight()
-	:
-	constantBuffer(Graphics::GetGraphics())
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
 
-	cube = std::make_shared<TestNewCube>();
+	cube = std::make_shared<NewCube>();
 	cube->SetLocation(Location);
 	//SetName("Default0");
-
-	//D3D11_BUFFER_DESC cbbd;
-	//ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
-
-	//cbbd.Usage = D3D11_USAGE_DEFAULT;
-	//cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
-	//cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//cbbd.CPUAccessFlags = 0;
-	//cbbd.MiscFlags = 0;
-
-	//Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
@@ -30,24 +17,11 @@ PointLight::PointLight()
 }
 
 PointLight::PointLight(const std::string& name)
-	:
-	constantBuffer(Graphics::GetGraphics())
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
-	cube = std::make_shared<TestNewCube>();
+	cube = std::make_shared<NewCube>();
 	cube->SetLocation(Location);
 	SetName(name);
-
-	//D3D11_BUFFER_DESC cbbd;
-	//ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
-
-	//cbbd.Usage = D3D11_USAGE_DEFAULT;
-	//cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
-	//cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//cbbd.CPUAccessFlags = 0;
-	//cbbd.MiscFlags = 0;
-
-	//Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
@@ -55,23 +29,10 @@ PointLight::PointLight(const std::string& name)
 }
 
 PointLight::PointLight(const std::string& name, float radius /*= 0.5f*/)
-	:
-	constantBuffer(Graphics::GetGraphics())
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
-	cube = std::make_shared<TestNewCube>();
+	cube = std::make_shared<NewCube>();
 	cube->SetLocation(Location);
-
-	//D3D11_BUFFER_DESC cbbd;
-	//ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
-
-	//cbbd.Usage = D3D11_USAGE_DEFAULT;
-	//cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
-	//cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//cbbd.CPUAccessFlags = 0;
-	//cbbd.MiscFlags = 0;
-
-	//Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
@@ -127,19 +88,14 @@ void PointLight::Reset()
 
 void PointLight::Draw() const
 {
-	//mesh.SetPosition(pcbData.pos);
-	//mesh.Draw(Graphics::GetGraphics());
-
 	cube->SetLocation(Location);
 	cube->Draw();
 }
 
 void PointLight::Bind(Graphics& gfx) const
 {
-
 	//constantBuffer.Update(Graphics::GetGraphics(), pcbDataCopy);
 	//constantBuffer.Bind(Graphics::GetGraphics());
-
 }
 
 void PointLight::Tick(double deltaTime)
@@ -150,20 +106,12 @@ void PointLight::Tick(double deltaTime)
 void PointLight::Render(double deltaTime)
 {
 	WObject::Render(deltaTime);
-	//Bind(Graphics::GetGraphics());
 
 	LightData.pos = DirectX::XMFLOAT3(Location.x, Location.y, Location.z);
 
 	auto pcbDataCopy = LightData;
 	const auto pos = DirectX::XMLoadFloat3(&LightData.pos);
 	DirectX::XMStoreFloat3(&pcbDataCopy.pos, DirectX::XMVector3Transform(pos, Graphics::GetGraphics().GetCamera()));
-
-
-	//Graphics::GetGraphics().GetDeviceContext3D()->UpdateSubresource(pPointLightBuffer.Get(), 0, nullptr, &pcbDataCopy, 0, 0);
-	//Graphics::GetGraphics().GetDeviceContext3D()->PSSetConstantBuffers(0, 1, pPointLightBuffer.GetAddressOf());
-
-	/*Graphics::GetGraphics().GetDeviceContext3D()->UpdateSubresource(cube->pConstantBufferColor.Get(), 0, nullptr, &cube->ConstantBufferColor, 0, 0);
-	Graphics::GetGraphics().GetDeviceContext3D()->PSSetConstantBuffers(1, 1, cube->pConstantBufferColor.GetAddressOf());*/
 
 	LightBuffer->Update(pcbDataCopy);
 	
