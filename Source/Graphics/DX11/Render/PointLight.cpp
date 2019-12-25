@@ -13,16 +13,18 @@ PointLight::PointLight()
 	cube->SetLocation(Location);
 	//SetName("Default0");
 
-	D3D11_BUFFER_DESC cbbd;
-	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+	//D3D11_BUFFER_DESC cbbd;
+	//ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
 
-	cbbd.Usage = D3D11_USAGE_DEFAULT;
-	cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
-	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbbd.CPUAccessFlags = 0;
-	cbbd.MiscFlags = 0;
+	//cbbd.Usage = D3D11_USAGE_DEFAULT;
+	//cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
+	//cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//cbbd.CPUAccessFlags = 0;
+	//cbbd.MiscFlags = 0;
 
-	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
+	//Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
+
+	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
 	Reset();
 }
@@ -36,16 +38,18 @@ PointLight::PointLight(const std::string& name)
 	cube->SetLocation(Location);
 	SetName(name);
 
-	D3D11_BUFFER_DESC cbbd;
-	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+	//D3D11_BUFFER_DESC cbbd;
+	//ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
 
-	cbbd.Usage = D3D11_USAGE_DEFAULT;
-	cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
-	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbbd.CPUAccessFlags = 0;
-	cbbd.MiscFlags = 0;
+	//cbbd.Usage = D3D11_USAGE_DEFAULT;
+	//cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
+	//cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//cbbd.CPUAccessFlags = 0;
+	//cbbd.MiscFlags = 0;
 
-	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
+	//Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
+
+	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
 	Reset();
 }
@@ -58,16 +62,18 @@ PointLight::PointLight(const std::string& name, float radius /*= 0.5f*/)
 	cube = std::make_shared<TestNewCube>();
 	cube->SetLocation(Location);
 
-	D3D11_BUFFER_DESC cbbd;
-	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+	//D3D11_BUFFER_DESC cbbd;
+	//ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
 
-	cbbd.Usage = D3D11_USAGE_DEFAULT;
-	cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
-	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbbd.CPUAccessFlags = 0;
-	cbbd.MiscFlags = 0;
+	//cbbd.Usage = D3D11_USAGE_DEFAULT;
+	//cbbd.ByteWidth = sizeof(PointLightConstantBuffer);
+	//cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//cbbd.CPUAccessFlags = 0;
+	//cbbd.MiscFlags = 0;
 
-	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
+	//Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pPointLightBuffer);
+
+	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
 	Reset();
 }
@@ -151,9 +157,16 @@ void PointLight::Render(double deltaTime)
 	auto pcbDataCopy = LightData;
 	const auto pos = DirectX::XMLoadFloat3(&LightData.pos);
 	DirectX::XMStoreFloat3(&pcbDataCopy.pos, DirectX::XMVector3Transform(pos, Graphics::GetGraphics().GetCamera()));
-	Graphics::GetGraphics().GetDeviceContext3D()->UpdateSubresource(pPointLightBuffer.Get(), 0, nullptr, &pcbDataCopy, 0, 0);
-	Graphics::GetGraphics().GetDeviceContext3D()->PSSetConstantBuffers(0, 1, pPointLightBuffer.GetAddressOf());
 
+
+	//Graphics::GetGraphics().GetDeviceContext3D()->UpdateSubresource(pPointLightBuffer.Get(), 0, nullptr, &pcbDataCopy, 0, 0);
+	//Graphics::GetGraphics().GetDeviceContext3D()->PSSetConstantBuffers(0, 1, pPointLightBuffer.GetAddressOf());
+
+	/*Graphics::GetGraphics().GetDeviceContext3D()->UpdateSubresource(cube->pConstantBufferColor.Get(), 0, nullptr, &cube->ConstantBufferColor, 0, 0);
+	Graphics::GetGraphics().GetDeviceContext3D()->PSSetConstantBuffers(1, 1, cube->pConstantBufferColor.GetAddressOf());*/
+
+	LightBuffer->Update(pcbDataCopy);
+	
 	Draw();
 	SpawnControlWindow();
 }

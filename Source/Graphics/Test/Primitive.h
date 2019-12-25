@@ -4,6 +4,8 @@
 #include "Geometry.h"
 #include <Graphics/DX11/Graphics.h>
 #include "Material.h"
+#include "../DX11/Render/Color.h"
+#include "PixelBuffer.h"
 
 struct Vector
 {
@@ -60,6 +62,12 @@ struct Rotator
 };
 
 
+struct ColorConstant
+{
+	DirectX::XMFLOAT3 Color = { 1.0f,1.0f,1.0f };
+	float padding;
+};
+
 struct ConstantTransform
 {
 	//DirectX::XMMATRIX ModelWorld;
@@ -89,10 +97,13 @@ public:
 
 	MeshData MeshData;
 
+	ColorConstant ConstantBufferColor;
+	std::shared_ptr<PixelBuffer> ColorBuffer;
+
 	Microsoft::WRL::ComPtr<ID3D11Buffer> VertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBufferPerObject;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBufferPerFrame;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBufferColor;
 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> VertexLayout;
 

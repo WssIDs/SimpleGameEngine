@@ -3,6 +3,7 @@
 #include "Graphics/DX11/Bindable/ConstantBuffers.h"
 #include "../../Engine/Core.h"
 #include "../../Test/TestNewCube.h"
+#include "../../Test/PixelBuffer.h"
 
 class TestNewSphere;
 
@@ -41,6 +42,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pPointLightBuffer;
 	
 	PointLightConstantBuffer LightData;
+
+	std::shared_ptr<PixelBuffer> LightBuffer;
+
 	mutable std::shared_ptr<TestNewSphere> sphere;
 	mutable std::shared_ptr<TestNewCube> cube;
 	mutable std::string name;

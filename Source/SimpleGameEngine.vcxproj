@@ -272,6 +272,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
   <ItemGroup>
     <ClInclude Include="Graphics\Test\InputTypes.h" />
     <ClInclude Include="Graphics\Test\Geometry.h" />
+    <ClInclude Include="Graphics\Test\PixelBuffer.h" />
     <ClInclude Include="Graphics\Test\TestTexture.h" />
     <ClInclude Include="Graphics\Test\TestNewCube.h" />
     <ClInclude Include="Graphics\Test\Material.h" />

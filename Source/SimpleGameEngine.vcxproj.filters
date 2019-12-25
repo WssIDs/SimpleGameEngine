@@ -472,6 +472,7 @@
     <ClInclude Include="Graphics\Test\PlatformInput.h" />
     <ClInclude Include="Graphics\Test\Geometry.h" />
     <ClInclude Include="Graphics\Test\Primitive.h" />
+    <ClInclude Include="Graphics\Test\PixelBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

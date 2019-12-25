@@ -69,15 +69,7 @@ void Primitive::Init()
 
 	Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbbd, nullptr, &pConstantBufferPerObject);
 
-	//ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
-
-	//cbbd.Usage = D3D11_USAGE_DEFAULT;
-	//cbbd.ByteWidth = sizeof(cbPerFrame);
-	//cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//cbbd.CPUAccessFlags = 0;
-	//cbbd.MiscFlags = 0;
-
-	//Graphics::GetGraphics().pDevice3D->CreateBuffer(&cbbd, nullptr, &pConstantBufferPerFrame);
+	ColorBuffer = std::make_shared<PixelBuffer>(ConstantBufferColor,1);
 
 	D3D11_RASTERIZER_DESC wfdesc;
 	ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
@@ -113,14 +105,14 @@ void Primitive::Draw()
 	//DirectX::XMStoreFloat3(&light.Position, DirectX::XMVector3Transform(pos, Graphics::GetGraphics().GetCamera()));
 
 	//constantBufferPerFrame.light = light;
-	//Graphics::GetGraphics().pDeviceContext3D->UpdateSubresource(pConstantBufferPerFrame.Get(), 0, nullptr, &constantBufferPerFrame, 0, 0);
-	//Graphics::GetGraphics().pDeviceContext3D->PSSetConstantBuffers(0, 1, pConstantBufferPerFrame.GetAddressOf());
 
 	ConstantBufferTransformPerObj.ModelView = DirectX::XMMatrixTranspose(ModelView);
 	ConstantBufferTransformPerObj.ModelViewProj = DirectX::XMMatrixTranspose(ModelView * Graphics::GetGraphics().GetCamera() * Graphics::GetGraphics().GetProjection());
 
 	Graphics::GetGraphics().GetDeviceContext3D()->UpdateSubresource(pConstantBufferPerObject.Get(), 0, nullptr, &ConstantBufferTransformPerObj, 0, 0);
 	Graphics::GetGraphics().GetDeviceContext3D()->VSSetConstantBuffers(0, 1, pConstantBufferPerObject.GetAddressOf());
+
+	ColorBuffer->Update(ConstantBufferColor);
 
 	if (!MeshMaterial->DiffuseSamplers.empty())
 	{
