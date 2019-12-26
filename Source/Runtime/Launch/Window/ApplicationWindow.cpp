@@ -23,6 +23,15 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
 
+	EngineInput = std::make_shared<InputSystem>();
+
+	if (EngineInput != nullptr)
+	{
+		EngineInput->BindAction("EngineExit", EInputEvent::IE_Pressed, this, &ApplicationWindow::EngineExit);
+
+		WindowKeyMessageHandler::Get()->SetEngineInputSystem(EngineInput.get());
+	}
+
 	level = new Level();
 
 	if (level != nullptr)
@@ -30,7 +39,7 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 		level->Load();
 	}
 
-	Graphics::GetGraphics().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
+	Graphics::Get().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
 
 	EngineInit();
 
@@ -60,7 +69,7 @@ int ApplicationWindow::Run()
 	EngineTick();
 
 	// reset (start) the timer
-	Graphics::GetGraphics().GetTimer()->Reset();
+	Graphics::Get().GetTimer()->Reset();
 
 	double accumulatedTime = 0.0;		// stores the time accumulated by the rendered
 	int nLoops = 0;						// the number of completed loops while updating the game
@@ -73,15 +82,15 @@ int ApplicationWindow::Run()
 		}
 
 		// let the timer tick
-		Graphics::GetGraphics().GetTimer()->Tick();
+		Graphics::Get().GetTimer()->Tick();
 
 		if (!IsPaused())
 		{
 			// calculate fps
-			Graphics::GetGraphics().CalculateFrameStats();
+			Graphics::Get().CalculateFrameStats();
 			
 			// accumulate the elapsed time since the last frame
-			accumulatedTime += Graphics::GetGraphics().GetTimer()->GetDeltaTime();
+			accumulatedTime += Graphics::Get().GetTimer()->GetDeltaTime();
 
 			// now update the game logic with fixed deltaTime as often as possible
 			nLoops = 0;
@@ -159,7 +168,7 @@ void ApplicationWindow::Update(double deltaTime)
 
 void ApplicationWindow::Render(double farseer)
 {
-	Graphics::GetGraphics().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
+	Graphics::Get().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
 
 	// DRAW/LOGICS
 
@@ -168,25 +177,30 @@ void ApplicationWindow::Render(double farseer)
 		level->Render(farseer);
 	}
 
-	Graphics::GetGraphics().EndFrame(); // EndFrame
+	Graphics::Get().EndFrame(); // EndFrame
 }
 
 void ApplicationWindow::OnResize()
 {
 	Window::OnResize();
-	Graphics::GetGraphics().OnResize();
+	Graphics::Get().OnResize();
 }
 
 void ApplicationWindow::OnPosChange()
 {
-	bool fullscreen = Graphics::GetGraphics().GetFullScreenState();
+	bool fullscreen = Graphics::Get().GetFullScreenState();
 
-	if (fullscreen != (bool)Graphics::GetGraphics().IsCurrentInFullScreen())
+	if (fullscreen != (bool)Graphics::Get().IsCurrentInFullScreen())
 	{
 		SetPause(true);
-		Graphics::GetGraphics().GetTimer()->Stop();
-		Graphics::GetGraphics().OnResize();
-		Graphics::GetGraphics().GetTimer()->Start();
+		Graphics::Get().GetTimer()->Stop();
+		Graphics::Get().OnResize();
+		Graphics::Get().GetTimer()->Start();
 		SetPause(false);
 	}
+}
+
+void ApplicationWindow::EngineExit()
+{
+	CloseWindow();
 }

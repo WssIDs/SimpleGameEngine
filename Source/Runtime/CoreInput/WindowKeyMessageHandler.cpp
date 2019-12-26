@@ -6,23 +6,26 @@ DEFINE_LOG_CATEGORY(MessageHandlerLog)
 
 WindowKeyMessageHandler::WindowKeyMessageHandler()
 {
-	AxisBindings.push_back(AxisBinding("MoveCameraForward", 1.0f, EKeys::W));
-	AxisBindings.push_back(AxisBinding("MoveCameraForward", -1.0f, EKeys::S));
-	AxisBindings.push_back(AxisBinding("MoveCameraRight", -1.0f, EKeys::A));
-	AxisBindings.push_back(AxisBinding("MoveCameraRight", 1.0f, EKeys::D));
-	AxisBindings.push_back(AxisBinding("MoveCameraUp", 1.0f, EKeys::E));
-	AxisBindings.push_back(AxisBinding("MoveCameraUp", -1.0f, EKeys::F));
+	// Engine key binding
+	EngineKeyBindings.emplace_back("EngineExit", EKeys::F4, false, /* Alt */ true);
 
-	AxisRawBindings.push_back(AxisBinding("Turn", 1.0f, EKeys::MouseX));
-	AxisRawBindings.push_back(AxisBinding("LookUp", 1.0f, EKeys::MouseY));
+	AxisBindings.emplace_back("MoveCameraForward", 1.0f, EKeys::W);
+	AxisBindings.emplace_back("MoveCameraForward", -1.0f, EKeys::S);
+	AxisBindings.emplace_back("MoveCameraRight", -1.0f, EKeys::A);
+	AxisBindings.emplace_back("MoveCameraRight", 1.0f, EKeys::D);
+	AxisBindings.emplace_back("MoveCameraUp", 1.0f, EKeys::E);
+	AxisBindings.emplace_back("MoveCameraUp", -1.0f, EKeys::F);
 
-	KeyBindings.push_back(KeyBinding("TestAction", EKeys::SpaceBar));
-	KeyBindings.push_back(KeyBinding("ToggleCameraInput", EKeys::F2, /* Shift */ true));
+	AxisRawBindings.emplace_back("Turn", 1.0f, EKeys::MouseX);
+	AxisRawBindings.emplace_back("LookUp", 1.0f, EKeys::MouseY);
+
+	KeyBindings.emplace_back("TestAction", EKeys::SpaceBar);
+	KeyBindings.emplace_back("ToggleCameraInput", EKeys::F2, /* Shift */ true);
 }
 
 WindowKeyMessageHandler::~WindowKeyMessageHandler()
 {
-	Input = nullptr;
+	EngineInput = nullptr;
 }
 
 void WindowKeyMessageHandler::SetHwnd(HWND hwnd)
@@ -30,15 +33,23 @@ void WindowKeyMessageHandler::SetHwnd(HWND hwnd)
 	this->hwnd = hwnd;
 }
 
-void WindowKeyMessageHandler::SetInputSystem(InputSystem* Input)
+void WindowKeyMessageHandler::SetEngineInputSystem(InputSystem* Input)
 {
-	this->Input = Input;
+	EngineInput = Input;
 }
 
-void WindowKeyMessageHandler::Tick(double DeltaTime)
+void WindowKeyMessageHandler::AddInputSystem(InputSystem* Input)
 {
-	Event.ProcessModifierKeys();
+	Inputs.emplace(Input);
+}
 
+void WindowKeyMessageHandler::RemoveInputSystem(InputSystem* Input)
+{
+	Inputs.erase(Input);
+}
+
+void WindowKeyMessageHandler::ProcessInputSystem(InputSystem* Input, double DeltaTime)
+{
 	if (Input != nullptr)
 	{
 		for (auto& Item : KeyBindings)
@@ -103,7 +114,7 @@ void WindowKeyMessageHandler::Tick(double DeltaTime)
 
 				if (keycode != nullptr)
 				{
-					if(GetAsyncKeyState(*keycode))
+					if (GetAsyncKeyState(*keycode))
 					{
 						axisItem.KeyEvent = EInputEvent::IE_Axis;
 						axisItem.Scale = WGMath::FInterpConstantTo(axisItem.Scale, axisItem.MaxScale, (float)DeltaTime, 7.0f);
@@ -142,14 +153,14 @@ void WindowKeyMessageHandler::Tick(double DeltaTime)
 		{
 			for (auto& axisRawItem : AxisRawBindings)
 			{
-				GetCursorPos(&lastMousePos);
-				if (ScreenToClient(hwnd, &lastMousePos))
+				GetCursorPos(&LastMousePos);
+				if (ScreenToClient(hwnd, &LastMousePos))
 				{
 					if (axisRawItem.TestKey == EKeys::MouseX)
 					{
-						if (deltaX != lastDeltaX)
+						if (DeltaX != LastDeltaX)
 						{
-							if (deltaX > lastDeltaX)
+							if (DeltaX > LastDeltaX)
 							{
 								axisRawItem.Scale = 1.0f;
 								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
@@ -160,13 +171,13 @@ void WindowKeyMessageHandler::Tick(double DeltaTime)
 								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
 							}
 
-							auto deltaRawX = int(std::abs(deltaX - lastDeltaX));
+							auto deltaRawX = int(std::abs(DeltaX - LastDeltaX));
 							for (int i = 0; i < deltaRawX; i++)
 							{
 								Input->ExecuteAxis(axisRawItem.AxisName, axisRawItem.Scale);
 							}
 
-							lastDeltaX = deltaX;
+							LastDeltaX = DeltaX;
 						}
 						else
 						{
@@ -178,9 +189,9 @@ void WindowKeyMessageHandler::Tick(double DeltaTime)
 
 					if (axisRawItem.TestKey == EKeys::MouseY)
 					{
-						if (deltaY != lastDeltaY)
+						if (DeltaY != LastDeltaY)
 						{
-							if (deltaY > lastDeltaY)
+							if (DeltaY > LastDeltaY)
 							{
 								axisRawItem.Scale = 1.0f;
 								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
@@ -191,13 +202,13 @@ void WindowKeyMessageHandler::Tick(double DeltaTime)
 								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
 							}
 
-							auto deltaRawX = int(std::abs(deltaY - lastDeltaY));
+							auto deltaRawX = int(std::abs(DeltaY - LastDeltaY));
 							for (int i = 0; i < deltaRawX; i++)
 							{
 								Input->ExecuteAxis(axisRawItem.AxisName, axisRawItem.Scale);
 							}
 
-							lastDeltaY = deltaY;
+							LastDeltaY = DeltaY;
 						}
 						else
 						{
@@ -212,20 +223,203 @@ void WindowKeyMessageHandler::Tick(double DeltaTime)
 	}
 }
 
-void WindowKeyMessageHandler::AddListener(AxisBinding AxisBind)
+void WindowKeyMessageHandler::ProcessEngineInputSystem(InputSystem* Input, double DeltaTime)
 {
-	AxisBindings.push_back(AxisBind);
+	if (Input != nullptr)
+	{
+		for (auto& Item : EngineKeyBindings)
+		{
+			const unsigned int* keycode = nullptr;
+			const unsigned int* charcode = nullptr;
+			FInputKeyManager::Get().GetCodesFromKey(Item.TestKey, keycode, charcode);
+
+			if (keycode != nullptr)
+			{
+				if (Event.IsShiftDown() == Item.IsShiftDown() && Event.IsAltDown() == Item.IsAltDown() && Event.IsControlDown() == Item.IsControlDown() && Event.IsCommandDown() == Item.IsCommandDown())
+				{
+					bool KeyIsPressed = (GetAsyncKeyState(*keycode) & 0x8000) != 0;
+
+					if (!Item.KeyIsDown() && KeyIsPressed && Item.KeyIsUp())
+					{
+						Item.KeyEvent = EInputEvent::IE_Pressed;
+						WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Press = %s", Item.TestKey.GetDisplayName().c_str());
+						Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
+					}
+				}
+
+				bool KeyIsReleased = (GetAsyncKeyState(*keycode) & 0x8000) == 0;
+
+				if (!Item.KeyIsUp() && KeyIsReleased && Item.KeyIsDown())
+				{
+					Item.KeyEvent = EInputEvent::IE_Released;
+					WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Release = %s", Item.TestKey.GetDisplayName().c_str());
+					Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
+				}
+			}
+			if (charcode != nullptr)
+			{
+				if (Event.IsShiftDown() == Item.IsShiftDown() && Event.IsAltDown() == Item.IsAltDown() && Event.IsControlDown() == Item.IsControlDown() && Event.IsCommandDown() == Item.IsCommandDown())
+				{
+					bool KeyIsPressed = (GetAsyncKeyState(VkKeyScan(*charcode)) & 0x8000) != 0;
+
+					if (!Item.KeyIsDown() && KeyIsPressed)
+					{
+						Item.KeyEvent = EInputEvent::IE_Pressed;
+						Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
+					}
+				}
+
+				bool KeyIsReleased = (GetAsyncKeyState(VkKeyScan(*charcode)) & 0x8000) == 0;
+
+				if (!Item.KeyIsUp() && KeyIsReleased)
+				{
+					Item.KeyEvent = EInputEvent::IE_Released;
+					Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
+				}
+			}
+		}
+
+		if (!EngineAxisBindings.empty())
+		{
+			for (auto& axisItem : EngineAxisBindings)
+			{
+				const unsigned int* keycode = nullptr;
+				const unsigned int* charcode = nullptr;
+				FInputKeyManager::Get().GetCodesFromKey(axisItem.TestKey, keycode, charcode);
+
+				if (keycode != nullptr)
+				{
+					if (GetAsyncKeyState(*keycode))
+					{
+						axisItem.KeyEvent = EInputEvent::IE_Axis;
+						axisItem.Scale = WGMath::FInterpConstantTo(axisItem.Scale, axisItem.MaxScale, (float)DeltaTime, 7.0f);
+						//WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Axis Key Release = %s", axisItem.TestKey.GetDisplayName().c_str());
+						Input->ExecuteAxis(axisItem.AxisName, axisItem.Scale);
+					}
+					else
+					{
+						axisItem.KeyEvent = EInputEvent::IE_MAX;
+						axisItem.Scale = WGMath::FInterpConstantTo(axisItem.Scale, 0, (float)DeltaTime, 7.0f);
+						Input->ExecuteAxis(axisItem.AxisName, axisItem.Scale);
+					}
+				}
+				if (charcode != nullptr)
+				{
+					if (GetAsyncKeyState(*charcode))
+					{
+						axisItem.KeyEvent = EInputEvent::IE_Axis;
+						axisItem.Scale = WGMath::FInterpConstantTo(axisItem.Scale, axisItem.MaxScale, (float)DeltaTime, 7.0f);
+						//WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Axis Char = %s", axisItem.TestKey.GetDisplayName().c_str());
+						Input->ExecuteAxis(axisItem.AxisName, axisItem.Scale);
+					}
+					else
+					{
+						axisItem.KeyEvent = EInputEvent::IE_MAX;
+						axisItem.Scale = WGMath::FInterpConstantTo(axisItem.Scale, 0, (float)DeltaTime, 7.0f);
+						Input->ExecuteAxis(axisItem.AxisName, axisItem.Scale);
+					}
+				}
+			}
+		}
+
+		/////////////////   WITH RAW ///////////////////
+
+		if (!EngineAxisRawBindings.empty())
+		{
+			for (auto& axisRawItem : EngineAxisRawBindings)
+			{
+				GetCursorPos(&LastMousePos);
+				if (ScreenToClient(hwnd, &LastMousePos))
+				{
+					if (axisRawItem.TestKey == EKeys::MouseX)
+					{
+						if (DeltaX != LastDeltaX)
+						{
+							if (DeltaX > LastDeltaX)
+							{
+								axisRawItem.Scale = 1.0f;
+								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
+							}
+							else
+							{
+								axisRawItem.Scale = -1.0f;
+								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
+							}
+
+							auto deltaRawX = int(std::abs(DeltaX - LastDeltaX));
+							for (int i = 0; i < deltaRawX; i++)
+							{
+								Input->ExecuteAxis(axisRawItem.AxisName, axisRawItem.Scale);
+							}
+
+							LastDeltaX = DeltaX;
+						}
+						else
+						{
+							axisRawItem.KeyEvent = EInputEvent::IE_MAX;
+							axisRawItem.Scale = WGMath::FInterpConstantTo(axisRawItem.Scale, 0.0f, (float)DeltaTime, 7.0f);
+							Input->ExecuteAxis(axisRawItem.AxisName, 0);
+						}
+					}
+
+					if (axisRawItem.TestKey == EKeys::MouseY)
+					{
+						if (DeltaY != LastDeltaY)
+						{
+							if (DeltaY > LastDeltaY)
+							{
+								axisRawItem.Scale = 1.0f;
+								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
+							}
+							else
+							{
+								axisRawItem.Scale = -1.0f;
+								axisRawItem.KeyEvent = EInputEvent::IE_Axis;
+							}
+
+							auto deltaRawX = int(std::abs(DeltaY - LastDeltaY));
+							for (int i = 0; i < deltaRawX; i++)
+							{
+								Input->ExecuteAxis(axisRawItem.AxisName, axisRawItem.Scale);
+							}
+
+							LastDeltaY = DeltaY;
+						}
+						else
+						{
+							axisRawItem.KeyEvent = EInputEvent::IE_MAX;
+							axisRawItem.Scale = WGMath::FInterpConstantTo(axisRawItem.Scale, 0.0f, (float)DeltaTime, 7.0f);
+							Input->ExecuteAxis(axisRawItem.AxisName, 0);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
-void WindowKeyMessageHandler::AddListener(KeyBinding KeyBind)
+void WindowKeyMessageHandler::Tick(double DeltaTime)
 {
-	KeyBindings.push_back(KeyBind);
+	Event.ProcessModifierKeys();
+
+	ProcessEngineInputSystem(EngineInput, DeltaTime);
+
+	if(!Inputs.empty())
+	{
+		for (auto const& Input : Inputs)
+		{
+			if(Input != nullptr)
+			{
+				ProcessInputSystem(Input, DeltaTime);
+			}
+		}
+	}
 }
 
 void WindowKeyMessageHandler::ProcessRaw(int deltaX, int deltaY)
 {
-	this->deltaX += (float)deltaX;
-	this->deltaY += (float)deltaY;
+	this->DeltaX += (float)deltaX;
+	this->DeltaY += (float)deltaY;
 }
 
 WindowKeyMessageHandler* WindowKeyMessageHandler::Get()

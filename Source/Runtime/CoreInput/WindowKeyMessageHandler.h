@@ -81,38 +81,34 @@ public:
 	~WindowKeyMessageHandler();
 
 	void SetHwnd(HWND hwnd);
-	void SetInputSystem(InputSystem* Input);
-
-	HWND hwnd;
+	HWND hwnd = nullptr;
 
 	void Tick(double DeltaTime);
-
-	void AddListener(AxisBinding AxisBind);
-	void AddListener(KeyBinding KeyBind);
-
 	void ProcessRaw(int deltaX, int deltaY);
 
+	void AddInputSystem(InputSystem* Input);
+	void RemoveInputSystem(InputSystem* Input);
+	void ProcessInputSystem(InputSystem* inInput, double DeltaTime);
+	// Object Inputs
+	std::set<InputSystem*> Inputs;
 	std::vector<AxisBinding> AxisRawBindings;
 	std::vector<AxisBinding> AxisBindings;
 	std::vector<KeyBinding> KeyBindings;
 
-	float step = 0.05f;
+	float LastDeltaX = 0.0f;
+	float LastDeltaY = 0.0f;
+	float DeltaX = 0.0f;
+	float DeltaY = 0.0f;
 
-	float lastDeltaX = 0.0f;
-	float lastDeltaY = 0.0f;
-	float deltaX = 0.0f;
-	float deltaY = 0.0f;
+	POINT LastMousePos;
 
-	POINT currentMousePos;
-	POINT lastMousePos;
-
-	int currentMousePosX;
-	int currentMousePosY;
-
-	int lastMousePosX;
-	int lastMousePosY;
-
-	InputSystem* Input;
+	void ProcessEngineInputSystem(InputSystem* Input, double DeltaTime);
+	void SetEngineInputSystem(InputSystem* Input);
+	// Engine input
+	InputSystem* EngineInput;
+	std::vector<AxisBinding> EngineAxisRawBindings;
+	std::vector<AxisBinding> EngineAxisBindings;
+	std::vector<KeyBinding> EngineKeyBindings;
 
 	static WindowKeyMessageHandler* Get();
 

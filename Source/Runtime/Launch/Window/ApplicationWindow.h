@@ -23,9 +23,13 @@ public:
 	void OnResize() override;
 	void OnPosChange() override;
 
+	void EngineExit();
+
 private:
 	double deltaTime;
 	int maxSkipFrames;
+
+	std::shared_ptr<InputSystem> EngineInput;
 
 	//int x = 0, y = 0;
 	bool showDemoWindow = false;
