@@ -41,7 +41,8 @@ Surface::~Surface()
 
 void Surface::Clear(Color fillValue)
 {
-	memset(pBuffer.get(), fillValue.dword, width * height * sizeof(Color)); // Update color
+	int result = width * height;
+	memset(pBuffer.get(), fillValue.dword, result * sizeof(Color)); // Update color
 }
 
 void Surface::PutPixel(unsigned int x, unsigned int y, Color c)
@@ -51,7 +52,8 @@ void Surface::PutPixel(unsigned int x, unsigned int y, Color c)
 	assert(x <= width);
 	assert(y < height);
 
-	pBuffer[y * width + x] = c;
+	int resultX = y * width + x;
+	pBuffer[resultX] = c;
 }
 
 Surface::Color Surface::GetPixel(unsigned int x, unsigned int y) const
@@ -61,7 +63,8 @@ Surface::Color Surface::GetPixel(unsigned int x, unsigned int y) const
 	assert(x <= width);
 	assert(y < height);
 
-	return pBuffer[y * width + x];
+	int resultX = y * width + x;
+	return pBuffer[resultX];
 }
 
 unsigned int Surface::GetWidth() const
@@ -104,7 +107,8 @@ Surface Surface::FromFile(const std::string& name)
 
 		width = bitmap.GetWidth();
 		height = bitmap.GetHeight();
-		pBuffer = std::make_unique<Color[]>(width * height);
+		int result = width * height;
+		pBuffer = std::make_unique<Color[]>(result);
 
 		for (unsigned int y = 0; y < height; ++y)
 		{
@@ -112,7 +116,8 @@ Surface Surface::FromFile(const std::string& name)
 			{
 				Gdiplus::Color c;
 				bitmap.GetPixel(x, y, &c);
-				pBuffer[y * width + x] = c.GetValue();
+				int resultX = y * width + x;
+				pBuffer[resultX] = c.GetValue();
 			}
 		}
 	}
@@ -187,10 +192,11 @@ void Surface::Copy(const Surface& source)
 {
 	assert(width == source.width);
 	assert(height == source.height);
-	memcpy(pBuffer.get(), source.pBuffer.get(), width * height * sizeof(Color));
+	int result = width * height;
+	memcpy(pBuffer.get(), source.pBuffer.get(), result * sizeof(Color));
 }
 
-Surface& Surface::operator=(Surface&& donor) noexcept
+Surface& Surface::operator=(Surface&& donor)
 {
 	this->width = donor.width;
 	this->height = donor.height;

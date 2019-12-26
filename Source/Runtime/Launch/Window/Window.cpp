@@ -201,7 +201,7 @@ Window::Window(int width, int height, const std::string& name, const std::string
 	ImGui_ImplWin32_Init(hwnd);
 	WGE_LOG(WindowLog, LogVerbosity::Default, "ImGuiWin32 Init");
 
-	Graphics::GetGraphics().InitGraphics(hwnd, this->width, this->height);
+	Graphics::Get().Init(hwnd, this->width, this->height);
 
 	// register mouse raw input device
 	RAWINPUTDEVICE rid;
@@ -366,7 +366,7 @@ void Window::ToggleBordlessFullScreenMode()
 		SetWindowLong(GetHwnd(), GWL_EXSTYLE, WS_EX_TOPMOST);
 		ShowWindow(GetHwnd(), SW_SHOWMAXIMIZED);
 
-		Graphics::GetGraphics().OnBordlessMaximize();
+		Graphics::Get().OnBordlessMaximize();
 		ConfineCursor();
 		bBordlessMaximize = true;
 	}
@@ -612,9 +612,9 @@ void Window::Wnd_OnClose(HWND hwnd)
 {
 	// display message close
 	bPaused = true;
-	if (Graphics::GetGraphics().GetTimer())
+	if (Graphics::Get().GetTimer())
 	{
-		Graphics::GetGraphics().GetTimer()->Stop();
+		Graphics::Get().GetTimer()->Stop();
 	}
 
 	onDestroy();
@@ -636,9 +636,9 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 		FreeCursor();
 		ShowCursor();
 		SetPause(true);
-		if (Graphics::GetGraphics().GetTimer())
+		if (Graphics::Get().GetTimer())
 		{
-			Graphics::GetGraphics().GetTimer()->Stop();
+			Graphics::Get().GetTimer()->Stop();
 		}
 		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Paused"));
 	}
@@ -651,9 +651,9 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 			HideCursor();
 		}
 		SetPause(false);
-		if (Graphics::GetGraphics().GetTimer())
+		if (Graphics::Get().GetTimer())
 		{
-			Graphics::GetGraphics().GetTimer()->Start();
+			Graphics::Get().GetTimer()->Start();
 		}
 		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Resumed"));
 	}
@@ -703,9 +703,9 @@ void Window::Wnd_OnEnterSizeMove()
 	bResizing = true;
 	bPaused = true;
 
-	if (Graphics::GetGraphics().GetTimer())
+	if (Graphics::Get().GetTimer())
 	{
-		Graphics::GetGraphics().GetTimer()->Stop();
+		Graphics::Get().GetTimer()->Stop();
 	}
 }
 
@@ -715,9 +715,9 @@ void Window::Wnd_OnExitSizeMove()
 	bResizing = false;
 	OnResize();
 	bPaused = false;
-	if (Graphics::GetGraphics().GetTimer())
+	if (Graphics::Get().GetTimer())
 	{
-		Graphics::GetGraphics().GetTimer()->Start();
+		Graphics::Get().GetTimer()->Start();
 	}
 }
 

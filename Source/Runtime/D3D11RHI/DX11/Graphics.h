@@ -1,7 +1,6 @@
 #pragma once
 //#include <Runtime/Core/Core.h>
-#include <Runtime/D3D11RHI/DX11/DirectXIncludes.h>
-#include <Runtime/Core/Timer/Timer.h>
+#include <Runtime/D3D11RHI/RHIInterface.h>
 #include "../../Core/Math/Color.h"
 #include "../../Logger/LogDefinitions.h"
 
@@ -19,7 +18,7 @@ enum class DirectVersionName
 };
 
 
-class Graphics
+class Graphics : public RHIInterface
 {
 	friend Bind::Bindable;
 
@@ -28,7 +27,7 @@ public:
 	Graphics& operator=(const Graphics&) = delete;
 	~Graphics();
 
-	void InitGraphics(HWND hWnd, int width, int height);
+	virtual void Init(HWND hWnd, int width, int height) override;
 
 	// init DX11_0
 	void InitDX11();
@@ -89,7 +88,7 @@ protected:
 
 public:
 
-	static Graphics& GetGraphics();
+	static Graphics& Get();
 
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> GetDeviceContext3D() const;
 	Microsoft::WRL::ComPtr<ID3D11Device1> GetDevice3D() const;

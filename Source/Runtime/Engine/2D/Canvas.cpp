@@ -17,23 +17,23 @@ void Canvas::Render(double deltaTime)
 
 void Canvas::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY, const std::wstring& fontName)
 {
-	Graphics::GetGraphics().DrawText(text, fontSize, textColor, screenX, screenY, fontName);
+	Graphics::Get().DrawText(text, fontSize, textColor, screenX, screenY, fontName);
 }
 
 void Canvas::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY)
 {
-	Graphics::GetGraphics().DrawText(text, fontSize, textColor, screenX, screenY);
+	Graphics::Get().DrawText(text, fontSize, textColor, screenX, screenY);
 }
 
 void Canvas::DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color)
 {
-	Graphics::GetGraphics().DrawFillRect(screenX, screenY, screenW, screenH, color);
+	Graphics::Get().DrawFillRect(screenX, screenY, screenW, screenH, color);
 }
 
 void Canvas::ShowFPS()
 {
-	DrawText(L"FPS: " + std::to_wstring(Graphics::GetGraphics().GetFPS()), 10.0f, LinearColor::White, 10.0f, 25.0f);
-	DrawText(L"FrameTime: " + std::to_wstring(Graphics::GetGraphics().GetFrameTime()) + L" ms", 10.0f, LinearColor::White, 10.0f, 40.0f);
+	DrawText(L"FPS: " + std::to_wstring(Graphics::Get().GetFPS()), 10.0f, LinearColor::White, 10.0f, 25.0f);
+	DrawText(L"FrameTime: " + std::to_wstring(Graphics::Get().GetFrameTime()) + L" ms", 10.0f, LinearColor::White, 10.0f, 40.0f);
 }
 
 void Canvas::Tick(double deltaTime)

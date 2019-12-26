@@ -9,6 +9,8 @@ class Actor : public WObject
 {
 public:
 
+	~Actor();
+
 	void CreatePlayerInputComponent();
 
 	virtual void SetupPlayerInputComponent(InputSystem* InputComponent);

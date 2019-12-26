@@ -2,11 +2,6 @@
 #include "..\..\Core\Helpers\StringHelper.h"
 #include "..\..\Core\Math\WGMath.h"
 
-//#include "Graphics/Helpers/DirectXHelper.h"
-//#include "Windows/Logger/LogDefinitions.h"
-//#include "../Helpers/StringHelper.h"
-//#include "Math/WGMath.h"
-
 DEFINE_LOG_CATEGORY(GraphicsLog);
 DEFINE_LOG_CATEGORY(LogD3D11_1RHI);
 DEFINE_LOG_CATEGORY(LogD2D_RHI);
@@ -24,7 +19,7 @@ Graphics::~Graphics()
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics Release");
 }
 
-void Graphics::InitGraphics(HWND hWnd, int width, int height)
+void Graphics::Init(HWND hWnd, int width, int height)
 {
 	this->hWnd = hWnd;
 	this->width = width;
@@ -40,7 +35,6 @@ void Graphics::InitGraphics(HWND hWnd, int width, int height)
 	InitDX2D();
 	ImGui_ImplDX11_Init(pDevice3D.Get(), pDeviceContext3D.Get());
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui DX11 Init");
-
 }
 
 void Graphics::InitDX11()
@@ -501,7 +495,7 @@ bool Graphics::OnResize()
 
 			 //recompute client area and set new window size
 			RECT rect = { 0, 0, (long)currentModeDescription.Width,  (long)currentModeDescription.Height };
-			if (FAILED(AdjustWindowRectEx(&rect, WS_EX_OVERLAPPEDWINDOW, false, WS_OVERLAPPEDWINDOW)))
+			if (AdjustWindowRectEx(&rect, WS_EX_OVERLAPPEDWINDOW, false, WS_OVERLAPPEDWINDOW))
 			{
 				WGE_LOG(GraphicsLog, LogVerbosity::Error, "Failed to adjust window rectangle!");
 				return false;
@@ -921,7 +915,7 @@ bool Graphics::IsImguiEnabled() const
 	return imguiEnabled;
 }
 
-Graphics& Graphics::GetGraphics()
+Graphics& Graphics::Get()
 {
 	static Graphics graphics;
 	return graphics;

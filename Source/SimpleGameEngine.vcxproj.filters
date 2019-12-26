@@ -476,6 +476,7 @@
     <ClInclude Include="Runtime\CoreInput\PlatformInput.h" />
     <ClInclude Include="Runtime\CoreInput\InputSystem.h" />
     <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\AssimpIncludes.h" />
+    <ClInclude Include="Runtime\D3D11RHI\RHIInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

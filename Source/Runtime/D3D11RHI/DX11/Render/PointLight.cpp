@@ -111,7 +111,7 @@ void PointLight::Render(double deltaTime)
 
 	auto pcbDataCopy = LightData;
 	const auto pos = DirectX::XMLoadFloat3(&LightData.pos);
-	DirectX::XMStoreFloat3(&pcbDataCopy.pos, DirectX::XMVector3Transform(pos, Graphics::GetGraphics().GetCamera()));
+	DirectX::XMStoreFloat3(&pcbDataCopy.pos, DirectX::XMVector3Transform(pos, Graphics::Get().GetCamera()));
 
 	LightBuffer->Update(pcbDataCopy);
 	

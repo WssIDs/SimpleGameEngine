@@ -23,7 +23,7 @@ public:
 		csd.SysMemPitch = 0;
 		csd.SysMemSlicePitch = 0;
 
-		Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbd, &csd, &pPixelBuffer);
+		Graphics::Get().GetDevice3D()->CreateBuffer(&cbd, &csd, &pPixelBuffer);
 	}
 	
 	template<typename T>
@@ -31,15 +31,15 @@ public:
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 
-		Graphics::GetGraphics().GetDeviceContext3D()->Map(
+		Graphics::Get().GetDeviceContext3D()->Map(
 			pPixelBuffer.Get(), 0u,
 			D3D11_MAP_WRITE_DISCARD, 0u,
 			&msr
 		);
 
 		memcpy(msr.pData, &Buffer, sizeof(Buffer));
-		Graphics::GetGraphics().GetDeviceContext3D()->Unmap(pPixelBuffer.Get(), 0u);
-		Graphics::GetGraphics().GetDeviceContext3D()->PSSetConstantBuffers(Slot, 1u, pPixelBuffer.GetAddressOf());
+		Graphics::Get().GetDeviceContext3D()->Unmap(pPixelBuffer.Get(), 0u);
+		Graphics::Get().GetDeviceContext3D()->PSSetConstantBuffers(Slot, 1u, pPixelBuffer.GetAddressOf());
 	}
 
 private:
@@ -69,7 +69,7 @@ public:
 		csd.SysMemPitch = 0;
 		csd.SysMemSlicePitch = 0;
 
-		Graphics::GetGraphics().GetDevice3D()->CreateBuffer(&cbd, &csd, &pVertexBuffer);
+		Graphics::Get().GetDevice3D()->CreateBuffer(&cbd, &csd, &pVertexBuffer);
 	}
 
 	template<typename T>
@@ -77,15 +77,15 @@ public:
 	{
 		D3D11_MAPPED_SUBRESOURCE msr;
 
-		Graphics::GetGraphics().GetDeviceContext3D()->Map(
+		Graphics::Get().GetDeviceContext3D()->Map(
 			pVertexBuffer.Get(), 0u,
 			D3D11_MAP_WRITE_DISCARD, 0u,
 			&msr
 		);
 
 		memcpy(msr.pData, &Buffer, sizeof(Buffer));
-		Graphics::GetGraphics().GetDeviceContext3D()->Unmap(pVertexBuffer.Get(), 0u);
-		Graphics::GetGraphics().GetDeviceContext3D()->VSSetConstantBuffers(Slot, 1u, pVertexBuffer.GetAddressOf());
+		Graphics::Get().GetDeviceContext3D()->Unmap(pVertexBuffer.Get(), 0u);
+		Graphics::Get().GetDeviceContext3D()->VSSetConstantBuffers(Slot, 1u, pVertexBuffer.GetAddressOf());
 	}
 
 private:

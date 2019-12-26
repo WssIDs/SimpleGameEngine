@@ -32,13 +32,13 @@ void Material::Load()
 
 	if (VertexShaderBuffer != nullptr || PixelShaderBuffer != nullptr)
 	{
-		Graphics::GetGraphics().GetDevice3D()->CreateVertexShader(VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), nullptr, &VertexShader);
-		Graphics::GetGraphics().GetDevice3D()->CreatePixelShader(PixelShaderBuffer->GetBufferPointer(), PixelShaderBuffer->GetBufferSize(), nullptr, &PixelShader);
+		Graphics::Get().GetDevice3D()->CreateVertexShader(VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), nullptr, &VertexShader);
+		Graphics::Get().GetDevice3D()->CreatePixelShader(PixelShaderBuffer->GetBufferPointer(), PixelShaderBuffer->GetBufferSize(), nullptr, &PixelShader);
 
 		if (VertexShader.Get() != nullptr || PixelShader.Get() != nullptr)
 		{
-			Graphics::GetGraphics().GetDeviceContext3D()->VSSetShader(VertexShader.Get(), nullptr, 0);
-			Graphics::GetGraphics().GetDeviceContext3D()->PSSetShader(PixelShader.Get(), nullptr, 0);
+			Graphics::Get().GetDeviceContext3D()->VSSetShader(VertexShader.Get(), nullptr, 0);
+			Graphics::Get().GetDeviceContext3D()->PSSetShader(PixelShader.Get(), nullptr, 0);
 
 			MaterialName = Path::GetFileNameWithoutExtension(EffectPath);
 

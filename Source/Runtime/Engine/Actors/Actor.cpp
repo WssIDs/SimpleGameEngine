@@ -1,6 +1,11 @@
 #include "Actor.h"
 #include <Runtime/CoreInput/WindowKeyMessageHandler.h>
 
+Actor::~Actor()
+{
+	WindowKeyMessageHandler::Get()->RemoveInputSystem(InputComponent.get());
+}
+
 void Actor::CreatePlayerInputComponent()
 {
 	if(InputComponent == nullptr)
@@ -8,7 +13,7 @@ void Actor::CreatePlayerInputComponent()
 		InputComponent = std::make_shared<InputSystem>();
 	}
 
-	WindowKeyMessageHandler::Get()->SetInputSystem(InputComponent.get());
+	WindowKeyMessageHandler::Get()->AddInputSystem(InputComponent.get());
 	SetupPlayerInputComponent(InputComponent.get());
 }
 

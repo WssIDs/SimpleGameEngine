@@ -274,6 +274,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Runtime\D3D11RHI\DX11\DirectXIncludes.h" />
     <ClInclude Include="Runtime\CoreInput\InputTypes.h" />
     <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\AssimpIncludes.h" />
+    <ClInclude Include="Runtime\D3D11RHI\RHIInterface.h" />
     <ClInclude Include="Runtime\Engine\Test\Geometry.h" />
     <ClInclude Include="Runtime\Engine\Test\Buffer.h" />
     <ClInclude Include="Runtime\Engine\Test\TestTexture.h" />
