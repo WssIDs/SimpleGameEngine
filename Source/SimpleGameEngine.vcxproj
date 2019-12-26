@@ -209,44 +209,44 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Graphics\Test\InputTypes.cpp" />
-    <ClCompile Include="Graphics\Test\TestTexture.cpp" />
-    <ClCompile Include="Graphics\Test\NewCube.cpp" />
-    <ClCompile Include="Graphics\Test\Material.cpp" />
-    <ClCompile Include="Graphics\Test\NewSphere.cpp" />
-    <ClCompile Include="Graphics\Test\PlatformInput.cpp" />
-    <ClCompile Include="Graphics\Test\Primitive.cpp" />
-    <ClCompile Include="Windows\Launch\StreamingContent.cpp" />
-    <ClCompile Include="Windows\Launch\App.cpp" />
-    <ClCompile Include="Graphics\DX11\Render\Color.cpp" />
-    <ClCompile Include="Graphics\Engine\Actors\Actor.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\Blender.cpp" />
-    <ClCompile Include="Graphics\2D\Canvas.cpp" />
-    <ClCompile Include="Graphics\DX11\Primitive\Mesh.cpp" />
-    <ClCompile Include="Graphics\DX11\Render\Vertex.cpp" />
-    <ClCompile Include="Graphics\DX11\Render\PointLight.cpp" />
-    <ClCompile Include="Graphics\Engine\Actors\Camera.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\Bindable.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\IndexBuffer.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\InputLayout.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\PixelShader.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\Sampler.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\Texture.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\Topology.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\TransformConstantBuffer.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\VertexBuffer.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\VertexShader.cpp" />
-    <ClCompile Include="Graphics\DX11\Drawable\Drawable.cpp" />
-    <ClCompile Include="Graphics\DX11\Graphics.cpp" />
-    <ClCompile Include="Graphics\DX11\Render\Surface.cpp" />
-    <ClCompile Include="Graphics\GUI\ImguiManager.cpp" />
-    <ClCompile Include="Graphics\DX11\Primitive\SolidSphere.cpp" />
-    <ClCompile Include="Graphics\DX11\Primitive\TestPlane.cpp" />
-    <ClCompile Include="Graphics\DX11\Primitive\TestCube.cpp" />
-    <ClCompile Include="Graphics\Engine\Core\Level\Level.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\Rasterizer.cpp" />
-    <ClCompile Include="Graphics\Engine\Actors\Light\TestPointLight.cpp" />
-    <ClCompile Include="Graphics\Test\InputSystem.cpp" />
+    <ClCompile Include="Runtime\CoreInput\InputTypes.cpp" />
+    <ClCompile Include="Runtime\Engine\Test\TestTexture.cpp" />
+    <ClCompile Include="Runtime\Engine\Test\NewCube.cpp" />
+    <ClCompile Include="Runtime\Engine\Test\Material.cpp" />
+    <ClCompile Include="Runtime\Engine\Test\NewSphere.cpp" />
+    <ClCompile Include="Runtime\CoreInput\PlatformInput.cpp" />
+    <ClCompile Include="Runtime\Engine\Test\Primitive.cpp" />
+    <ClCompile Include="Runtime\Launch\StreamingContent.cpp" />
+    <ClCompile Include="Runtime\Launch\App.cpp" />
+    <ClCompile Include="Runtime\Core\Math\Color.cpp" />
+    <ClCompile Include="Runtime\Engine\Actors\Actor.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\Blender.cpp" />
+    <ClCompile Include="Runtime\Engine\2D\Canvas.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Primitive\Mesh.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Render\Vertex.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Render\PointLight.cpp" />
+    <ClCompile Include="Runtime\Engine\Actors\Camera.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\Bindable.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\IndexBuffer.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\InputLayout.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\PixelShader.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\Sampler.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\Texture.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\Topology.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\TransformConstantBuffer.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\VertexBuffer.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\VertexShader.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Drawable\Drawable.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Graphics.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Render\Surface.cpp" />
+    <ClCompile Include="Runtime\GUI\ImguiManager.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Primitive\SolidSphere.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Primitive\TestPlane.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Primitive\TestCube.cpp" />
+    <ClCompile Include="Runtime\Engine\Level\Level.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\Rasterizer.cpp" />
+    <ClCompile Include="Runtime\Engine\Actors\Light\TestPointLight.cpp" />
+    <ClCompile Include="Runtime\CoreInput\InputSystem.cpp" />
     <ClCompile Include="ThirdParty\DirectXTex\Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_demo.cpp" />
@@ -254,78 +254,81 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="ThirdParty\Imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="ThirdParty\Imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\TransformConstantBufferDouble.cpp" />
     <ClCompile Include="ThirdParty\OpenFBX\miniz.c" />
     <ClCompile Include="ThirdParty\OpenFBX\ofbx.cpp" />
-    <ClCompile Include="Windows\Launch\LaunchEngineLoop.cpp" />
-    <ClCompile Include="Windows\Launch\WEngine.cpp" />
-    <ClCompile Include="Windows\Launch\Window\WindowKeyMessageHandler.cpp" />
-    <ClCompile Include="Windows\Launch\Window\ApplicationWindow.cpp" />
-    <ClCompile Include="Windows\Input\KeyboardInput.cpp" />
-    <ClCompile Include="Windows\Input\MouseInput.cpp" />
-    <ClCompile Include="Windows\Logger\Log.cpp" />
-    <ClCompile Include="Windows\main.cpp" />
-    <ClCompile Include="Windows\Timer\Timer.cpp" />
-    <ClCompile Include="Windows\Launch\Window\Window.cpp" />
-    <ClCompile Include="Graphics\Engine\Core\WObject.cpp" />
+    <ClCompile Include="Runtime\Launch\LaunchEngineLoop.cpp" />
+    <ClCompile Include="Runtime\Launch\WEngine.cpp" />
+    <ClCompile Include="Runtime\CoreInput\WindowKeyMessageHandler.cpp" />
+    <ClCompile Include="Runtime\Launch\Window\ApplicationWindow.cpp" />
+    <ClCompile Include="Runtime\Input\KeyboardInput.cpp" />
+    <ClCompile Include="Runtime\Input\MouseInput.cpp" />
+    <ClCompile Include="Runtime\Logger\Log.cpp" />
+    <ClCompile Include="Runtime\Launch\main.cpp" />
+    <ClCompile Include="Runtime\Core\Timer\Timer.cpp" />
+    <ClCompile Include="Runtime\Launch\Window\Window.cpp" />
+    <ClCompile Include="Runtime\Engine\WObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graphics\Test\InputTypes.h" />
-    <ClInclude Include="Graphics\Test\Geometry.h" />
-    <ClInclude Include="Graphics\Test\Buffer.h" />
-    <ClInclude Include="Graphics\Test\TestTexture.h" />
-    <ClInclude Include="Graphics\Test\NewCube.h" />
-    <ClInclude Include="Graphics\Test\Material.h" />
-    <ClInclude Include="Graphics\Test\NewSphere.h" />
-    <ClInclude Include="Graphics\Test\PlatformInput.h" />
-    <ClInclude Include="Graphics\Test\Primitive.h" />
-    <ClInclude Include="Windows\Launch\StreamingContent.h" />
-    <ClInclude Include="Windows\Launch\App.h" />
-    <ClInclude Include="Graphics\Engine\Engine.h" />
-    <ClInclude Include="Graphics\Engine\Actors\Actor.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\Blender.h" />
-    <ClInclude Include="Graphics\2D\Canvas.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\BindableCodex.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\Cube.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\Plane.h" />
-    <ClInclude Include="Graphics\DX11\Math\XM.h" />
-    <ClInclude Include="Graphics\DX11\Primitive\Mesh.h" />
-    <ClInclude Include="Graphics\DX11\Render\Color.h" />
-    <ClInclude Include="Graphics\DX11\Render\PointLight.h" />
-    <ClInclude Include="Graphics\Engine\Actors\Camera.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\Bindable.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\BindableCommon.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\ConstantBuffers.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\IndexBuffer.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\InputLayout.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\PixelShader.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\Sampler.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\Texture.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\Topology.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\TransformConstantBuffer.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\VertexBuffer.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\VertexShader.h" />
-    <ClInclude Include="Graphics\DX11\Drawable\Drawable.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\IndexedTriangleList.h" />
-    <ClInclude Include="Graphics\DX11\Geometry\Sphere.h" />
-    <ClInclude Include="Graphics\DX11\Graphics.h" />
-    <ClInclude Include="Graphics\DX11\Render\Surface.h" />
-    <ClInclude Include="Graphics\DX11\Math\WGMath.h" />
-    <ClInclude Include="Graphics\DX12\d3dx12.h" />
-    <ClInclude Include="Graphics\Engine\Core.h" />
-    <ClInclude Include="Graphics\Engine\ObjectGlobals.h" />
-    <ClInclude Include="Graphics\Helpers\DirectXHelper.h" />
-    <ClInclude Include="Graphics\GUI\ImguiManager.h" />
-    <ClInclude Include="Graphics\DX11\Primitive\SolidSphere.h" />
-    <ClInclude Include="Graphics\DX11\Primitive\TestPlane.h" />
-    <ClInclude Include="Graphics\DX11\Primitive\TestCube.h" />
-    <ClInclude Include="Graphics\Helpers\Path.h" />
-    <ClInclude Include="Graphics\Helpers\StringHelper.h" />
-    <ClInclude Include="Graphics\Engine\Core\IWObject.h" />
-    <ClInclude Include="Graphics\Engine\Core\Level\Level.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\Rasterizer.h" />
-    <ClInclude Include="Graphics\Engine\Actors\Light\TestPointLight.h" />
-    <ClInclude Include="Graphics\Test\InputSystem.h" />
+    <ClInclude Include="Runtime\Core\CoreTypes.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\DirectXIncludes.h" />
+    <ClInclude Include="Runtime\CoreInput\InputTypes.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\AssimpIncludes.h" />
+    <ClInclude Include="Runtime\Engine\Test\Geometry.h" />
+    <ClInclude Include="Runtime\Engine\Test\Buffer.h" />
+    <ClInclude Include="Runtime\Engine\Test\TestTexture.h" />
+    <ClInclude Include="Runtime\Engine\Test\NewCube.h" />
+    <ClInclude Include="Runtime\Engine\Test\Material.h" />
+    <ClInclude Include="Runtime\Engine\Test\NewSphere.h" />
+    <ClInclude Include="Runtime\CoreInput\PlatformInput.h" />
+    <ClInclude Include="Runtime\Engine\Test\Primitive.h" />
+    <ClInclude Include="Runtime\Launch\StreamingContent.h" />
+    <ClInclude Include="Runtime\Launch\App.h" />
+    <ClInclude Include="Runtime\Engine\Engine.h" />
+    <ClInclude Include="Runtime\Engine\Actors\Actor.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\Blender.h" />
+    <ClInclude Include="Runtime\Engine\2D\Canvas.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\BindableCodex.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Geometry\Cube.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Geometry\Plane.h" />
+    <ClInclude Include="Runtime\Core\Math\XM.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\Mesh.h" />
+    <ClInclude Include="Runtime\Core\Math\Color.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Render\PointLight.h" />
+    <ClInclude Include="Runtime\Engine\Actors\Camera.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\Bindable.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\BindableCommon.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\ConstantBuffers.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\IndexBuffer.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\InputLayout.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\PixelShader.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\Sampler.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\Texture.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\Topology.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\TransformConstantBuffer.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\VertexBuffer.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\VertexShader.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Drawable\Drawable.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Geometry\IndexedTriangleList.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Geometry\Sphere.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Graphics.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Render\Surface.h" />
+    <ClInclude Include="Runtime\Core\Math\WGMath.h" />
+    <ClInclude Include="Runtime\D3D12RHI\DX12\d3dx12.h" />
+    <ClInclude Include="Runtime\Core\Core.h" />
+    <ClInclude Include="Runtime\Engine\ObjectGlobals.h" />
+    <ClInclude Include="Runtime\Core\Helpers\DirectXHelper.h" />
+    <ClInclude Include="Runtime\GUI\ImguiManager.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\SolidSphere.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\TestPlane.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\TestCube.h" />
+    <ClInclude Include="Runtime\Core\Helpers\Path.h" />
+    <ClInclude Include="Runtime\Core\Helpers\StringHelper.h" />
+    <ClInclude Include="Runtime\Engine\IWObject.h" />
+    <ClInclude Include="Runtime\Engine\Level\Level.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\Rasterizer.h" />
+    <ClInclude Include="Runtime\Engine\Actors\Light\TestPointLight.h" />
+    <ClInclude Include="Runtime\CoreInput\InputSystem.h" />
     <ClInclude Include="ThirdParty\Assimp\aabb.h" />
     <ClInclude Include="ThirdParty\Assimp\ai_assert.h" />
     <ClInclude Include="ThirdParty\Assimp\anim.h" />
@@ -563,32 +566,32 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="ThirdParty\Imgui\imstb_rectpack.h" />
     <ClInclude Include="ThirdParty\Imgui\imstb_textedit.h" />
     <ClInclude Include="ThirdParty\Imgui\imstb_truetype.h" />
-    <ClInclude Include="Graphics\DX11\Render\Vertex.h" />
-    <ClInclude Include="Graphics\DX11\Bindable\TransformConstantBufferDouble.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Render\Vertex.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\Bindable\TransformConstantBufferDouble.h" />
     <ClInclude Include="ThirdParty\OpenFBX\miniz.h" />
     <ClInclude Include="ThirdParty\OpenFBX\ofbx.h" />
-    <ClInclude Include="Windows\Launch\LaunchEngineLoop.h" />
-    <ClInclude Include="Windows\Launch\WEngine.h" />
-    <ClInclude Include="Windows\Launch\Window\WindowKeyMessageHandler.h" />
-    <ClInclude Include="Windows\Launch\Window\ApplicationWindow.h" />
-    <ClInclude Include="Windows\Input\KeyboardInput.h" />
-    <ClInclude Include="Windows\Input\MouseInput.h" />
-    <ClInclude Include="Windows\Launch\Window\WindowHandle.h" />
-    <ClInclude Include="Windows\Logger\Log.h" />
-    <ClInclude Include="Windows\Logger\LogDefinitions.h" />
+    <ClInclude Include="Runtime\Launch\LaunchEngineLoop.h" />
+    <ClInclude Include="Runtime\Launch\WEngine.h" />
+    <ClInclude Include="Runtime\CoreInput\WindowKeyMessageHandler.h" />
+    <ClInclude Include="Runtime\Launch\Window\ApplicationWindow.h" />
+    <ClInclude Include="Runtime\Input\KeyboardInput.h" />
+    <ClInclude Include="Runtime\Input\MouseInput.h" />
+    <ClInclude Include="Runtime\Launch\Window\WindowHandle.h" />
+    <ClInclude Include="Runtime\Logger\Log.h" />
+    <ClInclude Include="Runtime\Logger\LogDefinitions.h" />
     <ClInclude Include="Resources\resource.h" />
-    <ClInclude Include="Windows\Timer\Timer.h" />
-    <ClInclude Include="Windows\Launch\Window\Window.h" />
-    <ClInclude Include="Graphics\Engine\Core\WObject.h" />
+    <ClInclude Include="Runtime\Core\Timer\Timer.h" />
+    <ClInclude Include="Runtime\Launch\Window\Window.h" />
+    <ClInclude Include="Runtime\Engine\WObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\Shaders\Buffers\Transform.hlsli" />
-    <None Include="Graphics\Shaders\Functions\LightVectorData.hlsli" />
-    <None Include="Graphics\Shaders\Functions\ShaderFunctions.hlsli" />
-    <None Include="Graphics\Shaders\Lights\PointLight.hlsli" />
+    <None Include="Shaders\Buffers\Transform.hlsli" />
+    <None Include="Shaders\Functions\LightVectorData.hlsli" />
+    <None Include="Shaders\Functions\ShaderFunctions.hlsli" />
+    <None Include="Shaders\Lights\PointLight.hlsli" />
     <None Include="Resources\SimpleGameEngine.aps" />
     <None Include="ThirdParty\Assimp\assimp\color4.inl" />
     <None Include="ThirdParty\Assimp\assimp\material.inl" />
@@ -624,7 +627,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ResourceCompile Include="Resources\SimpleGameEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPS.hlsl">
+    <FxCompile Include="Shaders\PixelShaders\PhongPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -634,37 +637,37 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSNormalMap.hlsl">
+    <FxCompile Include="Shaders\PixelShaders\PhongPSNormalMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSNormalMapObject.hlsl">
+    <FxCompile Include="Shaders\PixelShaders\PhongPSNormalMapObject.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSNotex.hlsl">
+    <FxCompile Include="Shaders\PixelShaders\PhongPSNotex.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSSpecular.hlsl">
+    <FxCompile Include="Shaders\PixelShaders\PhongPSSpecular.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\PixelShaders\PhongPSSpecularNormalMap.hlsl">
+    <FxCompile Include="Shaders\PixelShaders\PhongPSSpecularNormalMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVS.hlsl">
+    <FxCompile Include="Shaders\VertexShaders\PhongVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -674,19 +677,19 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVSNormalMap.hlsl">
+    <FxCompile Include="Shaders\VertexShaders\PhongVSNormalMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\VertexShaders\PhongVSNotex.hlsl">
+    <FxCompile Include="Shaders\VertexShaders\PhongVSNotex.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\PixelShaders\SolidPS.hlsl">
+    <FxCompile Include="Shaders\PixelShaders\SolidPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -696,7 +699,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Graphics\Shaders\VertexShaders\SolidVS.hlsl">
+    <FxCompile Include="Shaders\VertexShaders\SolidVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
