@@ -63,7 +63,7 @@ private:
 
 	std::string getCurrentTime() const;
 
-	std::string getCurrentTimeByFormat(const std::string& format = "%d.%m.%Y %H.%M.%S") const;
+	std::string getCurrentTimeByFormat(const std::string& format) const;
 		std::vector<std::filesystem::path> GetFilesByMask(std::filesystem::path& directory,const std::string& filemask);
 };
 

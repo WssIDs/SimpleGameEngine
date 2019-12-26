@@ -86,7 +86,7 @@ void Log::InternalMsg(std::string format, ...)
 	}
 
 	std::stringstream output;
-	output << formatted.get() << getCurrentTimeByFormat();
+	output << formatted.get() << getCurrentTimeByFormat("%d.%m.%Y %H.%M.%S");
 
 	if (is_opened)
 	{

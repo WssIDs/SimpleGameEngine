@@ -21,6 +21,8 @@ WindowKeyMessageHandler::WindowKeyMessageHandler()
 
 	KeyBindings.emplace_back("TestAction", EKeys::SpaceBar);
 	KeyBindings.emplace_back("ToggleCameraInput", EKeys::F2, /* Shift */ true);
+
+	EKeys::Initialize();
 }
 
 WindowKeyMessageHandler::~WindowKeyMessageHandler()
@@ -56,7 +58,7 @@ void WindowKeyMessageHandler::ProcessInputSystem(InputSystem* Input, double Delt
 		{
 			const unsigned int* keycode = nullptr;
 			const unsigned int* charcode = nullptr;
-			FInputKeyManager::Get().GetCodesFromKey(Item.TestKey, keycode, charcode);
+			FInputKeyManager::Get().GetCodesFromKey(Item.GetKey(), keycode, charcode);
 
 			if (keycode != nullptr)
 			{
@@ -67,7 +69,7 @@ void WindowKeyMessageHandler::ProcessInputSystem(InputSystem* Input, double Delt
 					if (!Item.KeyIsDown() && KeyIsPressed && Item.KeyIsUp())
 					{
 						Item.KeyEvent = EInputEvent::IE_Pressed;
-						WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Press = %s", Item.TestKey.GetDisplayName().c_str());
+						WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Press = %s", Item.GetKey().GetDisplayName().c_str());
 						Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
 					}
 				}
@@ -77,7 +79,7 @@ void WindowKeyMessageHandler::ProcessInputSystem(InputSystem* Input, double Delt
 				if (!Item.KeyIsUp() && KeyIsReleased && Item.KeyIsDown())
 				{
 					Item.KeyEvent = EInputEvent::IE_Released;
-					WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Release = %s", Item.TestKey.GetDisplayName().c_str());
+					WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Release = %s", Item.GetKey().GetDisplayName().c_str());
 					Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
 				}
 			}
@@ -110,7 +112,7 @@ void WindowKeyMessageHandler::ProcessInputSystem(InputSystem* Input, double Delt
 			{
 				const unsigned int* keycode = nullptr;
 				const unsigned int* charcode = nullptr;
-				FInputKeyManager::Get().GetCodesFromKey(axisItem.TestKey, keycode, charcode);
+				FInputKeyManager::Get().GetCodesFromKey(axisItem.GetKey(), keycode, charcode);
 
 				if (keycode != nullptr)
 				{
@@ -156,7 +158,7 @@ void WindowKeyMessageHandler::ProcessInputSystem(InputSystem* Input, double Delt
 				GetCursorPos(&LastMousePos);
 				if (ScreenToClient(hwnd, &LastMousePos))
 				{
-					if (axisRawItem.TestKey == EKeys::MouseX)
+					if (axisRawItem.GetKey() == EKeys::MouseX)
 					{
 						if (DeltaX != LastDeltaX)
 						{
@@ -187,7 +189,7 @@ void WindowKeyMessageHandler::ProcessInputSystem(InputSystem* Input, double Delt
 						}
 					}
 
-					if (axisRawItem.TestKey == EKeys::MouseY)
+					if (axisRawItem.GetKey() == EKeys::MouseY)
 					{
 						if (DeltaY != LastDeltaY)
 						{
@@ -231,7 +233,7 @@ void WindowKeyMessageHandler::ProcessEngineInputSystem(InputSystem* Input, doubl
 		{
 			const unsigned int* keycode = nullptr;
 			const unsigned int* charcode = nullptr;
-			FInputKeyManager::Get().GetCodesFromKey(Item.TestKey, keycode, charcode);
+			FInputKeyManager::Get().GetCodesFromKey(Item.GetKey(), keycode, charcode);
 
 			if (keycode != nullptr)
 			{
@@ -242,7 +244,7 @@ void WindowKeyMessageHandler::ProcessEngineInputSystem(InputSystem* Input, doubl
 					if (!Item.KeyIsDown() && KeyIsPressed && Item.KeyIsUp())
 					{
 						Item.KeyEvent = EInputEvent::IE_Pressed;
-						WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Press = %s", Item.TestKey.GetDisplayName().c_str());
+						WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Press = %s", Item.GetKey().GetDisplayName().c_str());
 						Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
 					}
 				}
@@ -252,7 +254,7 @@ void WindowKeyMessageHandler::ProcessEngineInputSystem(InputSystem* Input, doubl
 				if (!Item.KeyIsUp() && KeyIsReleased && Item.KeyIsDown())
 				{
 					Item.KeyEvent = EInputEvent::IE_Released;
-					WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Release = %s", Item.TestKey.GetDisplayName().c_str());
+					WGE_LOG(MessageHandlerLog, LogVerbosity::Warning, "Key Release = %s", Item.GetKey().GetDisplayName().c_str());
 					Input->ExecuteKey(Item.ActionName, Item.KeyEvent);
 				}
 			}
@@ -285,7 +287,7 @@ void WindowKeyMessageHandler::ProcessEngineInputSystem(InputSystem* Input, doubl
 			{
 				const unsigned int* keycode = nullptr;
 				const unsigned int* charcode = nullptr;
-				FInputKeyManager::Get().GetCodesFromKey(axisItem.TestKey, keycode, charcode);
+				FInputKeyManager::Get().GetCodesFromKey(axisItem.GetKey(), keycode, charcode);
 
 				if (keycode != nullptr)
 				{
@@ -331,7 +333,7 @@ void WindowKeyMessageHandler::ProcessEngineInputSystem(InputSystem* Input, doubl
 				GetCursorPos(&LastMousePos);
 				if (ScreenToClient(hwnd, &LastMousePos))
 				{
-					if (axisRawItem.TestKey == EKeys::MouseX)
+					if (axisRawItem.GetKey() == EKeys::MouseX)
 					{
 						if (DeltaX != LastDeltaX)
 						{
@@ -362,7 +364,7 @@ void WindowKeyMessageHandler::ProcessEngineInputSystem(InputSystem* Input, doubl
 						}
 					}
 
-					if (axisRawItem.TestKey == EKeys::MouseY)
+					if (axisRawItem.GetKey() == EKeys::MouseY)
 					{
 						if (DeltaY != LastDeltaY)
 						{

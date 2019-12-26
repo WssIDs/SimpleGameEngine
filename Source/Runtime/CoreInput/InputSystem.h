@@ -54,11 +54,11 @@ struct KeyBinding
 	KeyBinding()
 		:
 		ActionName(""),
-		Key(0),
+		Key(EKeys::Invalid),
 		KeyEvent(EInputEvent::IE_MAX)
 	{}
 
-	KeyBinding(unsigned char Key, EInputEvent KeyEvent)
+	KeyBinding(FKey Key, EInputEvent KeyEvent)
 		:
 		ActionName(""),
 		Key(Key),
@@ -77,21 +77,21 @@ struct KeyBinding
 	//{
 	//}
 
-	KeyBinding(std::string ActionName, unsigned char Key, bool bShift = false, bool bAlt = false, bool bCtrl = false)
-		:
-		ActionName(ActionName),
-		Key(Key),
-		KeyEvent(EInputEvent::IE_MAX),
-		bShift(bShift),
-		bAlt(bAlt),
-		bCtrl(bCtrl)
-	{
-	}
+	//KeyBinding(std::string ActionName, unsigned char Key, bool bShift = false, bool bAlt = false, bool bCtrl = false)
+	//	:
+	//	ActionName(ActionName),
+	//	Key(Key),
+	//	KeyEvent(EInputEvent::IE_MAX),
+	//	bShift(bShift),
+	//	bAlt(bAlt),
+	//	bCtrl(bCtrl)
+	//{
+	//}
 
 	KeyBinding(std::string ActionName, FKey Key, bool bShift = false, bool bAlt = false, bool bCtrl = false, bool bCmd = false)
 		:
 		ActionName(ActionName),
-		TestKey(Key),
+		Key(Key),
 		KeyEvent(EInputEvent::IE_Released),
 		bShift(bShift),
 		bAlt(bAlt),
@@ -103,7 +103,7 @@ struct KeyBinding
 	KeyBinding(std::string ActionName, EInputEvent KeyEvent)
 		:
 		ActionName(ActionName),
-		Key(0),
+		Key(EKeys::Invalid),
 		KeyEvent(KeyEvent)
 	{
 	}
@@ -138,17 +138,20 @@ struct KeyBinding
 		return KeyEvent == EInputEvent::IE_Released ? true : false;
 	}
 
+	FKey GetKey() const
+	{
+		return Key;
+	}
+
 	bool bShift = false;
 	bool bAlt = false;
 	bool bCtrl = false;
 	bool bCmd = false;
 
 	std::string ActionName;
-	unsigned char Key;
 	EInputEvent KeyEvent;
 
-
-	FKey TestKey;
+	FKey Key;
 };
 
 struct AxisBinding
@@ -157,11 +160,11 @@ struct AxisBinding
 		:
 		Scale(0.0f),
 		MaxScale(0.0f),
-		Key(0),
+		Key(EKeys::Invalid),
 		KeyEvent(EInputEvent::IE_Axis)
 	{}
 
-	AxisBinding(unsigned char Key, EInputEvent KeyEvent)
+	AxisBinding(FKey Key, EInputEvent KeyEvent)
 		:
 		Scale(0.0f),
 		MaxScale(0.0f),
@@ -169,7 +172,7 @@ struct AxisBinding
 		KeyEvent(KeyEvent)
 	{}
 
-	AxisBinding(unsigned char Key, float MaxScale)
+	AxisBinding(FKey Key, float MaxScale)
 		:
 		Scale(0.0f),
 		MaxScale(MaxScale),
@@ -178,7 +181,7 @@ struct AxisBinding
 	{
 	}
 
-	AxisBinding(unsigned char Key, EInputEvent KeyEvent, float MaxScale)
+	AxisBinding(FKey Key, EInputEvent KeyEvent, float MaxScale)
 		:
 		Scale(0.0f),
 		MaxScale(MaxScale),
@@ -187,20 +190,19 @@ struct AxisBinding
 	{
 	}
 
-
-	// for Bindind Axis
+	// for Binding Axis
 	AxisBinding(const std::string& AxisName)
 		:
 		AxisName(AxisName),
 		Scale(0.0f),
 		MaxScale(0.0f),
-		Key(0),
+		Key(EKeys::Invalid),
 		KeyEvent(EInputEvent::IE_Axis)
 	{
 	}
 
 	// For Message Handler
-	AxisBinding(const std::string& AxisName, float MaxScale, unsigned char Key)
+	AxisBinding(const std::string& AxisName, float MaxScale, FKey Key)
 		:
 		AxisName(AxisName),
 		Scale(0.0f),
@@ -210,15 +212,15 @@ struct AxisBinding
 	{
 	}
 
-	AxisBinding(const std::string& AxisName, float MaxScale, FKey Key)
-		:
-		AxisName(AxisName),
-		Scale(0.0f),
-		MaxScale(MaxScale),
-		TestKey(Key),
-		KeyEvent(EInputEvent::IE_Axis)
-	{
-	}
+	//AxisBinding(const std::string& AxisName, float MaxScale, FKey Key)
+	//	:
+	//	AxisName(AxisName),
+	//	Scale(0.0f),
+	//	MaxScale(MaxScale),
+	//	Key(Key),
+	//	KeyEvent(EInputEvent::IE_Axis)
+	//{
+	//}
 
 	// For Message Handler
 	AxisBinding(const std::string& AxisName, float MaxScale)
@@ -226,7 +228,7 @@ struct AxisBinding
 		AxisName(AxisName),
 		Scale(0.0f),
 		MaxScale(MaxScale),
-		Key(0),
+		Key(EKeys::Invalid),
 		KeyEvent(EInputEvent::IE_Axis)
 	{
 	}
@@ -243,13 +245,17 @@ struct AxisBinding
 		}
 	}
 
+	FKey GetKey() const
+	{
+		return Key;
+	}
+
 	std::string AxisName;
 	float MaxScale = 0.0f;
 	float Scale = 0.0f;
-	unsigned char Key;
 	EInputEvent KeyEvent;
 
-	FKey TestKey;
+	FKey Key;
 };
 
 //   онтейнер дл€ хранени€ указател€ на метод.
@@ -359,7 +365,7 @@ public:
 	}
 
 	template< class UserClass, class Func>
-	void Bind(const unsigned char Key, const EInputEvent KeyEvent, UserClass* Object, Func Method)
+	void Bind(const FKey Key, const EInputEvent KeyEvent, UserClass* Object, Func Method)
 	{
 		if(DelegateContainer)
 		{
@@ -436,7 +442,7 @@ public:
 	}
 
 	template< class UserClass, class Func>
-	void Bind(const unsigned char Key, const EInputEvent KeyEvent, float MaxScale, UserClass* Object, Func Method)
+	void Bind(const FKey Key, const EInputEvent KeyEvent, float MaxScale, UserClass* Object, Func Method)
 	{
 		if (DelegateContainer)
 		{
@@ -515,7 +521,7 @@ public:
 	//}
 
 	template< class UserClass, class Func>
-	void BindAction(const std::string& ActionName, const unsigned char Key, const EInputEvent KeyEvent, UserClass* Object, Func Method)
+	void BindAction(const std::string& ActionName, const FKey Key, const EInputEvent KeyEvent, UserClass* Object, Func Method)
 	{
 		auto newdelegate = new DelegateNoArgs();
 		newdelegate->Bind(Key, KeyEvent, Object, Method);
@@ -590,13 +596,13 @@ public:
 		}
 	}
 
-	void ExecuteKey(const unsigned char Key,const EInputEvent KeyEvent)
+	void ExecuteKey(FKey Key,const EInputEvent KeyEvent)
 	{
 		//auto inputKey = KeyBinding(Key, KeyEvent);
 
 		for (auto & Bind : BindsKeyAction)
 		{
-			if(Bind->GetKeyInfo().Key == Key && Bind->GetKeyInfo().KeyEvent == KeyEvent)
+			if(Bind->GetKeyInfo().GetKey() == Key && Bind->GetKeyInfo().KeyEvent == KeyEvent)
 			{
 				Bind->Execute();
 			}
