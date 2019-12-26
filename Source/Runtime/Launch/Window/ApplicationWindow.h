@@ -24,17 +24,10 @@ public:
 	void OnPosChange() override;
 
 	void EngineExit();
+	void ChangeFullScreenMode();
 
 private:
-	double deltaTime;
-	int maxSkipFrames;
-
 	std::shared_ptr<InputSystem> EngineInput;
-
-	//int x = 0, y = 0;
-	bool showDemoWindow = false;
-	float speedFactor = 1.0f;
-
 	Level* level;
 };
 

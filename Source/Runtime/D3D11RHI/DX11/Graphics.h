@@ -1,5 +1,4 @@
 #pragma once
-//#include <Runtime/Core/Core.h>
 #include <Runtime/D3D11RHI/RHIInterface.h>
 #include "../../Core/Math/Color.h"
 #include "../../Logger/LogDefinitions.h"
@@ -61,11 +60,6 @@ public:
 
 	void SetViewport(int width, int height);
 
-	void CalculateFrameStats();
-	Timer* GetTimer() const;
-	int GetFPS() const;
-	double GetFrameTime() const;
-
 	// Clear buffers and set a new TragetView 
 	void BeginFrame(float red, float green, float blue);
 	// Show scene
@@ -107,17 +101,17 @@ private:
 	int height = 0;
 
 	// color format
-	DXGI_FORMAT desiredColourFormat;						// the desired color format
-	unsigned int numberOfSupportedModes;					// the number of supported screen modes for the desired color format
-	DXGI_MODE_DESC* supportedModes;							// list of all supported screen modes for the desired color format
-	DXGI_MODE_DESC  currentModeDescription;					// description of the currently active screen mode
-	unsigned int currentModeIndex;							// the index of the current mode in the list of all supported screen modes
-	bool startInFullscreen;									// true if the game should start in full screen mode
-	bool currentlyInFullscreen;								// true if the game is currently in full screen mode
-	bool changeMode;										// true if the screen resolution should be changed this frame
+	DXGI_FORMAT desiredColourFormat = {};						// the desired color format
+	unsigned int numberOfSupportedModes = 0;					// the number of supported screen modes for the desired color format
+	DXGI_MODE_DESC* supportedModes = nullptr;					// list of all supported screen modes for the desired color format
+	DXGI_MODE_DESC  currentModeDescription = {};				// description of the currently active screen mode
+	unsigned int currentModeIndex = 0;							// the index of the current mode in the list of all supported screen modes
+	bool startInFullscreen = false;								// true if the game should start in full screen mode
+	bool currentlyInFullscreen = false;							// true if the game is currently in full screen mode
+	bool changeMode = false;									// true if the screen resolution should be changed this frame
 
-	DirectX::XMMATRIX projection;
-	DirectX::XMMATRIX camera;
+	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX camera = DirectX::XMMatrixIdentity();
 
 	bool imguiEnabled = true;
 
@@ -135,13 +129,6 @@ private:
 	Microsoft::WRL::ComPtr<ID2D1DeviceContext1> pDeviceContext2D = nullptr;		// pointer to the device context
 
 	Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pDefaultBrush = nullptr;
-
-	std::shared_ptr<Timer> timer;
-	int fps = 0;							// frames per second
-	double mspf = 0.0;					    // milliseconds per frame
-
-	int nFrames = 0;				    // number of frames seen
-	double elapsedTime = 0.0;		    // time since last call
 };
 
 

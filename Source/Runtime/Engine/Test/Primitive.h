@@ -8,6 +8,10 @@
 struct Vector
 {
 	Vector()
+		:
+		x(0.0f),
+		y(0.0f),
+		z(0.0f)
 	{}
 
 	Vector(float inX, float inY, float inZ)
@@ -41,6 +45,10 @@ struct Vector
 struct Rotator
 {
 	Rotator()
+		:
+		Pitch(0.0f),
+		Yaw(0.0f),
+		Roll(0.0f)
 	{}
 
 	Rotator(float inPitch, float inYaw, float inRoll)

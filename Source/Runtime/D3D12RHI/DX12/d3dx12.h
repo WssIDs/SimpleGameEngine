@@ -2749,7 +2749,7 @@ inline bool operator==(const D3D12_RENDER_PASS_DEPTH_STENCIL_DESC& a, const D3D1
 #include <vector>
 #include <string>
 #include <memory>
-#include <wrl/client.h>
+#include <wrl.h>
 
 //------------------------------------------------------------------------------------------------
 class CD3DX12_STATE_OBJECT_DESC

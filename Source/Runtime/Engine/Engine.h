@@ -6,9 +6,9 @@ class WEngine : public WObject
 {
 public:
 	/** Engine loop, used for callbacks from the engine module into launch. */
-	class IEngineLoop* EngineLoop;
+	class IEngineLoop* EngineLoop = nullptr;
 
-	virtual void Tick(float DeltaSeconds) {};
+	virtual void Tick(float DeltaSeconds);
 
 	/** Initialize the game engine. */
 	virtual void Init(IEngineLoop* InEngineLoop);
@@ -21,3 +21,4 @@ protected:
 /** Global engine pointer. Can be 0 so don't use without checking. */
 extern class WEngine* GEngine;
 
+DECLARE_LOG_CATEGORY_EXTERN(WEngineLog)

@@ -1,4 +1,5 @@
 #include "Canvas.h"
+#include  <Runtime/Launch/App.h>
 //#include "..\DX11\Graphics.h"
 
 Canvas::Canvas()
@@ -32,8 +33,8 @@ void Canvas::DrawFillRect(const float screenX, const float screenY, const float 
 
 void Canvas::ShowFPS()
 {
-	DrawText(L"FPS: " + std::to_wstring(Graphics::Get().GetFPS()), 10.0f, LinearColor::White, 10.0f, 25.0f);
-	DrawText(L"FrameTime: " + std::to_wstring(Graphics::Get().GetFrameTime()) + L" ms", 10.0f, LinearColor::White, 10.0f, 40.0f);
+	DrawText(L"FPS: " + std::to_wstring(FApp::GetFramePerSeconds()), 10.0f, LinearColor::White, 10.0f, 25.0f);
+	DrawText(L"FrameTime: " + std::to_wstring(FApp::GetMiliSecondsPerFrame()) + L" ms", 10.0f, LinearColor::White, 10.0f, 40.0f);
 }
 
 void Canvas::Tick(double deltaTime)

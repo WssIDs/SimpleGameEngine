@@ -6,7 +6,7 @@ class FApp
 {
 public:
 
-	FApp();
+	FApp() = default;
 	/**
 	 * Gets time delta in seconds.
 	 *
@@ -27,8 +27,41 @@ public:
 		DeltaTime = Seconds;
 	}
 
+	static void SetTotalTime(double Seconds)
+	{
+		TotalTime = Seconds;
+	}
+
+	static double GetTotalTime()
+	{
+		return TotalTime;
+	}
+
+	static void SetFramePerSeconds(double fps)
+	{
+		FramePerSeconds = fps;
+	}
+
+	static double GetFramePerSeconds()
+	{
+		return FramePerSeconds;
+	}
+
+	static void SetMiliSecondsPerFrame(double mspf)
+	{
+		MiliSecondsPerFrame = mspf;
+	}
+
+	static double GetMiliSecondsPerFrame()
+	{
+		return MiliSecondsPerFrame;
+	}
+
 private:
 
+	static double FramePerSeconds;
+	static double MiliSecondsPerFrame;
+	static double TotalTime;
 	/** Holds current delta time in seconds. */
 	static double DeltaTime;
 };

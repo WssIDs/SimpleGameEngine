@@ -476,7 +476,7 @@ void FKey::ResetKey()
 		const unsigned int CharCode = std::atoi(KeyNameStr2.c_str());
 		if (CharCode > 0)
 		{
-			FInputKeyManager::Get().GetKeyFromCodes(-1, CharCode);
+			FInputKeyManager::Get().GetKeyFromCodes(0, CharCode);
 		}
 	}
 }

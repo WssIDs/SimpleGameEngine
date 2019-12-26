@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include "..\..\Core\Helpers\StringHelper.h"
 #include "..\..\Core\Math\WGMath.h"
+#include "..\..\Launch\App.h"
 
 DEFINE_LOG_CATEGORY(GraphicsLog);
 DEFINE_LOG_CATEGORY(LogD3D11_1RHI);
@@ -25,7 +26,7 @@ void Graphics::Init(HWND hWnd, int width, int height)
 	this->width = width;
 	this->height = height;
 
-	timer = std::make_shared<Timer>();
+	//timer = std::make_shared<FTimer>();
 
 	desiredColourFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 
@@ -830,37 +831,6 @@ void Graphics::SetViewport(int width, int height)
 	pDeviceContext3D->RSSetViewports(1u, &vp); // one viewport, not split screen
 
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "SetViewport %dx%d", width, height );
-}
-
-void Graphics::CalculateFrameStats()
-{
-	nFrames++;
-	// compute average statistics over one second
-	if ((timer->GetTotalTime() - elapsedTime) >= 1.0)
-	{
-		// set fps and mspf
-		fps = nFrames;
-		mspf = 1000.0 / (double)fps;
-
-		// reset
-		nFrames = 0;
-		elapsedTime += 1.0;
-	}
-}
-
-Timer* Graphics::GetTimer() const
-{
-	return timer.get();
-}
-
-int Graphics::GetFPS() const
-{
-	return fps;
-}
-
-double Graphics::GetFrameTime() const
-{
-	return mspf;
 }
 
 void Graphics::EndFrame()

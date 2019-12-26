@@ -5,10 +5,14 @@
 DEFINE_LOG_CATEGORY(MessageHandlerLog)
 
 WindowKeyMessageHandler::WindowKeyMessageHandler()
+	:
+	EngineInput(nullptr),
+	LastMousePos(POINT{ 0,0 })
 {
 	// Engine key binding
 	EngineKeyBindings.emplace_back("EngineExit", EKeys::F4, false, /* Alt */ true);
 
+	// Gameplay key binding
 	AxisBindings.emplace_back("MoveCameraForward", 1.0f, EKeys::W);
 	AxisBindings.emplace_back("MoveCameraForward", -1.0f, EKeys::S);
 	AxisBindings.emplace_back("MoveCameraRight", -1.0f, EKeys::A);

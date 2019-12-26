@@ -17,9 +17,7 @@ FEngineLoop	GEngineLoop;
 
 ApplicationWindow::ApplicationWindow(int width, int height, const std::string& name, const std::string& commandLine)
 	:
-	Window(width, height, name, commandLine),
-	deltaTime(1.0 /(double)240),
-	maxSkipFrames(10)
+	Window(width, height, name, commandLine)
 {
 	WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "Create");
 
@@ -28,6 +26,7 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	if (EngineInput != nullptr)
 	{
 		EngineInput->BindAction("EngineExit", EInputEvent::IE_Pressed, this, &ApplicationWindow::EngineExit);
+		EngineInput->BindAction("ChangeFullSceenMode", EInputEvent::IE_Pressed, this, &ApplicationWindow::ChangeFullScreenMode);
 
 		WindowKeyMessageHandler::Get()->SetEngineInputSystem(EngineInput.get());
 	}
@@ -42,9 +41,6 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	Graphics::Get().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
 
 	EngineInit();
-
-	//Cube = std::make_shared<TestNewCube>();
-	//Sphere = std::make_shared<NewSphere>();
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -66,13 +62,10 @@ void ApplicationWindow::EngineTick()
 
 int ApplicationWindow::Run()
 {
-	EngineTick();
+	FTimer::Get()->Reset();
 
-	// reset (start) the timer
-	Graphics::Get().GetTimer()->Reset();
-
-	double accumulatedTime = 0.0;		// stores the time accumulated by the rendered
-	int nLoops = 0;						// the number of completed loops while updating the game
+	FTimer::Get()->ResetAccumulatedTime();		// stores the time accumulated by the rendered
+	FTimer::Get()->ResetNumberLoops();			// the number of completed loops while updating the game
 
 	while (true)
 	{
@@ -82,30 +75,29 @@ int ApplicationWindow::Run()
 		}
 
 		// let the timer tick
-		Graphics::Get().GetTimer()->Tick();
+		FTimer::Get()->Tick();
 
 		if (!IsPaused())
 		{
-			// calculate fps
-			Graphics::Get().CalculateFrameStats();
+			// calculate frame per seconds
+			FTimer::Get()->CalculateFramePerSeconds();
 			
 			// accumulate the elapsed time since the last frame
-			accumulatedTime += Graphics::Get().GetTimer()->GetDeltaTime();
-
+			FTimer::Get()->AccumulateTime(true);
+			
 			// now update the game logic with fixed deltaTime as often as possible
-			nLoops = 0;
-			while (accumulatedTime >= deltaTime && nLoops < maxSkipFrames)
+			FTimer::Get()->ResetNumberLoops();
+			while (FTimer::Get()->GetAccumulatedTime() >= FTimer::Get()->GetDefaultDeltaTime() && FTimer::Get()->GetNumberLoops() < FTimer::Get()->GetMaxSkipFrames())
 			{
-				Update(deltaTime);
-				//Update(deltaTime);
-				accumulatedTime -= deltaTime;
-				nLoops++;
-
-				//WGE_LOG(ApplicationWindowLog, LogVerbosity::Default, "delta = %lf, accumulatedTime = %lf, nLoops = %d", deltaTime, accumulatedTime, nLoops);
+				Update(FTimer::Get()->GetDefaultDeltaTime());
+				FTimer::Get()->AccumulateTime(false);
+				FTimer::Get()->GenerateNumberLoops();
 			}
 
-			Render(accumulatedTime / deltaTime);
+			Render(FTimer::Get()->GetAccumulatedTime() / FTimer::Get()->GetDefaultDeltaTime());
 		}
+
+		EngineTick();
 	}
 }
 
@@ -193,9 +185,9 @@ void ApplicationWindow::OnPosChange()
 	if (fullscreen != (bool)Graphics::Get().IsCurrentInFullScreen())
 	{
 		SetPause(true);
-		Graphics::Get().GetTimer()->Stop();
+		FTimer::Get()->Stop();
 		Graphics::Get().OnResize();
-		Graphics::Get().GetTimer()->Start();
+		FTimer::Get()->Start();
 		SetPause(false);
 	}
 }
@@ -203,4 +195,9 @@ void ApplicationWindow::OnPosChange()
 void ApplicationWindow::EngineExit()
 {
 	CloseWindow();
+}
+
+void ApplicationWindow::ChangeFullScreenMode()
+{
+	ToggleBordlessFullScreenMode();
 }

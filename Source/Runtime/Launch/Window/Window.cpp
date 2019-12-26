@@ -612,10 +612,13 @@ void Window::Wnd_OnClose(HWND hwnd)
 {
 	// display message close
 	bPaused = true;
-	if (Graphics::Get().GetTimer())
-	{
-		Graphics::Get().GetTimer()->Stop();
-	}
+
+	FTimer::Get()->Stop();
+
+	//if (Graphics::Get().GetTimer())
+	//{
+	//	Graphics::Get().GetTimer()->Stop();
+	//}
 
 	onDestroy();
 	FreeConsole();
@@ -636,10 +639,13 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 		FreeCursor();
 		ShowCursor();
 		SetPause(true);
-		if (Graphics::Get().GetTimer())
-		{
-			Graphics::Get().GetTimer()->Stop();
-		}
+		//if (Graphics::Get().GetTimer())
+		//{
+		//	Graphics::Get().GetTimer()->Stop();
+		//}
+
+		FTimer::Get()->Stop();
+
 		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Paused"));
 	}
 	else
@@ -651,10 +657,13 @@ void Window::Wnd_OnActivate(HWND hwnd, UINT state, HWND hwndActDeact, BOOL fMini
 			HideCursor();
 		}
 		SetPause(false);
-		if (Graphics::Get().GetTimer())
-		{
-			Graphics::Get().GetTimer()->Start();
-		}
+		//if (Graphics::Get().GetTimer())
+		//{
+		//	Graphics::Get().GetTimer()->Start();
+		//}
+
+		FTimer::Get()->Start();
+
 		WGE_LOG(WindowLog, LogVerbosity::Default, TEXT("Game Resumed"));
 	}
 }
@@ -703,10 +712,12 @@ void Window::Wnd_OnEnterSizeMove()
 	bResizing = true;
 	bPaused = true;
 
-	if (Graphics::Get().GetTimer())
-	{
-		Graphics::Get().GetTimer()->Stop();
-	}
+	//if (Graphics::Get().GetTimer())
+	//{
+	//	Graphics::Get().GetTimer()->Stop();
+	//}
+
+	FTimer::Get()->Stop();
 }
 
 void Window::Wnd_OnExitSizeMove()
@@ -715,10 +726,12 @@ void Window::Wnd_OnExitSizeMove()
 	bResizing = false;
 	OnResize();
 	bPaused = false;
-	if (Graphics::Get().GetTimer())
-	{
-		Graphics::Get().GetTimer()->Start();
-	}
+	//if (Graphics::Get().GetTimer())
+	//{
+	//	Graphics::Get().GetTimer()->Start();
+	//}
+
+	FTimer::Get()->Start();
 }
 
 void Window::Wnd_OnGetMinMaxInfo(HWND hwnd, LPMINMAXINFO lpMinMaxInfo)

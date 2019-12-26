@@ -1,6 +1,6 @@
 #pragma once
 #include <Runtime/Core/Core.h>
-#include <wrl/client.h>
+#include <wrl.h>
 
 class PixelBuffer
 {

@@ -5,6 +5,7 @@
 #include <memory>
 #include <Runtime/Logger/LogDefinitions.h>
 #include <Runtime/CoreInput/WindowKeyMessageHandler.h>
+#include <Runtime/Core/Timer/Timer.h>
 
 
 class Window
