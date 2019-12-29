@@ -18,17 +18,17 @@ void Canvas::Render(double deltaTime)
 
 void Canvas::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY, const std::wstring& fontName)
 {
-	Graphics::Get().DrawText(text, fontSize, textColor, screenX, screenY, fontName);
+	DX11RHI::Get().DrawText(text, fontSize, textColor, screenX, screenY, fontName);
 }
 
 void Canvas::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY)
 {
-	Graphics::Get().DrawText(text, fontSize, textColor, screenX, screenY);
+	DX11RHI::Get().DrawText(text, fontSize, textColor, screenX, screenY);
 }
 
 void Canvas::DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color)
 {
-	Graphics::Get().DrawFillRect(screenX, screenY, screenW, screenH, color);
+	DX11RHI::Get().DrawFillRect(screenX, screenY, screenW, screenH, color);
 }
 
 void Canvas::ShowFPS()

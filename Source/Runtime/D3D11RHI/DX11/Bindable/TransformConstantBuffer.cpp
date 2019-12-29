@@ -3,7 +3,7 @@
 
 namespace Bind
 {
-	TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Drawable& parent, UINT slot /*0u*/)
+	TransformConstantBuffer::TransformConstantBuffer(DX11RHI& gfx, const Drawable& parent, UINT slot /*0u*/)
 		:
 		Parent(parent)
 	{
@@ -13,18 +13,18 @@ namespace Bind
 		}
 	}
 
-	void TransformConstantBuffer::Bind(Graphics& gfx)
+	void TransformConstantBuffer::Bind(DX11RHI& gfx)
 	{
 		UpdateBind(gfx, GetTransforms(gfx));
 	}
 
-	void TransformConstantBuffer::UpdateBind(Graphics& gfx, const Transforms& transforms)
+	void TransformConstantBuffer::UpdateBind(DX11RHI& gfx, const Transforms& transforms)
 	{
 		pVertexConstantBuffer->Update(gfx, transforms);
 		pVertexConstantBuffer->Bind(gfx);
 	}
 
-	Bind::TransformConstantBuffer::Transforms TransformConstantBuffer::GetTransforms(Graphics& gfx)
+	Bind::TransformConstantBuffer::Transforms TransformConstantBuffer::GetTransforms(DX11RHI& gfx)
 	{
 		const auto modelView = Parent.GetTransformXM() * gfx.GetCamera();
 		return	{

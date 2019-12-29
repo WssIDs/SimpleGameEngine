@@ -8,7 +8,7 @@ namespace Bind
 	class Bindable
 	{
 	public:
-		virtual void Bind(Graphics& gfx) = 0;
+		virtual void Bind(DX11RHI& gfx) = 0;
 		virtual std::string GetUID() const
 		{
 			assert(false);
@@ -17,7 +17,7 @@ namespace Bind
 		virtual ~Bindable() = default;
 
 	protected:
-		static ID3D11DeviceContext* GetContext(Graphics& gfx);
-		static ID3D11Device* GetDevice(Graphics& gfx);
+		static ID3D11DeviceContext* GetContext(DX11RHI& gfx);
+		static ID3D11Device* GetDevice(DX11RHI& gfx);
 	};
 }

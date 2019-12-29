@@ -7,7 +7,7 @@
 
 // Types
 #include <Runtime/Core/CoreTypes.h>
-#include <Runtime/D3D11RHI/DX11/Graphics.h>
+#include <Runtime/D3D11RHI/DX11/DX11RHI.h>
 
 
 #include <Runtime/Logger/LogDefinitions.h>

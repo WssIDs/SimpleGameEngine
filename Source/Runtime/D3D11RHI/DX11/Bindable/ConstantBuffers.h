@@ -10,7 +10,7 @@ namespace Bind
 	class ConstantBuffer : public Bindable
 	{
 	public:
-		void Update(Graphics& gfx, const C& consts)
+		void Update(DX11RHI& gfx, const C& consts)
 		{
 			D3D11_MAPPED_SUBRESOURCE msr;
 
@@ -23,7 +23,7 @@ namespace Bind
 			memcpy(msr.pData, &consts, sizeof(consts));
 			GetContext(gfx)->Unmap(pConstantBuffer.Get(), 0u);
 		}
-		ConstantBuffer(Graphics& gfx, const C& consts, UINT slot = 0u)
+		ConstantBuffer(DX11RHI& gfx, const C& consts, UINT slot = 0u)
 			:
 			slot(slot)
 		{
@@ -42,7 +42,7 @@ namespace Bind
 
 			GetDevice(gfx)->CreateBuffer(&cbd, &csd, &pConstantBuffer);
 		}
-		ConstantBuffer(Graphics& gfx, UINT slot = 0u)
+		ConstantBuffer(DX11RHI& gfx, UINT slot = 0u)
 			:
 			slot(slot)
 		{
@@ -71,15 +71,15 @@ namespace Bind
 
 	public:
 		using ConstantBuffer<C>::ConstantBuffer;
-		void Bind(Graphics& gfx) override
+		void Bind(DX11RHI& gfx) override
 		{
 			GetContext(gfx)->VSSetConstantBuffers(this->slot, 1u, pConstantBuffer.GetAddressOf());
 		}
-		static std::shared_ptr<VertexConstantBuffer> Resolve(Graphics& gfx, const C& consts, UINT slot = 0)
+		static std::shared_ptr<VertexConstantBuffer> Resolve(DX11RHI& gfx, const C& consts, UINT slot = 0)
 		{
 			return Codex::Resolve<VertexConstantBuffer>(gfx, consts, slot);
 		}
-		static std::shared_ptr<VertexConstantBuffer> Resolve(Graphics& gfx, UINT slot = 0)
+		static std::shared_ptr<VertexConstantBuffer> Resolve(DX11RHI& gfx, UINT slot = 0)
 		{
 			return Codex::Resolve<VertexConstantBuffer>(gfx, slot);
 		}
@@ -107,15 +107,15 @@ namespace Bind
 
 	public:
 		using ConstantBuffer<C>::ConstantBuffer;
-		void Bind(Graphics& gfx) override
+		void Bind(DX11RHI& gfx) override
 		{
 			GetContext(gfx)->PSSetConstantBuffers(this->slot, 1u, pConstantBuffer.GetAddressOf());
 		}
-		static std::shared_ptr<PixelConstantBuffer> Resolve(Graphics& gfx, const C& consts, UINT slot = 0)
+		static std::shared_ptr<PixelConstantBuffer> Resolve(DX11RHI& gfx, const C& consts, UINT slot = 0)
 		{
 			return Codex::Resolve<PixelConstantBuffer>(gfx, consts, slot);
 		}
-		static std::shared_ptr<PixelConstantBuffer> Resolve(Graphics& gfx, UINT slot = 0)
+		static std::shared_ptr<PixelConstantBuffer> Resolve(DX11RHI& gfx, UINT slot = 0)
 		{
 			return Codex::Resolve<PixelConstantBuffer>(gfx, slot);
 		}

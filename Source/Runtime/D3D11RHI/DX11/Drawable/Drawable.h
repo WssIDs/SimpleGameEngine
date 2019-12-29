@@ -16,7 +16,7 @@ public:
 	Drawable() = default;
 	Drawable(const Drawable&) = delete;
 	virtual DirectX::XMMATRIX GetTransformXM() const = 0;
-	void Draw(Graphics& gfx) const;
+	void Draw(DX11RHI& gfx) const;
 	virtual void Update(float deltaSeconds) {}
 	virtual ~Drawable() = default;
 

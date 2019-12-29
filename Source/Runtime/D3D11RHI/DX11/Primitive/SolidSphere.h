@@ -5,7 +5,7 @@
 class SolidSphere : public Drawable
 {
 public:
-	SolidSphere(Graphics& gfx, float radius);
+	SolidSphere(DX11RHI& gfx, float radius);
 	void Update(float deltaSeconds) override;
 	void SetPosition(DirectX::XMFLOAT3 position);
 	DirectX::XMMATRIX GetTransformXM() const override;

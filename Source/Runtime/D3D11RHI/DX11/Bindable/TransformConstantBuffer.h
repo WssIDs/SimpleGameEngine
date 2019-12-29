@@ -14,12 +14,12 @@ namespace Bind
 			DirectX::XMMATRIX model;
 		};
 	public:
-		TransformConstantBuffer(Graphics& gfx, const Drawable& parent, UINT slot = 0u);
-		void Bind(Graphics& gfx) override;
+		TransformConstantBuffer(DX11RHI& gfx, const Drawable& parent, UINT slot = 0u);
+		void Bind(DX11RHI& gfx) override;
 
 	protected:
-		void UpdateBind(Graphics& gfx, const Transforms& transforms);
-		Transforms GetTransforms(Graphics& gfx);
+		void UpdateBind(DX11RHI& gfx, const Transforms& transforms);
+		Transforms GetTransforms(DX11RHI& gfx);
 	private:
 		static std::unique_ptr<VertexConstantBuffer<Transforms>> pVertexConstantBuffer;
 		const Drawable& Parent;

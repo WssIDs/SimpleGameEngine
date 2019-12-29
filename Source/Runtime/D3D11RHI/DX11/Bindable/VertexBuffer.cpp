@@ -4,12 +4,12 @@
 
 namespace Bind
 {
-	VertexBuffer::VertexBuffer(Graphics& gfx, const DynamicVtx::VertexBuffer& vertexBuffer)
+	VertexBuffer::VertexBuffer(DX11RHI& gfx, const DynamicVtx::VertexBuffer& vertexBuffer)
 		:
 		VertexBuffer(gfx, "?", vertexBuffer)
 	{}
 
-	VertexBuffer::VertexBuffer(Graphics& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer)
+	VertexBuffer::VertexBuffer(DX11RHI& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer)
 		:
 		stride((UINT)vertexBuffer.GetLayout().Size()),
 		tag(tag)
@@ -28,13 +28,13 @@ namespace Bind
 		GetDevice(gfx)->CreateBuffer(&bd, &sd, &pVertexBuffer);
 	}
 
-	void VertexBuffer::Bind(Graphics& gfx)
+	void VertexBuffer::Bind(DX11RHI& gfx)
 	{
 		const UINT offset = 0u;
 		GetContext(gfx)->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 	}
 
-	std::shared_ptr<VertexBuffer> VertexBuffer::Resolve(Graphics& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Resolve(DX11RHI& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer)
 	{
 		assert(tag != "?");
 		return Codex::Resolve<VertexBuffer>(gfx, tag, vertexBuffer);

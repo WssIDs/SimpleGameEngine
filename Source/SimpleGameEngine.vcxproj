@@ -237,7 +237,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\VertexBuffer.cpp" />
     <ClCompile Include="Runtime\D3D11RHI\DX11\Bindable\VertexShader.cpp" />
     <ClCompile Include="Runtime\D3D11RHI\DX11\Drawable\Drawable.cpp" />
-    <ClCompile Include="Runtime\D3D11RHI\DX11\Graphics.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\DX11RHI.cpp" />
     <ClCompile Include="Runtime\D3D11RHI\DX11\Render\Surface.cpp" />
     <ClCompile Include="Runtime\GUI\ImguiManager.cpp" />
     <ClCompile Include="Runtime\D3D11RHI\DX11\Primitive\SolidSphere.cpp" />
@@ -312,7 +312,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClInclude Include="Runtime\D3D11RHI\DX11\Drawable\Drawable.h" />
     <ClInclude Include="Runtime\D3D11RHI\DX11\Geometry\IndexedTriangleList.h" />
     <ClInclude Include="Runtime\D3D11RHI\DX11\Geometry\Sphere.h" />
-    <ClInclude Include="Runtime\D3D11RHI\DX11\Graphics.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\DX11RHI.h" />
     <ClInclude Include="Runtime\D3D11RHI\DX11\Render\Surface.h" />
     <ClInclude Include="Runtime\Core\Math\WGMath.h" />
     <ClInclude Include="Runtime\D3D12RHI\DX12\d3dx12.h" />

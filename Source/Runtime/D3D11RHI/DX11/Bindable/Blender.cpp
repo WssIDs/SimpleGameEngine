@@ -4,7 +4,7 @@
 
 namespace Bind
 {
-	Blender::Blender(Graphics& gfx, bool blending, std::optional<float> factor)
+	Blender::Blender(DX11RHI& gfx, bool blending, std::optional<float> factor)
 		:
 		blending(blending)
 	{
@@ -35,7 +35,7 @@ namespace Bind
 		GetDevice(gfx)->CreateBlendState(&blendDesc, &pBlender);
 	}
 
-	void Blender::Bind(Graphics& gfx)
+	void Blender::Bind(DX11RHI& gfx)
 	{
 		const float* data = factors ? factors->data() : nullptr;
 		GetContext(gfx)->OMSetBlendState(pBlender.Get(), data, 0xFFFFFFFF);
@@ -53,7 +53,7 @@ namespace Bind
 		return factors->front();
 	}
 
-	std::shared_ptr<Blender> Blender::Resolve(Graphics& gfx, bool blending, std::optional<float> factor)
+	std::shared_ptr<Blender> Blender::Resolve(DX11RHI& gfx, bool blending, std::optional<float> factor)
 	{
 		return Codex::Resolve<Blender>(gfx, blending, factor);
 	}

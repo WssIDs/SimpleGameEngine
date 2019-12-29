@@ -1,7 +1,7 @@
 #pragma once
 #include "IWObject.h"
 
-class Graphics;
+class DX11RHI;
 
 
 class WObject : public IWObject

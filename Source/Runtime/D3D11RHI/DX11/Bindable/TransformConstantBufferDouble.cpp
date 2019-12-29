@@ -2,7 +2,7 @@
 
 namespace Bind
 {
-	TransformConstantBufferDouble::TransformConstantBufferDouble(Graphics& gfx, const Drawable& parent, UINT slotV /*= 0u*/, UINT slotP /*= 0u*/)
+	TransformConstantBufferDouble::TransformConstantBufferDouble(DX11RHI& gfx, const Drawable& parent, UINT slotV /*= 0u*/, UINT slotP /*= 0u*/)
 		:
 		TransformConstantBuffer(gfx,parent,slotV)
 	{
@@ -12,14 +12,14 @@ namespace Bind
 		}
 	}
 
-	void TransformConstantBufferDouble::Bind(Graphics& gfx)
+	void TransformConstantBufferDouble::Bind(DX11RHI& gfx)
 	{
 		const auto transforms = GetTransforms(gfx);
 		TransformConstantBuffer::UpdateBind(gfx, transforms);
 		UpdateBind(gfx, transforms);
 	}
 
-	void TransformConstantBufferDouble::UpdateBind(Graphics& gfx, const Transforms& transforms)
+	void TransformConstantBufferDouble::UpdateBind(DX11RHI& gfx, const Transforms& transforms)
 	{
 		pPixelConstantBuffer->Update(gfx, transforms);
 		pPixelConstantBuffer->Bind(gfx);

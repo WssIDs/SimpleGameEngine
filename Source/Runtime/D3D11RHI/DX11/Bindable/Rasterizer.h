@@ -7,9 +7,9 @@ namespace Bind
 	class Rasterizer : public Bindable
 	{
 	public:
-		Rasterizer(Graphics& gfx, bool twoSided);
-		void Bind(Graphics& gfx) override;
-		static std::shared_ptr<Rasterizer> Resolve(Graphics& gfx, bool twoSided);
+		Rasterizer(DX11RHI& gfx, bool twoSided);
+		void Bind(DX11RHI& gfx) override;
+		static std::shared_ptr<Rasterizer> Resolve(DX11RHI& gfx, bool twoSided);
 		static std::string GenerateUID(bool twoSided);
 		std::string GetUID() const override;
 

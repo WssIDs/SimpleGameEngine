@@ -9,9 +9,9 @@ namespace Bind
 	class InputLayout : public Bindable
 	{
 	public:
-		InputLayout(Graphics& gfx, DynamicVtx::VertexLayout layout, ID3DBlob* pVertexShaderByteCode);
-		void Bind(Graphics& gfx) override;
-		static std::shared_ptr<InputLayout> Resolve(Graphics& gfx, const DynamicVtx::VertexLayout& layout, ID3DBlob* pVertexShaderByteCode);
+		InputLayout(DX11RHI& gfx, DynamicVtx::VertexLayout layout, ID3DBlob* pVertexShaderByteCode);
+		void Bind(DX11RHI& gfx) override;
+		static std::shared_ptr<InputLayout> Resolve(DX11RHI& gfx, const DynamicVtx::VertexLayout& layout, ID3DBlob* pVertexShaderByteCode);
 		static std::string GenerateUID(const DynamicVtx::VertexLayout& layout, ID3DBlob* pVertexShaderByteCode = nullptr);
 		std::string GetUID() const override;
 

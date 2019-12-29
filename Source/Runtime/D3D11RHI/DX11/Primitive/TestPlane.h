@@ -4,11 +4,11 @@
 class TestPlane : public Drawable
 {
 public:
-	TestPlane(Graphics& gfx, float size);
+	TestPlane(DX11RHI& gfx, float size);
 	void SetPosition(DirectX::XMFLOAT3 pos);
 	void SetRotation(float roll, float pitch, float yaw);
 	DirectX::XMMATRIX GetTransformXM() const override;
-	void SpawnControlWindow(Graphics& gfx);
+	void SpawnControlWindow(DX11RHI& gfx);
 private:
 	struct PSMaterialConstant
 	{

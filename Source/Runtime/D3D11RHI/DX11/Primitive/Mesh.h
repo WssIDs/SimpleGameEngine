@@ -13,8 +13,8 @@ struct aiNode;
 class Mesh : public Drawable
 {
 public:
-	Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs);
-	void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const;
+	Mesh(DX11RHI& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs);
+	void Draw(DX11RHI& gfx, DirectX::FXMMATRIX accumulatedTransform) const;
 	DirectX::XMMATRIX GetTransformXM() const override;
 
 private:
@@ -49,14 +49,14 @@ public:
 
 public:
 	Node(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& inTransform);
-	void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const;
+	void Draw(DX11RHI& gfx, DirectX::FXMMATRIX accumulatedTransform) const;
 	void SetTransform(DirectX::FXMMATRIX inTransform);
 	const DirectX::XMFLOAT4X4 GetAppliedTransform() const;
 	int GetId() const;
 	void ShowTree(Node*& pSelectedNode) const;
 
 	template<class T>
-	bool ControlMaterial(Graphics& gfx, T& c)
+	bool ControlMaterial(DX11RHI& gfx, T& c)
 	{
 		if (meshPtrs.empty())
 		{
@@ -132,7 +132,7 @@ public:
 	Model() = default;
 	Model(const std::string path, DirectX::XMFLOAT3 scale3D = {1.0f,1.0f,1.0f});
 	void Draw() const;
-	void ShowWindow(Graphics& gfx, const char* windowName = nullptr);
+	void ShowWindow(DX11RHI& gfx, const char* windowName = nullptr);
 	void SetRootTransform(DirectX::FXMMATRIX transform);
 	~Model();
 

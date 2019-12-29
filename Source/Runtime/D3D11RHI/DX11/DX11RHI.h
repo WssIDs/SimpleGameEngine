@@ -17,14 +17,14 @@ enum class DirectVersionName
 };
 
 
-class Graphics : public RHIInterface
+class DX11RHI : public RHIInterface
 {
 	friend Bind::Bindable;
 
 public:
-	Graphics(const Graphics&) = delete;
-	Graphics& operator=(const Graphics&) = delete;
-	~Graphics();
+	DX11RHI(const DX11RHI&) = delete;
+	DX11RHI& operator=(const DX11RHI&) = delete;
+	~DX11RHI();
 
 	virtual void Init(HWND hWnd, int width, int height) override;
 
@@ -78,11 +78,11 @@ public:
 
 protected:
 
-	Graphics() {};
+	DX11RHI() {};
 
 public:
 
-	static Graphics& Get();
+	static DX11RHI& Get();
 
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> GetDeviceContext3D() const;
 	Microsoft::WRL::ComPtr<ID3D11Device1> GetDevice3D() const;

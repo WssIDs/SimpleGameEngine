@@ -9,11 +9,11 @@ namespace Bind
 	class VertexBuffer : public Bindable
 	{
 	public:
-		VertexBuffer(Graphics& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer);
-		VertexBuffer(Graphics& gfx, const DynamicVtx::VertexBuffer& vertexBuffer);
-		void Bind(Graphics& gfx) override;
+		VertexBuffer(DX11RHI& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer);
+		VertexBuffer(DX11RHI& gfx, const DynamicVtx::VertexBuffer& vertexBuffer);
+		void Bind(DX11RHI& gfx) override;
 
-		static std::shared_ptr<VertexBuffer> Resolve(Graphics& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer);
+		static std::shared_ptr<VertexBuffer> Resolve(DX11RHI& gfx, const std::string& tag, const DynamicVtx::VertexBuffer& vertexBuffer);
 		
 		template<typename...Ignore>
 		static std::string GenerateUID(const std::string& tag, Ignore&&...ignore)

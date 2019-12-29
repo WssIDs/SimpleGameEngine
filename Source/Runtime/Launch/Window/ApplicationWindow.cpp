@@ -38,7 +38,7 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 		level->Load();
 	}
 
-	Graphics::Get().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
+	DX11RHI::Get().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
 
 	EngineInit();
 }
@@ -160,7 +160,7 @@ void ApplicationWindow::Update(double deltaTime)
 
 void ApplicationWindow::Render(double farseer)
 {
-	Graphics::Get().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
+	DX11RHI::Get().BeginFrame(0.07, 0.0f, 0.12f); // StartFrame
 
 	// DRAW/LOGICS
 
@@ -169,24 +169,24 @@ void ApplicationWindow::Render(double farseer)
 		level->Render(farseer);
 	}
 
-	Graphics::Get().EndFrame(); // EndFrame
+	DX11RHI::Get().EndFrame(); // EndFrame
 }
 
 void ApplicationWindow::OnResize()
 {
 	Window::OnResize();
-	Graphics::Get().OnResize();
+	DX11RHI::Get().OnResize();
 }
 
 void ApplicationWindow::OnPosChange()
 {
-	bool fullscreen = Graphics::Get().GetFullScreenState();
+	bool fullscreen = DX11RHI::Get().GetFullScreenState();
 
-	if (fullscreen != (bool)Graphics::Get().IsCurrentInFullScreen())
+	if (fullscreen != (bool)DX11RHI::Get().IsCurrentInFullScreen())
 	{
 		SetPause(true);
 		FTimer::Get()->Stop();
-		Graphics::Get().OnResize();
+		DX11RHI::Get().OnResize();
 		FTimer::Get()->Start();
 		SetPause(false);
 	}

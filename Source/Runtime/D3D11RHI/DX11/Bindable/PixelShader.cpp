@@ -5,7 +5,7 @@
 
 namespace Bind
 {
-	PixelShader::PixelShader(Graphics& gfx, const std::string& path)
+	PixelShader::PixelShader(DX11RHI& gfx, const std::string& path)
 		:
 		path(path)
 	{
@@ -14,12 +14,12 @@ namespace Bind
 		GetDevice(gfx)->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader);
 	}
 
-	void PixelShader::Bind(Graphics& gfx)
+	void PixelShader::Bind(DX11RHI& gfx)
 	{
 		GetContext(gfx)->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 	}
 
-	std::shared_ptr<PixelShader> PixelShader::Resolve(Graphics& gfx, const std::string& path)
+	std::shared_ptr<PixelShader> PixelShader::Resolve(DX11RHI& gfx, const std::string& path)
 	{
 		return Codex::Resolve<PixelShader>(gfx, path);
 	}

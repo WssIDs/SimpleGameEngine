@@ -2,7 +2,7 @@
 #include <Runtime/D3D11RHI/DX11/Geometry/Cube.h>
 #include <Runtime/D3D11RHI/DX11/Bindable/BindableCommon.h>
 
-TestCube::TestCube(Graphics& gfx, float size)
+TestCube::TestCube(DX11RHI& gfx, float size)
 {
 	using namespace Bind;
 	namespace dx = DirectX;
@@ -50,7 +50,7 @@ DirectX::XMMATRIX TestCube::GetTransformXM() const
 		DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 }
 
-void TestCube::SpawnControlWindow(Graphics& gfx)
+void TestCube::SpawnControlWindow(DX11RHI& gfx)
 {
 	if (ImGui::Begin("Cube"))
 	{

@@ -92,7 +92,7 @@ void PointLight::Draw() const
 	Mesh->Draw();
 }
 
-void PointLight::Bind(Graphics& gfx) const
+void PointLight::Bind(DX11RHI& gfx) const
 {
 	//constantBuffer.Update(Graphics::GetGraphics(), pcbDataCopy);
 	//constantBuffer.Bind(Graphics::GetGraphics());
@@ -111,7 +111,7 @@ void PointLight::Render(double deltaTime)
 
 	auto pcbDataCopy = LightData;
 	const auto pos = DirectX::XMLoadFloat3(&LightData.pos);
-	DirectX::XMStoreFloat3(&pcbDataCopy.pos, DirectX::XMVector3Transform(pos, Graphics::Get().GetCamera()));
+	DirectX::XMStoreFloat3(&pcbDataCopy.pos, DirectX::XMVector3Transform(pos, DX11RHI::Get().GetCamera()));
 
 	LightBuffer->Update(pcbDataCopy);
 	

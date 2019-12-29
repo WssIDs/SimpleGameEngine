@@ -3,7 +3,7 @@
 #include <Runtime/D3D11RHI/DX11/Bindable/BindableCommon.h>
 #include <memory>
 
-TestPlane::TestPlane(Graphics& gfx, float size)
+TestPlane::TestPlane(DX11RHI& gfx, float size)
 {
 	using namespace Bind;
 	namespace dx = DirectX;
@@ -50,7 +50,7 @@ DirectX::XMMATRIX TestPlane::GetTransformXM() const
 		DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 }
 
-void TestPlane::SpawnControlWindow(Graphics& gfx)
+void TestPlane::SpawnControlWindow(DX11RHI& gfx)
 {
 	if (ImGui::Begin("Plane"))
 	{

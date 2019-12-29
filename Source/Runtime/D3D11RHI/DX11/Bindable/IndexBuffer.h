@@ -6,11 +6,11 @@ namespace Bind
 	class IndexBuffer : public Bindable
 	{
 	public:
-		IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indices);
-		IndexBuffer(Graphics& gfx, std::string tag, const std::vector<unsigned short>& indices);
-		void Bind(Graphics& gfx) override;
+		IndexBuffer(DX11RHI& gfx, const std::vector<unsigned short>& indices);
+		IndexBuffer(DX11RHI& gfx, std::string tag, const std::vector<unsigned short>& indices);
+		void Bind(DX11RHI& gfx) override;
 		UINT GetCount() const;
-		static std::shared_ptr<IndexBuffer> Resolve(Graphics& gfx, const std::string& tag,
+		static std::shared_ptr<IndexBuffer> Resolve(DX11RHI& gfx, const std::string& tag,
 			const std::vector<unsigned short>& indices);
 		template<typename...Ignore>
 		static std::string GenerateUID(const std::string& tag, Ignore&&...ignore)

@@ -4,17 +4,17 @@
 
 namespace Bind
 {
-	Topology::Topology(Graphics& gfx, D3D_PRIMITIVE_TOPOLOGY type)
+	Topology::Topology(DX11RHI& gfx, D3D_PRIMITIVE_TOPOLOGY type)
 		:
 		type(type)
 	{}
 
-	void Topology::Bind(Graphics& gfx)
+	void Topology::Bind(DX11RHI& gfx)
 	{
 		GetContext(gfx)->IASetPrimitiveTopology(type);
 	}
 
-	std::shared_ptr<Topology> Topology::Resolve(Graphics& gfx, D3D_PRIMITIVE_TOPOLOGY type)
+	std::shared_ptr<Topology> Topology::Resolve(DX11RHI& gfx, D3D_PRIMITIVE_TOPOLOGY type)
 	{
 		return Codex::Resolve<Topology>(gfx, type);
 	}

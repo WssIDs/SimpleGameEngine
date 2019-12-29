@@ -4,7 +4,7 @@
 
 namespace Bind
 {
-	InputLayout::InputLayout(Graphics& gfx, DynamicVtx::VertexLayout layout_in, ID3DBlob* pVertexShaderByteCode)
+	InputLayout::InputLayout(DX11RHI& gfx, DynamicVtx::VertexLayout layout_in, ID3DBlob* pVertexShaderByteCode)
 		:
 		layout(std::move(layout_in))
 	{
@@ -18,12 +18,12 @@ namespace Bind
 			&pInputLayout);
 	}
 
-	void InputLayout::Bind(Graphics& gfx)
+	void InputLayout::Bind(DX11RHI& gfx)
 	{
 		GetContext(gfx)->IASetInputLayout(pInputLayout.Get());
 	}
 
-	std::shared_ptr<InputLayout> InputLayout::Resolve(Graphics& gfx, const DynamicVtx::VertexLayout& layout, ID3DBlob* pVertexShaderByteCode)
+	std::shared_ptr<InputLayout> InputLayout::Resolve(DX11RHI& gfx, const DynamicVtx::VertexLayout& layout, ID3DBlob* pVertexShaderByteCode)
 	{
 		return Codex::Resolve<InputLayout>(gfx, layout, pVertexShaderByteCode);
 	}

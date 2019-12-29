@@ -1,4 +1,4 @@
-#include "Graphics.h"
+#include "DX11RHI.h"
 #include "..\..\Core\Helpers\StringHelper.h"
 #include "..\..\Core\Math\WGMath.h"
 #include "..\..\Launch\App.h"
@@ -11,7 +11,7 @@ namespace wrl = Microsoft::WRL;
 
 namespace dx = DirectX;
 
-Graphics::~Graphics()
+DX11RHI::~DX11RHI()
 {
 	ImGui_ImplDX11_Shutdown();
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui DX11 ShutDown");
@@ -20,7 +20,7 @@ Graphics::~Graphics()
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics Release");
 }
 
-void Graphics::Init(HWND hWnd, int width, int height)
+void DX11RHI::Init(HWND hWnd, int width, int height)
 {
 	this->hWnd = hWnd;
 	this->width = width;
@@ -38,7 +38,7 @@ void Graphics::Init(HWND hWnd, int width, int height)
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "ImGui DX11 Init");
 }
 
-void Graphics::InitDX11()
+void DX11RHI::InitDX11()
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferDesc.Width = width;
@@ -139,7 +139,7 @@ void Graphics::InitDX11()
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics DX11 Init");
 }
 
-void Graphics::InitDX11_1()
+void DX11RHI::InitDX11_1()
 {
 	auto  FeatureLevelsRequested = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 	UINT               numLevelsRequested = 1;
@@ -319,7 +319,7 @@ void Graphics::InitDX11_1()
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "Graphics DX11_1 Init");
 }
 
-void Graphics::changeResolution(bool increase)
+void DX11RHI::changeResolution(bool increase)
 {
 	if (increase)
 	{
@@ -354,7 +354,7 @@ void Graphics::changeResolution(bool increase)
 	}
 }
 
-void Graphics::OnBordlessMaximize()
+void DX11RHI::OnBordlessMaximize()
 {
 	RECT desktop;
 	const HWND hDesktop = GetDesktopWindow();
@@ -456,7 +456,7 @@ void Graphics::OnBordlessMaximize()
 	ImGui::GetIO().DisplaySize.y = (float)currentModeDescription.Height;
 }
 
-bool Graphics::OnResize()
+bool DX11RHI::OnResize()
 {
 	// Microsoft recommends zeroing out the refresh rate of the description before resizing the targets
 	DXGI_MODE_DESC zeroRefreshRate = currentModeDescription;
@@ -611,7 +611,7 @@ bool Graphics::OnResize()
 	return true;
 }
 
-bool Graphics::GetFullScreenState() const
+bool DX11RHI::GetFullScreenState() const
 {
 	BOOL fullscreen;
 
@@ -620,12 +620,12 @@ bool Graphics::GetFullScreenState() const
 	return (bool)fullscreen;
 }
 
-bool Graphics::IsCurrentInFullScreen() const
+bool DX11RHI::IsCurrentInFullScreen() const
 {
 	return currentlyInFullscreen;
 }
 
-void Graphics::InitDX2D()
+void DX11RHI::InitDX2D()
 {
 	if(FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), &pDwriteFactory2D)))
 	{
@@ -698,7 +698,7 @@ void Graphics::InitDX2D()
 	WGE_LOG(LogD2D_RHI, LogVerbosity::Default, "Graphics 2D Init");
 }
 
-void Graphics::Begin2DFrame()
+void DX11RHI::Begin2DFrame()
 {
 	pDeviceContext2D->BeginDraw();
 
@@ -725,21 +725,21 @@ void Graphics::Begin2DFrame()
 	}
 }
 
-void Graphics::End2DFrame()
+void DX11RHI::End2DFrame()
 {
 	pDeviceContext2D->EndDraw();
 }
 
-void Graphics::ClearScreen(LinearColor color)
+void DX11RHI::ClearScreen(LinearColor color)
 {
 	pDeviceContext2D->Clear(D2D1::ColorF(color.R, color.G, color.B, color.A));
 }
 
-void Graphics::DrawCircle()
+void DX11RHI::DrawCircle()
 {
 }
 
-void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY,const std::wstring& fontName)
+void DX11RHI::DrawText(const std::wstring& text, const float fontSize, LinearColor textColor, float screenX, float screenY,const std::wstring& fontName)
 {
 
 	wrl::ComPtr<IDWriteTextFormat> pTextFormat;
@@ -771,7 +771,7 @@ void Graphics::DrawText(const std::wstring& text, const float fontSize, LinearCo
 	pDeviceContext2D->DrawTextLayout(D2D1::Point2F(screenX, screenY), pTextLayout.Get(), GetDefaultBrush().Get());
 }
 
-void Graphics::DrawRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color, const float strokeWidth /*= 1.0f*/)
+void DX11RHI::DrawRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color, const float strokeWidth /*= 1.0f*/)
 {
 	D2D1_RECT_F rect = D2D1::RectF(
 		screenX,
@@ -784,7 +784,7 @@ void Graphics::DrawRect(const float screenX, const float screenY, const float sc
 	pDeviceContext2D->DrawRectangle(rect, GetDefaultBrush().Get(), strokeWidth);
 }
 
-void Graphics::DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color)
+void DX11RHI::DrawFillRect(const float screenX, const float screenY, const float screenW, const float screenH, const LinearColor& color)
 {
 	D2D1_RECT_F rect = D2D1::RectF(
 		screenX,
@@ -797,7 +797,7 @@ void Graphics::DrawFillRect(const float screenX, const float screenY, const floa
 	pDeviceContext2D->FillRectangle(rect, GetDefaultBrush().Get());
 }
 
-void Graphics::DrawEllipse(const float screenX, const float screenY, const float radiusX, const float radiusY, const LinearColor& color, const float strokeWidth)
+void DX11RHI::DrawEllipse(const float screenX, const float screenY, const float radiusX, const float radiusY, const LinearColor& color, const float strokeWidth)
 {
 	D2D1_POINT_2F centre = {screenX, screenY};
 	D2D1_ELLIPSE ellipse = {centre, radiusX, radiusY};
@@ -806,7 +806,7 @@ void Graphics::DrawEllipse(const float screenX, const float screenY, const float
 	pDeviceContext2D->DrawEllipse(ellipse, GetDefaultBrush().Get(), strokeWidth);
 }
 
-wrl::ComPtr<ID2D1SolidColorBrush> Graphics::CreateSolidColorBrush(LinearColor color)
+wrl::ComPtr<ID2D1SolidColorBrush> DX11RHI::CreateSolidColorBrush(LinearColor color)
 {
 	wrl::ComPtr<ID2D1SolidColorBrush> pBrush;
 	pDeviceContext2D->CreateSolidColorBrush(
@@ -817,7 +817,7 @@ wrl::ComPtr<ID2D1SolidColorBrush> Graphics::CreateSolidColorBrush(LinearColor co
 	return pBrush;
 }
 
-void Graphics::SetViewport(int width, int height)
+void DX11RHI::SetViewport(int width, int height)
 {
 	// configure viewport
 	D3D11_VIEWPORT vp;
@@ -833,7 +833,7 @@ void Graphics::SetViewport(int width, int height)
 	WGE_LOG(GraphicsLog, LogVerbosity::Default, "SetViewport %dx%d", width, height );
 }
 
-void Graphics::EndFrame()
+void DX11RHI::EndFrame()
 {
 	if(imguiEnabled)
 	{
@@ -846,7 +846,7 @@ void Graphics::EndFrame()
 	pSwap->Present(0, 0u);
 }
 
-void Graphics::BeginFrame(float red, float green, float blue)
+void DX11RHI::BeginFrame(float red, float green, float blue)
 {
 	if(imguiEnabled)
 	{
@@ -865,48 +865,48 @@ void Graphics::BeginFrame(float red, float green, float blue)
 	pDeviceContext3D->ClearDepthStencilView(pDepthStencilView3D.Get(), D3D11_CLEAR_DEPTH| D3D11_CLEAR_STENCIL, 1.0f, 0u);
 }
 
-void Graphics::DrawIndexed(UINT count)
+void DX11RHI::DrawIndexed(UINT count)
 {
 	pDeviceContext3D->DrawIndexed(count,0u, 0u);
 }
 
-void Graphics::EnableImgui()
+void DX11RHI::EnableImgui()
 {
 	imguiEnabled = true;
 }
 
-void Graphics::DisableImgui()
+void DX11RHI::DisableImgui()
 {
 	imguiEnabled = false;
 }
 
-bool Graphics::IsImguiEnabled() const
+bool DX11RHI::IsImguiEnabled() const
 {
 	return imguiEnabled;
 }
 
-Graphics& Graphics::Get()
+DX11RHI& DX11RHI::Get()
 {
-	static Graphics graphics;
+	static DX11RHI graphics;
 	return graphics;
 }
 
-Microsoft::WRL::ComPtr<ID3D11DeviceContext1> Graphics::GetDeviceContext3D() const
+Microsoft::WRL::ComPtr<ID3D11DeviceContext1> DX11RHI::GetDeviceContext3D() const
 {
 	return pDeviceContext3D;
 }
 
-Microsoft::WRL::ComPtr<ID3D11Device1> Graphics::GetDevice3D() const
+Microsoft::WRL::ComPtr<ID3D11Device1> DX11RHI::GetDevice3D() const
 {
 	return pDevice3D;
 }
 
-Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> Graphics::GetDefaultBrush() const
+Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> DX11RHI::GetDefaultBrush() const
 {
 	return pDefaultBrush;
 }
 
-void Graphics::SetColor(const LinearColor& color)
+void DX11RHI::SetColor(const LinearColor& color)
 {
 	D2D_COLOR_F colorF = D2D1::ColorF(color.R, color.G, color.B, color.A);
 
@@ -920,7 +920,7 @@ void Graphics::SetColor(const LinearColor& color)
 	}
 }
 
-void Graphics::PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId)
+void DX11RHI::PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL::ComPtr<IDXGIFactory2> dxgiFactory, UINT deviceId)
 {
 	std::string versionName;
 
@@ -973,22 +973,22 @@ void Graphics::PrintListAdapters(DirectVersionName dVersionName, Microsoft::WRL:
 	WGE_LOG(LogD3D11_1RHI, LogVerbosity::Success, "Chosen %s Adapter: %d", versionName.c_str(), chosenAdapter);
 }
 
-void Graphics::SetProjection(DirectX::XMMATRIX projection)
+void DX11RHI::SetProjection(DirectX::XMMATRIX projection)
 {
 	this->projection = projection;
 }
 
-DirectX::XMMATRIX Graphics::GetProjection() const
+DirectX::XMMATRIX DX11RHI::GetProjection() const
 {
 	return projection;
 }
 
-void Graphics::SetCamera(DirectX::XMMATRIX camera)
+void DX11RHI::SetCamera(DirectX::XMMATRIX camera)
 {
 	this->camera = camera;
 }
 
-DirectX::XMMATRIX Graphics::GetCamera() const
+DirectX::XMMATRIX DX11RHI::GetCamera() const
 {
 	return camera;
 }

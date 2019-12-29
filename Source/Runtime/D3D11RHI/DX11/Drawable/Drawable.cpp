@@ -4,7 +4,7 @@
 
 using namespace Bind;
 
-void Drawable::Draw(Graphics& gfx) const
+void Drawable::Draw(DX11RHI& gfx) const
 {
 	for (auto& bind : binds)
 	{

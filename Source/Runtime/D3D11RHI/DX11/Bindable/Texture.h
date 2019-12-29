@@ -19,9 +19,9 @@ namespace Bind
 		 * bSurfaceLoading = true - Surface
 		 */
 		Texture();
-		Texture(Graphics& gfx, const std::string& fileName, UINT slot = 0);
-		virtual void Bind(Graphics& gfx) override;
-		static std::shared_ptr<Texture> Resolve(Graphics& gfx, const std::string& path, UINT slot = 0);
+		Texture(DX11RHI& gfx, const std::string& fileName, UINT slot = 0);
+		virtual void Bind(DX11RHI& gfx) override;
+		static std::shared_ptr<Texture> Resolve(DX11RHI& gfx, const std::string& path, UINT slot = 0);
 		static std::string GenerateUID(const std::string& path, UINT slot = 0);
 		std::string GetUID() const override;
 

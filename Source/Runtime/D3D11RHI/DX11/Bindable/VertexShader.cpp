@@ -3,13 +3,13 @@
 
 namespace Bind
 {
-	VertexShader::VertexShader(Graphics& gfx, const std::string& path)
+	VertexShader::VertexShader(DX11RHI& gfx, const std::string& path)
 	{
 		D3DReadFileToBlob(std::wstring(path.begin(), path.end()).c_str(), &pByteCode);
 		GetDevice(gfx)->CreateVertexShader(pByteCode->GetBufferPointer(), pByteCode->GetBufferSize(), nullptr, &pVertexShader);
 	}
 
-	void VertexShader::Bind(Graphics& gfx)
+	void VertexShader::Bind(DX11RHI& gfx)
 	{
 		GetContext(gfx)->VSSetShader(pVertexShader.Get(), nullptr, 0u);
 	}
@@ -19,7 +19,7 @@ namespace Bind
 		return pByteCode.Get();
 	}
 
-	std::shared_ptr<VertexShader> VertexShader::Resolve(Graphics& gfx, const std::string& path)
+	std::shared_ptr<VertexShader> VertexShader::Resolve(DX11RHI& gfx, const std::string& path)
 	{
 		return Codex::Resolve<VertexShader>(gfx, path);
 	}

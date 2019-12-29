@@ -14,7 +14,7 @@ namespace Bind
 {
 	namespace wrl = Microsoft::WRL;
 
-	Texture::Texture(Graphics& gfx, const std::string& fileName, UINT slot)
+	Texture::Texture(DX11RHI& gfx, const std::string& fileName, UINT slot)
 		:
 		path(fileName),
 		slot(slot)
@@ -128,12 +128,12 @@ namespace Bind
 		////
 	}
 
-	void Texture::Bind(Graphics& gfx)
+	void Texture::Bind(DX11RHI& gfx)
 	{
 		GetContext(gfx)->PSSetShaderResources(slot, 1u, pTextureView.GetAddressOf());
 	}
 
-	std::shared_ptr<Texture> Texture::Resolve(Graphics& gfx, const std::string& path, UINT slot)
+	std::shared_ptr<Texture> Texture::Resolve(DX11RHI& gfx, const std::string& path, UINT slot)
 	{
 		return Codex::Resolve<Texture>(gfx, path, slot);
 	}

@@ -2,7 +2,7 @@
 #include <Runtime/D3D11RHI/DX11/Bindable/BindableCommon.h>
 #include <Runtime/D3D11RHI/DX11/Geometry/Sphere.h>
 
-SolidSphere::SolidSphere(Graphics& gfx, float radius)
+SolidSphere::SolidSphere(DX11RHI& gfx, float radius)
 {
 	using namespace Bind;
 	namespace dx = DirectX;

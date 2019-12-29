@@ -9,11 +9,11 @@ namespace Bind
 	class VertexShader : public Bindable
 	{
 	public:
-		VertexShader(Graphics& gfx, const std::string& path);
-		virtual void Bind(Graphics& gfx) override;
+		VertexShader(DX11RHI& gfx, const std::string& path);
+		virtual void Bind(DX11RHI& gfx) override;
 		ID3DBlob* GetByteCode() const;
 
-		static std::shared_ptr<VertexShader> Resolve(Graphics& gfx, const std::string& path);
+		static std::shared_ptr<VertexShader> Resolve(DX11RHI& gfx, const std::string& path);
 		static std::string GenerateUID(const std::string& path);
 		std::string GetUID() const override;
 

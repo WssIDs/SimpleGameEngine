@@ -90,7 +90,7 @@ void Camera::Tick(double deltaTime)
 void Camera::Render(double deltaTime)
 {
 	WObject::Render(deltaTime);
-	Graphics::Get().SetCamera(GetMatrix());
+	DX11RHI::Get().SetCamera(GetMatrix());
 	
 	SpawnControlWindow();
 }

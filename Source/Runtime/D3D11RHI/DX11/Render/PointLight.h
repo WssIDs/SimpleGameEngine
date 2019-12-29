@@ -14,7 +14,7 @@ public:
 	void SpawnControlWindow();
 	void Reset();
 	void Draw() const;
-	void Bind(Graphics& gfx) const;
+	void Bind(DX11RHI& gfx) const;
 
 	virtual void Tick(double deltaTime) override;
 	virtual void Render(double deltaTime) override;

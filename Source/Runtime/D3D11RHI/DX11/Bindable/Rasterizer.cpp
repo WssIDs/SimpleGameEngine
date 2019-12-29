@@ -3,7 +3,7 @@
 
 namespace Bind
 {
-	Rasterizer::Rasterizer(Graphics& gfx, bool twoSided)
+	Rasterizer::Rasterizer(DX11RHI& gfx, bool twoSided)
 		:
 		twoSided(twoSided)
 	{
@@ -13,12 +13,12 @@ namespace Bind
 		GetDevice(gfx)->CreateRasterizerState(&rasterDesc, &pRasterizer);
 	}
 
-	void Rasterizer::Bind(Graphics& gfx)
+	void Rasterizer::Bind(DX11RHI& gfx)
 	{
 		GetContext(gfx)->RSSetState(pRasterizer.Get());
 	}
 
-	std::shared_ptr<Rasterizer> Rasterizer::Resolve(Graphics& gfx, bool twoSided)
+	std::shared_ptr<Rasterizer> Rasterizer::Resolve(DX11RHI& gfx, bool twoSided)
 	{
 		return Codex::Resolve<Rasterizer>(gfx, twoSided);
 	}

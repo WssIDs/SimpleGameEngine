@@ -65,9 +65,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\D3D11RHI\DX11\Render\Vertex.cpp" />
-    <ClCompile Include="Runtime\D3D11RHI\DX11\Graphics.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\GUI\ImguiManager.cpp" />
     <ClCompile Include="Runtime\Engine\Level\Level.cpp" />
     <ClCompile Include="Runtime\Engine\WObject.cpp" />
@@ -105,6 +102,9 @@
     <ClCompile Include="Runtime\CoreInput\InputTypes.cpp" />
     <ClCompile Include="Runtime\CoreInput\PlatformInput.cpp" />
     <ClCompile Include="Runtime\CoreInput\InputSystem.cpp" />
+    <ClCompile Include="Runtime\D3D11RHI\DX11\DX11RHI.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h">
@@ -424,9 +424,6 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\D3D11RHI\DX11\Render\Vertex.h" />
-    <ClInclude Include="Runtime\D3D11RHI\DX11\Graphics.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Runtime\GUI\ImguiManager.h" />
     <ClInclude Include="Runtime\Core\Helpers\DirectXHelper.h">
       <Filter>Source</Filter>
@@ -477,6 +474,9 @@
     <ClInclude Include="Runtime\CoreInput\InputSystem.h" />
     <ClInclude Include="Runtime\D3D11RHI\DX11\Primitive\AssimpIncludes.h" />
     <ClInclude Include="Runtime\D3D11RHI\RHIInterface.h" />
+    <ClInclude Include="Runtime\D3D11RHI\DX11\DX11RHI.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

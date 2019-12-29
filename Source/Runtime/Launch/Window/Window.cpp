@@ -7,7 +7,7 @@
 #include <Runtime/Core/Math/WGMath.h>
 #include "Runtime/Core/Helpers/StringHelper.h"
 #include <Runtime/CoreInput/InputSystem.h>
-#include <Runtime/D3D11RHI/DX11/Graphics.h>
+#include <Runtime/D3D11RHI/DX11/DX11RHI.h>
 
 
 DEFINE_LOG_CATEGORY(WindowLog);
@@ -201,7 +201,7 @@ Window::Window(int width, int height, const std::string& name, const std::string
 	ImGui_ImplWin32_Init(hwnd);
 	WGE_LOG(WindowLog, LogVerbosity::Default, "ImGuiWin32 Init");
 
-	Graphics::Get().Init(hwnd, this->width, this->height);
+	DX11RHI::Get().Init(hwnd, this->width, this->height);
 
 	// register mouse raw input device
 	RAWINPUTDEVICE rid;
@@ -366,7 +366,7 @@ void Window::ToggleBordlessFullScreenMode()
 		SetWindowLong(GetHwnd(), GWL_EXSTYLE, WS_EX_TOPMOST);
 		ShowWindow(GetHwnd(), SW_SHOWMAXIMIZED);
 
-		Graphics::Get().OnBordlessMaximize();
+		DX11RHI::Get().OnBordlessMaximize();
 		ConfineCursor();
 		bBordlessMaximize = true;
 	}

@@ -4,7 +4,7 @@
 
 namespace Bind
 {
-	Sampler::Sampler(Graphics& gfx)
+	Sampler::Sampler(DX11RHI& gfx)
 	{
 		D3D11_SAMPLER_DESC samplerDesc = CD3D11_SAMPLER_DESC{ CD3D11_DEFAULT{} };
 		samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
@@ -15,12 +15,12 @@ namespace Bind
 		GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSampler);
 	}
 
-	void Sampler::Bind(Graphics& gfx)
+	void Sampler::Bind(DX11RHI& gfx)
 	{
 		GetContext(gfx)->PSSetSamplers(0u, 1u, pSampler.GetAddressOf());
 	}
 
-	std::shared_ptr<Sampler> Sampler::Resolve(Graphics& gfx)
+	std::shared_ptr<Sampler> Sampler::Resolve(DX11RHI& gfx)
 	{
 		return Codex::Resolve<Sampler>(gfx);
 	}
