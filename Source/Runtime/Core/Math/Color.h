@@ -69,6 +69,14 @@ struct LinearColor
 		A = alpha;
 	}
 
+	LinearColor(double red, double green, double blue, double alpha = 1.0f)
+	{
+		R = (float)red;
+		G = (float)green;
+		B = (float)blue;
+		A = (float)alpha;
+	}
+
 	template <typename Archive>
 	void serialize(Archive& ar, const unsigned int version)
 	{

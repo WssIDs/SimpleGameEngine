@@ -4,10 +4,17 @@
 PointLight::PointLight()
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
+	
 
-	Mesh = std::make_shared<NewSphere>();
-	//Mesh->SetRotation(Rotation);
+	Mesh = std::make_shared<NewMesh>();
+	Mesh->SetMesh("sphere.fbx");
+	Mesh->SetMaterial("Sphere.fx");
 	Mesh->SetLocation(Location);
+	Mesh->SetScale3D(Vector(0.1, 0.1, 0.1));
+	//Mesh->InitBufferData();
+	Mesh->Init();
+
+	//Mesh->SetRotation(Rotation);
 	//SetName("Default0");
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 
@@ -17,9 +24,13 @@ PointLight::PointLight()
 PointLight::PointLight(const std::string& name)
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
-	Mesh = std::make_shared<NewSphere>();
-	//Mesh->SetRotation(Rotation);
+	Mesh = std::make_shared<NewMesh>();
+	Mesh->SetMesh("sphere.fbx");
+	Mesh->SetMaterial("Sphere.fx");
 	Mesh->SetLocation(Location);
+	Mesh->SetScale3D(Vector(0.1, 0.1, 0.1));
+	//Mesh->InitBufferData();
+	Mesh->Init();
 	SetName(name);
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
@@ -30,9 +41,13 @@ PointLight::PointLight(const std::string& name)
 PointLight::PointLight(const std::string& name, float radius /*= 0.5f*/)
 {
 	Location = Vector(-35.0f, 160.0f, -50.0f);
-	Mesh = std::make_shared<NewSphere>();
-	//Mesh->SetRotation(Rotation);
+	Mesh = std::make_shared<NewMesh>();
+	Mesh->SetMesh("sphere.fbx");
+	Mesh->SetMaterial("Sphere.fx");
 	Mesh->SetLocation(Location);
+	Mesh->SetScale3D(Vector(0.1, 0.1, 0.1));
+	//Mesh->InitBufferData();
+	Mesh->Init();
 
 	LightBuffer = std::make_shared<PixelBuffer>(LightData);
 

@@ -209,6 +209,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Engine\Test\NewMesh.cpp" />
     <ClCompile Include="Runtime\CoreInput\InputTypes.cpp" />
     <ClCompile Include="Runtime\Engine\Test\TestTexture.cpp" />
     <ClCompile Include="Runtime\Engine\Test\NewCube.cpp" />
@@ -270,6 +271,7 @@ copy /y $(ProjectDir)ThirdParty\Assimp\libs\zlib.dll $(SolutionDir)Binaries\Win6
     <ClCompile Include="Runtime\Engine\WObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Engine\Test\NewMesh.h" />
     <ClInclude Include="Runtime\Core\CoreTypes.h" />
     <ClInclude Include="Runtime\D3D11RHI\DX11\DirectXIncludes.h" />
     <ClInclude Include="Runtime\CoreInput\InputTypes.h" />

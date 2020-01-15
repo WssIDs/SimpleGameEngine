@@ -3,7 +3,7 @@
 #include <Runtime/D3D11RHI/DX11/Bindable/ConstantBuffers.h>
 #include <Runtime/Engine/Test/Buffer.h>
 #include <Runtime/Engine/Test/Primitive.h>
-
+#include "Runtime/Engine/Test/NewMesh.h"
 
 class PointLight : public WObject
 {
@@ -37,6 +37,6 @@ private:
 	PointLightConstantBuffer LightData;
 	std::shared_ptr<PixelBuffer> LightBuffer;
 
-	mutable std::shared_ptr<Primitive> Mesh;
+	mutable std::shared_ptr<NewMesh> Mesh;
 	mutable std::string Name;
 };

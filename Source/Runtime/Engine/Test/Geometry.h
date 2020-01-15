@@ -5,20 +5,54 @@
 
 struct MainVertex
 {
+	MainVertex() {};
+
 	MainVertex(float inX, float inY, float inZ, float inRed = 1.0f, float inGreen = 1.0f, float inBlue = 1.0f, float inAlpha = 1.0f)
 		:
 		Position(inX, inY, inZ),
 		Color(inRed, inGreen, inBlue, inAlpha)
 	{}
 
-	MainVertex(DirectX::XMFLOAT3 inPosition, LinearColor inColor = LinearColor::White)
+	MainVertex(Vector inVector, float inRed = 1.0f, float inGreen = 1.0f, float inBlue = 1.0f, float inAlpha = 1.0f)
+		:
+		Position(inVector.x, inVector.y, inVector.z),
+		Color(inRed, inGreen, inBlue, inAlpha)
+	{}
+
+	MainVertex(Vector inPosition, LinearColor inColor = LinearColor::White)
 		:
 		Position(inPosition),
 		Color(inColor)
 	{}
 
-	DirectX::XMFLOAT3 Position;
+	void InitPosition(float inX, float inY, float inZ)
+	{
+		Position = Vector(inX, inY, inZ);
+	}
+	void InitColor(LinearColor inColor = LinearColor::White)
+	{
+		Color = inColor;
+	}
+
+	void InitColor(float inRed = 1.0f, float inGreen = 1.0f, float inBlue = 1.0f, float inAlpha = 1.0f)
+	{
+		Color = LinearColor(inRed, inGreen, inBlue, inAlpha);
+	}
+
+	void InitNormal(float inX, float inY, float inZ)
+	{
+		Normal = Vector(inX, inY, inZ);
+	}
+
+	void InitUV(float inX, float inY)
+	{
+		UV = DirectX::XMFLOAT2(inX, inY);
+	}
+
+	Vector Position;
 	LinearColor Color;
+	Vector Normal;
+	DirectX::XMFLOAT2 UV;
 };
 
 struct MeshData
@@ -27,13 +61,23 @@ struct MeshData
 
 	MeshData(std::vector<MainVertex> inVertices, std::vector<unsigned int> inIndices)
 		:
+		Vertices(inVertices)
+	{
+		for(auto inIndex : inIndices)
+		{
+			Indices.emplace_back(inIndex);
+		}
+	}
+
+	MeshData(std::vector<MainVertex> inVertices, std::vector<int> inIndices)
+		:
 		Vertices(inVertices),
 		Indices(inIndices)
 	{
 	}
 
 	std::vector<MainVertex> Vertices;
-	std::vector<unsigned int> Indices;
+	std::vector<int> Indices;
 };
 
 class Geometry
@@ -67,7 +111,7 @@ public:
 					DirectX::XMMatrixRotationZ(longitudeAngle * iLong)
 				);
 				DirectX::XMStoreFloat3(&calculatedPos, v);
-				vertices.emplace_back(calculatedPos);
+				vertices.emplace_back(calculatedPos.x, calculatedPos.y, calculatedPos.z);
 			}
 		}
 
@@ -76,14 +120,14 @@ public:
 		{
 			DirectX::XMFLOAT3 northPos;
 			DirectX::XMStoreFloat3(&northPos, base);
-			vertices.emplace_back(northPos);
+			vertices.emplace_back(northPos.x, northPos.y, northPos.z);
 		}
 
 		const auto iSouthPole = (unsigned int)vertices.size();
 		{
 			DirectX::XMFLOAT3 southPos;
 			DirectX::XMStoreFloat3(&southPos, DirectX::XMVectorNegate(base));
-			vertices.emplace_back(southPos);
+			vertices.emplace_back(southPos.x, southPos.y, southPos.z);
 		}
 
 		const auto calcIdx = [latDiv, longDiv](unsigned int iLat, unsigned int iLong)

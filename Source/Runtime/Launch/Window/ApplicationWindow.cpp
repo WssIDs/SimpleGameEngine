@@ -1,6 +1,5 @@
 ﻿#include "ApplicationWindow.h"
 #include <iomanip>
-#include <memory>
 #include <algorithm>
 #include <ThirdParty/Imgui/imgui.h>
 #include <thread>
@@ -41,6 +40,11 @@ ApplicationWindow::ApplicationWindow(int width, int height, const std::string& n
 	DX11RHI::Get().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 5000.0f));
 
 	EngineInit();
+
+	Mesh = std::make_shared<NewMesh>();
+	Mesh->SetMesh("Box.fbx");
+	Mesh->SetMaterial("Sphere.fx");
+	Mesh->Init();
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -156,6 +160,11 @@ void ApplicationWindow::Update(double deltaTime)
 	{
 		level->Tick(deltaTime);
 	}
+
+	if (Mesh)
+	{
+		Mesh->Update(deltaTime);
+	}
 }
 
 void ApplicationWindow::Render(double farseer)
@@ -167,6 +176,11 @@ void ApplicationWindow::Render(double farseer)
 	if (level != nullptr)
 	{
 		level->Render(farseer);
+	}
+
+	if (Mesh)
+	{
+		Mesh->Draw();
 	}
 
 	DX11RHI::Get().EndFrame(); // EndFrame

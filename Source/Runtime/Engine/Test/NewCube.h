@@ -1,5 +1,5 @@
 #pragma once
-#include <Graphics/Engine/Core/Core.h>
+#include <Runtime/Core/Core.h>
 #include <memory>
 #include "Material.h"
 #include "Geometry.h"
@@ -62,6 +62,7 @@ class NewCube : public Primitive
 public:
 	NewCube();
 
+	bool Init();
 	virtual void InitMaterial() override;
 	virtual void Update(double DeltaTime) override;
 	virtual void Draw() override;

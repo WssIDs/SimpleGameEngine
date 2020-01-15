@@ -2,6 +2,8 @@
 #include "Window.h"
 #include <Runtime/GUI/ImguiManager.h>
 #include <Runtime/Engine/Level/Level.h>
+#include "../../Engine/Test/NewMesh.h"
+#include <memory>
 
 class ApplicationWindow: public Window
 {
@@ -29,6 +31,7 @@ public:
 private:
 	std::shared_ptr<InputSystem> EngineInput;
 	Level* level;
+	std::shared_ptr<NewMesh> Mesh;
 };
 
 

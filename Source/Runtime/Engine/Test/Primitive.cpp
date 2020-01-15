@@ -25,7 +25,12 @@ void Primitive::SetMaterial(std::string Name)
 	ShaderName = Name;
 }
 
-void Primitive::Init()
+std::string Primitive::GetShaderName() const
+{
+	return ShaderName;
+}
+
+void Primitive::InitBufferData()
 {
 	SetScale3D(Scale);
 	SetRotation(Rotation);

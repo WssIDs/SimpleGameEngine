@@ -4,74 +4,7 @@
 #include "Geometry.h"
 #include "Material.h"
 #include "Buffer.h"
-
-struct Vector
-{
-	Vector()
-		:
-		x(0.0f),
-		y(0.0f),
-		z(0.0f)
-	{}
-
-	Vector(float inX, float inY, float inZ)
-		:
-		x(inX),
-		y(inY),
-		z(inZ)
-	{}
-
-	static Vector IdentityVector()
-	{
-		return Vector(1.0f, 1.0f, 1.0f);
-	}
-
-	static Vector ZeroVector()
-	{
-		return Vector(0.0f, 0.0f, 0.0f);
-	}
-
-	friend Vector operator+(const Vector& leftVector, const Vector& rightVector)
-	{
-		Vector result = Vector(leftVector.x + rightVector.x, leftVector.y + rightVector.y, leftVector.z + rightVector.z);
-		return result;
-	}
-
-	float x;
-	float y;
-	float z;
-};
-
-struct Rotator
-{
-	Rotator()
-		:
-		Pitch(0.0f),
-		Yaw(0.0f),
-		Roll(0.0f)
-	{}
-
-	Rotator(float inPitch, float inYaw, float inRoll)
-		:
-		Pitch(inPitch),
-		Roll(inRoll),
-		Yaw(inYaw)
-	{}
-
-	static Rotator IdentityRotator()
-	{
-		return Rotator(1.0f, 1.0f, 1.0f);
-	}
-
-	static Rotator ZeroRotator()
-	{
-		Vector(0.0f, 0.0f, 0.0f);
-	}
-
-	float Pitch;
-	float Roll;
-	float Yaw;
-};
+#include <sstream>
 
 
 struct ColorConstant
@@ -96,7 +29,8 @@ public:
 	virtual void InitMaterial();
 	// set shader Name
 	void SetMaterial(std::string Name);
-	void Init();
+	std::string GetShaderName() const;
+	void InitBufferData();
 
 	virtual void Update(double DeltaTime);
 	virtual void Draw();

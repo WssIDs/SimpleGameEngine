@@ -105,6 +105,7 @@
     <ClCompile Include="Runtime\D3D11RHI\DX11\DX11RHI.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Engine\Test\NewMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\resource.h">
@@ -477,6 +478,7 @@
     <ClInclude Include="Runtime\D3D11RHI\DX11\DX11RHI.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Engine\Test\NewMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\wgengine.ico">

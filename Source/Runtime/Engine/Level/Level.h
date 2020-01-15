@@ -48,6 +48,9 @@ public:
 
 		std::shared_ptr<WObject> model(new Model(BASE_MODELS_DIR + "sponza.fbx"));
 		SceneObjects.push_back(model);
+
+		//std::shared_ptr<WObject> model2(new Model(BASE_MODELS_DIR + "Box.fbx"));
+		//SceneObjects.push_back(model2);
 	}
 
 	void Tick(double deltaTime) override

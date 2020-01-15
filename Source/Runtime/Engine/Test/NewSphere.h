@@ -9,6 +9,7 @@ class NewSphere : public Primitive
 public:
 	NewSphere();
 
+	bool Init();
 	virtual void InitMaterial() override;
 	virtual void Update(double DeltaTime) override;
 	virtual void Draw() override;
