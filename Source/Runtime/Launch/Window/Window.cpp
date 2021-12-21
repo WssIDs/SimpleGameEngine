@@ -9,7 +9,6 @@
 #include <Runtime/CoreInput/InputSystem.h>
 #include <Runtime/D3D11RHI/DX11/DX11RHI.h>
 
-
 DEFINE_LOG_CATEGORY(WindowLog);
 
 Window::WindowClass Window::WindowClass::wndClass;
@@ -562,6 +561,8 @@ LRESULT CALLBACK Window::handleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 	return window->handleMsg(hWnd, msg, wParam, lParam);
 }
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT Window::handleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

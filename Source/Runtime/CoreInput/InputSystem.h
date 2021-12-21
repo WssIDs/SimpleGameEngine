@@ -390,7 +390,8 @@ public:
 
 	void Execute()
 	{
-		DelegateContainer->Execute(&Arguments<>());
+		IArguments* arg = new Arguments();
+		DelegateContainer->Execute(arg);
 	}
 
 	//template< class T1 > void operator()(T1 i_arg1)
@@ -468,7 +469,7 @@ public:
 	template<class Arg>
 	void Execute(Arg Args)
 	{
-		DelegateContainer->Execute(&Arguments<Arg>(Args));
+		DelegateContainer->Execute(new Arguments<Arg>(Args));
 	}
 
 	//template< class T1 > void operator()(T1 i_arg1)

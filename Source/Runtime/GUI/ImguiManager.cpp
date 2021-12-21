@@ -23,7 +23,7 @@ ImguiManager::ImguiManager()
 
 	std::filesystem::path path = std::filesystem::path(R"(..\..\..\Content\Fonts\segoeui.ttf)");
 
-	std::string filename = path.u8string();
+	std::string filename = path.string();
 
 	io.Fonts->AddFontFromFileTTF(filename.c_str(), 18.0f, &font_config, ranges);
 
